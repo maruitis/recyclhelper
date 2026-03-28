@@ -1,23 +1,19 @@
-/const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-const supabaseKey = "sb_publishable_DDFuLL3q18SJOdzlIb13JQ_zsZNn1d5"; // Убедись, что ключ верный (anon public)
+const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
+// Вставь сюда ANON KEY из настроек Supabase (тот, что длинный и на 'ey...')
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6eWN4dGx4aHJ0Z2NmZHpnY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg0MzksImV4cCI6MjA5MDI4NDQzOX0.HdgX9ErkXLtUCOIO20TUPor0lz3kHI_JHQe7AFq42B8"; 
 
-// Используем другое имя переменной, чтобы не было конфликта с глобальным объектом библиотеки
+// Создаем клиент с НОВЫМ именем 'db', чтобы не было конфликтов
 const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Проверка
-console.log("Supabase client ready:", db);
-
-(async function testSupabase() {
-  try {
-    // ЗАМЕНИ 'your_table_name' на реальное название своей таблицы!
-    const { data, error } = await db.from('posts').select('*'); 
+async function test() {
+    // ВАЖНО: замени 'posts' на название СВОЕЙ таблицы
+    const { data, error } = await db.from('posts').select('*');
     
     if (error) {
-      console.error("Ошибка запроса:", error.message);
+        console.error("Ошибка:", error.message);
     } else {
-      console.log("Данные из базы:", data);
+        console.log("Успех! Данные:", data);
     }
-  } catch (e) {
-    console.error("Сбой подключения:", e);
-  }
-})();
+}
+
+test();
