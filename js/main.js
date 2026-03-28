@@ -1,24 +1,23 @@
-// main.js
-const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-const supabaseKey = "sb_publishable_DDFuLL3q18SJOdzlIb13JQ_zsZNn1d5";
+/const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
+const supabaseKey = "ВАШ_КЛЮЧ"; // Убедись, что ключ верный (anon public)
 
-// Если клиент Supabase уже создан, не создаём заново
-window.supabaseClient = window.supabaseClient || window.supabase.createClient(supabaseUrl, supabaseKey);
+// Используем другое имя переменной, чтобы не было конфликта с глобальным объектом библиотеки
+const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Локальный alias для удобства
-const supabase = window.supabaseClient;
+// Проверка
+console.log("Supabase client ready:", db);
 
-// Проверка, что клиент работает
-console.log("Supabase client ready:", supabase);
 (async function testSupabase() {
   try {
-    const { data, error } = await supabase.from('your_table_name').select('*');
+    // ЗАМЕНИ 'your_table_name' на реальное название своей таблицы!
+    const { data, error } = await db.from('posts').select('*'); 
+    
     if (error) {
-      console.error("Supabase query error:", error);
+      console.error("Ошибка запроса:", error.message);
     } else {
-      console.log("Supabase data:", data);
+      console.log("Данные из базы:", data);
     }
   } catch (e) {
-    console.error("Supabase fetch failed:", e);
+    console.error("Сбой подключения:", e);
   }
 })();
