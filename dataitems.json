@@ -1,0 +1,53 @@
+{
+ "items":[
+  {
+   "items_id":1,
+   "name":"plastic bottle"
+  }
+ ],
+
+ "materials":[
+  {
+   "material_id":1,
+   "items_id":1,
+   "material_name":"PET",
+   "abbreviation":"01",
+   "feels":"clear strong lightweight",
+   "common_use":"water bottles"
+  },
+
+  {
+   "material_id":2,
+   "items_id":1,
+   "material_name":"HDPE",
+   "abbreviation":"02",
+   "feels":"opaque",
+   "common_use":"milk bottles"
+  }
+ ],
+
+ "diy":[
+  {
+   "diy_id":1,
+   "items_id":1,
+   "material_id":1,
+   "idea_name":"Mini plant pot",
+   "step1":"Cut the bottle in half",
+   "step2":"Use the bottom as pot",
+   "step3":"Add soil",
+   "step4":"Plant seeds",
+   "step5":"Water the plant"
+  }
+ ],
+
+ "calculator":[
+  {
+   "calc_id":1,
+   "items_id":1,
+   "material_id":1,
+   "co2_saved_kg":0.09,
+   "energy_saved_kwh":2.2,
+   "water_saved_liters":3
+  }
+ ]
+}
