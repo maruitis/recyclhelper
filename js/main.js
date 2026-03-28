@@ -1,5 +1,5 @@
 /const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-const supabaseKey = "ВАШ_КЛЮЧ"; // Убедись, что ключ верный (anon public)
+const supabaseKey = "sb_publishable_DDFuLL3q18SJOdzlIb13JQ_zsZNn1d5"; // Убедись, что ключ верный (anon public)
 
 // Используем другое имя переменной, чтобы не было конфликта с глобальным объектом библиотеки
 const db = supabase.createClient(supabaseUrl, supabaseKey);
