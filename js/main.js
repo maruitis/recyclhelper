@@ -7,7 +7,7 @@ const db = supabase.createClient(supabaseUrl, supabaseKey);
 
 async function test() {
     // ВАЖНО: замени 'posts' на название СВОЕЙ таблицы
-    const { data, error } = await db.from('posts').select('*');
+    const { data, error } = await db.from('items').select('*');
     
     if (error) {
         console.error("Ошибка:", error.message);
