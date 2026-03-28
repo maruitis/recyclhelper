@@ -91,3 +91,35 @@ if (document.readyState === "loading") {
 } else {
   initHomeSearch();
 }
+async function searchItem() {
+  const query = document.getElementById('searchInput').value.trim();
+  const resultsDiv = document.getElementById('searchResults');
+
+  if (!query) {
+    resultsDiv.innerHTML = "Please enter something to search.";
+    resultsDiv.hidden = false;
+    return;
+  }
+
+  try {
+    // пример для тестовой таблицы "todos"
+    const { data, error } = await supabase
+      .from('todos')
+      .select('*')
+      .ilike('task', `%${query}%`);  // ilike — поиск без учёта регистра
+
+    if (error) {
+      resultsDiv.innerHTML = "Error fetching data: " + error.message;
+    } else if (data.length === 0) {
+      resultsDiv.innerHTML = "No results found.";
+    } else {
+      // выводим результаты
+      resultsDiv.innerHTML = data.map(item => `<div>${item.task}</div>`).join('');
+    }
+
+    resultsDiv.hidden = false;
+  } catch (e) {
+    resultsDiv.innerHTML = "Something went wrong: " + e.message;
+    resultsDiv.hidden = false;
+  }
+}
