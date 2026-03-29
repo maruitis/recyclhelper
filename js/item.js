@@ -233,3 +233,5 @@ plus.onclick = () => {
 };
 
 }
+
+document.getElementById("calculatorSection").hidden = false;
