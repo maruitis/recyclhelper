@@ -1,6 +1,16 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/javascript.js to edit this template
- */
+async function loadCalculator(){
 
+  const { data, error } = await supabase
+    .from("calculator")
+    .select("*")
+    .eq("items_id", itemId)
+    .eq("material_id", selectedMaterial)
+    .single();
+  if(error){
+    console.error(error);
+    return;
+  }
 
+  updateCalculator(data);
+
+}

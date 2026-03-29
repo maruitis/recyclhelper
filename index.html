@@ -12,45 +12,7 @@
   <link rel="stylesheet" href="css/mansstils.css">
   
   <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    async function searchItem() {
-    const query = document.getElementById("searchInput").value.trim().toLowerCase();
-    const resultsEl = document.getElementById("searchResults");
-    resultsEl.innerHTML = "";
-    resultsEl.hidden = true;
 
-    if (!query) return;
-
-    const { data: items, error } = await supabase
-      .from("items")
-      .select("*")
-      .ilike("name", `%${query}%`);
-
-    if (error) {
-      console.error(error);
-      resultsEl.innerHTML = "<p>Error loading items.</p>";
-      resultsEl.hidden = false;
-      return;
-    }
-
-    if (!items || items.length === 0) {
-      resultsEl.innerHTML = "<p>No results found.</p>";
-      resultsEl.hidden = false;
-      return;
-    }
-
-    items.forEach(item => {
-      const a = document.createElement("a");
-      a.href = `item.html?id=${item.items_id || item.id}`;
-      a.textContent = item.name;
-      a.className = "search-result-link";
-      resultsEl.appendChild(a);
-    });
-
-    resultsEl.hidden = false;
-  }
-</script>
 </head>
 <body class="page-home">
 

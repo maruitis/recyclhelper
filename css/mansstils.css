@@ -173,13 +173,13 @@ h1 {
     font-size: clamp(32px, 7vw, 56px);
 }
 
-/* 1. Полоса навигации: сверху и слева */
+
 nav {
     display: flex;
-    justify-content: flex-start; /* Прижимает кнопки к левому краю */
+    justify-content: flex-start; 
     align-items: center;
-    gap: 35px;         /* Расстояние между светящимися зонами */
-    padding: 25px 45px; /* Отступы от краев полосы */
+    gap: 35px;        
+    padding: 25px 45px; 
     
     background: var(--nav-plain-bg);
     
@@ -199,7 +199,7 @@ nav.nav-row {
     background: linear-gradient(to bottom, var(--nav-row-bg), transparent);
 }
 
-/* 2. Сами окошки-кнопки */
+
 .nav-link {
     text-decoration: none;
     color: var(--nav-link-fg);
@@ -208,7 +208,7 @@ nav.nav-row {
     font-weight: 900;
     font-size: clamp(13px, 2.2vw, 18px);
     
-    /* ФИКСИРОВАННЫЙ РАЗМЕР */
+ 
     width: auto;
     min-width: 0;
     height: 44px;
@@ -217,27 +217,25 @@ nav.nav-row {
     background-color: var(--nav-link-bg);
     border-radius: 50px;
     
-    /* ЦЕНТРИРОВАНИЕ ТЕКСТА (и по горизонтали, и по вертикали) */
     display: flex;
-    justify-content: center; /* Центр по ширине */
-    align-items: center;     /* Центр по высоте */
+    justify-content: center;
+    align-items: center;    
     text-align: center;
 
-    /* ЖИРНАЯ И ШИРОКАЯ ТЕНЬ */
-    /* 45px — размытие (blur), 12px — растяжение (spread) */
+    
     box-shadow: 0 0 55px 12px #00FF6A; 
     
     transition: all 0.3s ease;
 }
 
-/* Эффект при наведении — еще больше объема */
+
 .nav-link:hover {
-    /* Еще более широкое свечение при наведении */
+    
     box-shadow: 0 0 60px 18px #00FF6A;
     transform: translateY(-2px);
 }
 
-/* Главный контейнер для всех блоков (выстраивает их в ряд) */
+/* Главный контейнер для всех блоков  */
 .main-container {
     display: flex;
     justify-content: center;
@@ -269,27 +267,21 @@ nav.nav-row {
     box-sizing: border-box;
     transition: transform 0.3s ease;
     
-    /* УБИРАЕМ overflow совсем, чтобы выпустить верх/низ */
     overflow: visible; 
 }
 
 .img-wrapper {
     position: absolute;
-    top: -30px;    /* Насколько сильно торчит сверху */
-    bottom: -30px; /* Насколько сильно торчит снизу */
-    right: -30px;  /* Выносим за край, чтобы потом обрезать */
+    top: -30px;    
+    bottom: -30px; 
+    right: -30px; 
     width: 150px;
     z-index: 1;
     pointer-events: none;
 
-    /* МАГИЯ: Режем только ПРАВЫЙ край. 
-       Считаем: ширина карточки 250px, отступ wrapper справа -30px.
-       Значит, граница обрезки проходит на 30px левее правого края wrapper. */
+    
     clip-path: inset(-100px 30px -90px -100px); 
-    /* Значения: top, right, bottom, left. 
-       Минусовые значения (-100px) гарантируют, что сверху, снизу и слева ничего НЕ обрежется. 
-       Положительное (30px) — режет справа. */
-}
+    
 
 .card-img {
     width: 100%;
@@ -310,9 +302,9 @@ nav.nav-row {
     margin-left: auto;
     margin-right: auto;
 }
-/* Поднимаем картинку только во второй карточке */
+
 .info-card:nth-child(2) .img-wrapper {
-    top: -41px; /* Было -50px, делаем выше */
+    top: -41px; 
 }
 
 /* Поднимаем картинку только в третьей карточке */
@@ -323,15 +315,15 @@ nav.nav-row {
 .info-card:nth-child(3) .img-wrapper {
     width: 120px;
 }
-/* Общие настройки контейнеров */
+
 .cloud {
     position: fixed;
-    top: -60px; /* Высота от верхнего края */
-    z-index: -1; /* Уводим под текст */
-    pointer-events: none; /* Чтобы можно было кликать сквозь облака */
+    top: -60px; 
+    z-index: -1; 
+    pointer-events: none; 
 }
 
-/* Стилизация самой картинки внутри блока */
+
 .cloud img {
     width: min(720px, 95vw);
     max-width: 900px;
@@ -361,7 +353,7 @@ nav.nav-row {
     }
 }
 
-/* ——— Layout: header, search, item page ——— */
+
 .site-header {
     position: relative;
     z-index: 2;
@@ -624,7 +616,7 @@ button.theme-toggle {
     white-space: normal;
 }
 
-/* Footer CTA on older pages (about, donate, …) */
+
 body:not(.page-home):not(.page-item) > h2:last-of-type {
     position: fixed;
     bottom: 16px;

@@ -1,3 +1,56 @@
+async function searchItem() {
+
+  const input = document.getElementById("searchInput");
+  const results = document.getElementById("searchResults");
+
+  const query = input.value.trim().toLowerCase();
+
+  results.innerHTML = "";
+  results.hidden = true;
+
+  if (!query) return;
+
+  const { data, error } = await supabase
+    .from("items")
+    .select("items_id,name")
+    .ilike("name", `%${query}%`);
+
+  if (error) {
+
+    console.error(error);
+
+    results.innerHTML = "<p>Error loading items</p>";
+    results.hidden = false;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    results.innerHTML = "<p>No results found</p>";
+    results.hidden = false;
+    return;
+  }
+
+  data.forEach(item => {
+
+    const link = document.createElement("a");
+
+    link.href = `item.html?id=${item.items_id}`;
+
+    link.textContent = item.name;
+
+    link.className = "search-result-link";
+
+    results.appendChild(link);
+
+  });
+
+  results.hidden = false;
+
+}
+
+
+
 function sanitizeIlikeQuery(raw) {
   return raw.trim().replace(/[%_\\]/g, "");
 }

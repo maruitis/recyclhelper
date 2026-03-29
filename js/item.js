@@ -11,15 +11,14 @@ const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6eWN4dGx4aHJ0Z2NmZHpnY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg0MzksImV4cCI6MjA5MDI4NDQzOX0.HdgX9ErkXLtUCOIO20TUPor0lz3kHI_JHQe7AFq42B8";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const currentItemId = 1; // или получаем динамически из URL
+const currentItemId = 1; 
 
-// Контейнеры в HTML
+
 const materialsGrid = document.getElementById("materialsGrid");
 const diyCards = document.getElementById("diyCards");
 const lifehacksColumns = document.getElementById("lifehacksColumns");
 const calculatorSection = document.getElementById("calculator");
 
-// 1. Получаем материалы
 async function loadMaterials() {
   const { data: materials, error } = await supabase
     .from("materials")
@@ -28,23 +27,23 @@ async function loadMaterials() {
 
   if (error) return console.error("Materials error:", error);
 
-  // Чистим сетку
+ 
   materialsGrid.innerHTML = "";
 
   materials.forEach(mat => {
     const btn = document.createElement("button");
-    btn.textContent = mat.name; // название материала
+    btn.textContent = mat.name; 
     btn.className = "material-card";
     btn.onclick = () => selectMaterial(mat.id);
     materialsGrid.appendChild(btn);
   });
 }
 
-// 2. Выбираем материал
+
 async function selectMaterial(materialId) {
   console.log("Выбран материал:", materialId);
 
-  // Загружаем лайфхаки для выбранного материала
+ 
   const { data: lifehacks, error: lhError } = await supabase
     .from("diy")
     .select("*")
@@ -59,7 +58,7 @@ async function selectMaterial(materialId) {
     lifehacksColumns.appendChild(li);
   });
 
-  // Загружаем калькулятор для выбранного материала
+
   const { data: calcData, error: calcError } = await supabase
     .from("calculator")
     .select("*")
@@ -70,9 +69,9 @@ async function selectMaterial(materialId) {
   renderCalculator(calcData);
 }
 
-// 3. Рендерим калькулятор
+
 function renderCalculator(calcData) {
-  calculatorSection.innerHTML = ""; // очищаем
+  calculatorSection.innerHTML = "";
   calcData.forEach(item => {
     const div = document.createElement("div");
     div.textContent = `${item.name}: ${item.value}`;
@@ -80,5 +79,131 @@ function renderCalculator(calcData) {
   });
 }
 
-// Запуск
-loadMaterials();
+document.addEventListener("DOMContentLoaded", () => {
+
+  if(item_id){
+
+    loadMaterials();
+
+  }
+
+});
+// GET ITEM ID FROM URL
+
+const params = new URLSearchParams(window.location.search);
+
+const itemId = params.get("id");
+
+let selectedMaterial = null;
+let quantity = 1;
+
+
+// LOAD MATERIALS
+
+async function loadMaterials(){
+
+  if(!itemId) return;
+
+  const { data, error } = await supabase
+    .from("materials")
+    .select("*")
+    .eq("items_id", itemId);
+
+  if(error){
+
+    console.error(error);
+    return;
+
+  }
+
+  const container = document.getElementById("materials");
+
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  data.forEach(material => {
+
+    const btn = document.createElement("button");
+
+    btn.textContent = material.material_name;
+
+    btn.className = "material-card";
+
+    btn.onclick = () => selectMaterial(material.material_id);
+
+    container.appendChild(btn);
+
+  });
+
+}
+
+
+// SELECT MATERIAL
+
+function selectMaterial(id){
+
+  selectedMaterial = id;
+
+  loadCalculator();
+  loadDiy();
+
+}
+
+
+// LOAD CALCULATOR
+
+async function loadCalculator(){
+
+  if(!selectedMaterial) return;
+
+  const { data, error } = await supabase
+    .from("calculator")
+    .select("*")
+    .eq("items_id", itemId)
+    .eq("material_id", selectedMaterial)
+    .single();
+
+  if(error){
+
+    console.error(error);
+    return;
+
+  }
+
+  updateCalculator(data);
+
+}
+
+
+// UPDATE CALCULATOR
+
+function updateCalculator(calc){
+
+  const water =
+    calc.water_saved_liters * quantity;
+
+  const energy =
+    calc.energy_saved_kwh * quantity;
+
+  const co2 =
+    calc.co2_saved_kg * quantity;
+
+  const waterEl = document.getElementById("water");
+  const energyEl = document.getElementById("energy");
+  const co2El = document.getElementById("co2");
+
+  if(waterEl) waterEl.textContent = water;
+  if(energyEl) energyEl.textContent = energy;
+  if(co2El) co2El.textContent = co2;
+
+}
+
+
+// PAGE LOAD
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  loadMaterials();
+
+});

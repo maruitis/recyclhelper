@@ -57,7 +57,7 @@
       sb_client_missing: "Database client did not load. Serve the site over http(s), not file://, and check the console.",
       theme_go_dark: "Switch to dark mode",
       theme_go_light: "Switch to light mode",
-    },
+    }
     lv: {
       nav_about: "PAR MUMS",
       nav_mission: "MŪSU MISIJA",
