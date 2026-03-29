@@ -68,7 +68,7 @@
       scan_title: "Kameras skenēšana drīzumā",
       footer_cta: "KATRA PĀRSTRĀDĀTA LIETA IR SVARĪGA. RĪKOJIES TAGAD!",
       card_containers: "UZZINI PAR PAREIZO ATKRITUMU TVERTNI",
-      card_items: "UZZINI PAR <br> LIETĀM, <br> KO PĀRSTRĀDĀT",
+      card_items: "UZZINI PAR <br> LIETĀM, <br> KO PĀRS <br> TRĀDĀT",
       card_benefits: "UZZINI PAR <br> IEGUVUMIEM",
       item_search_placeholder: "Meklēt citu lietu…",
       item_search_btn: "Meklēt",
