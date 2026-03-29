@@ -161,6 +161,13 @@ if (!supabase) {
   }
 
   async function load() {
+     console.log("ITEM ID:", id);
+
+const { data: materials } = await supabase
+  .from("materials")
+  .select("*");
+
+console.log("ALL MATERIALS:", materials);
     const params = new URLSearchParams(location.search);
     const id = Number(params.get("id"));
     if (!id) { document.getElementById("itemLoadError").hidden = false; return; }
