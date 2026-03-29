@@ -56,9 +56,9 @@
       option_fallback: "Option",
       sb_client_missing: "Database client did not load. Serve the site over http(s), not file://, and check the console.",
       theme_go_dark: "Switch to dark mode",
-      theme_go_light: "Switch to light mode",
-    }
-    lv: {
+      theme_go_light: "Switch to light mode"
+    },
+      lv: {
       nav_about: "PAR MUMS",
       nav_mission: "MŪSU MISIJA",
       nav_donate: "ZIEDOT",
@@ -111,8 +111,8 @@
       option_fallback: "Variants",
       sb_client_missing: "Datubāzes klients neielādējās. Atver vietni caur http(s), nevis file://, un pārbaudi konsoli.",
       theme_go_dark: "Pārslēgt uz tumšo režīmu",
-      theme_go_light: "Pārslēgt uz gaišo režīmu",
-    },
+      theme_go_light: "Pārslēgt uz gaišo režīmu"
+    }
   };
 
   function getLang() {
@@ -138,7 +138,7 @@
 
   function t(lang, key) {
     const pack = STRINGS[lang] || STRINGS.en;
-    return pack[key] != null ? pack[key] : STRINGS.en[key] || key;
+    return pack[key] !== null ? pack[key] : STRINGS.en[key] || key;
   }
 
   function applyTranslations(lang) {
