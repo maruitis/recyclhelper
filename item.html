@@ -16,7 +16,6 @@ try {
 </head>
 <body class="page-item">
 
-  <!-- Clouds / Background -->
   <div class="cloud cloud-left" aria-hidden="true">
     <img src="images/cloud.png" alt="">
   </div>
@@ -24,7 +23,6 @@ try {
     <img src="images/cloud.png" alt="">
   </div>
 
-  <!-- Header -->
   <header class="site-header">
     <nav class="nav-row" aria-label="Main">
       <div class="nav-pills">
@@ -49,19 +47,17 @@ try {
     <div class="hero-search-block hero-search-block--tight">
       <form class="hero-search-row" action="index.html" method="get">
         <label class="search-field-wrap" for="itemSearchInput">
-          <input id="itemSearchInput" name="q" type="search" class="search-input" data-i18n-placeholder="item_search_placeholder" placeholder="Search another item…" autocomplete="off">
+          <input id="itemSearchInput" name="q" type="search" class="search-input" placeholder="Search another item…" autocomplete="off">
           <span class="search-input-icon" aria-hidden="true">🔍</span>
         </label>
-        <button type="submit" class="btn-pill btn-search-main" data-i18n="item_search_btn">Search</button>
+        <button type="submit" class="btn-pill btn-search-main">Search</button>
       </form>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="item-main">
     <p id="itemLoadError" class="item-error" hidden></p>
 
-    <!-- Hero Section -->
     <section class="item-hero-grid" id="itemHero" hidden>
       <div class="item-visual">
         <img id="itemImage" src="" alt="" class="item-image" hidden>
@@ -77,153 +73,60 @@ try {
             <button type="button" class="cap-btn cap-no" id="capNo" aria-pressed="false" title="Without cap">✕</button>
           </div>
         </div>
-
-        <!-- Lifehacks -->
         <div class="lifehacks-banner glass-panel">
-          <h3 class="lifehacks-title" data-i18n="lifehacks_title">Lifehacks for recycling</h3>
+          <h3 class="lifehacks-title">Lifehacks for recycling</h3>
           <div class="lifehacks-columns" id="lifehacksText"></div>
         </div>
       </div>
     </section>
 
-    <!-- Materials Section -->
     <section class="materials-section" id="materialsSection" hidden>
-      <h2 class="section-title" data-i18n="materials_title">Possible materials</h2>
-      <p class="section-hint" data-i18n="materials_hint">Choose up to one type that matches your item (max 4 shown).</p>
+      <h2 class="section-title">Possible materials</h2>
+      <p class="section-hint">Choose up to one type that matches your item (max 4 shown).</p>
       <div class="materials-grid" id="materialsGrid"></div>
     </section>
 
-    <!-- DIY Section -->
     <section class="diy-section" id="diySection" hidden>
-      <h2 class="section-title section-title--diy" data-i18n="diy_title">Lifehacks and homemade ideas</h2>
+      <h2 class="section-title section-title--diy">Lifehacks and homemade ideas</h2>
       <div class="diy-cards" id="diyCards"></div>
     </section>
 
-    <!-- Bottom Section: Calculator + Map -->
     <div class="item-bottom-grid">
-      <!-- Calculator -->
       <section class="calculator-panel glass-panel" id="calculatorSection" hidden>
         <div class="calculator-head">
-          <h2 class="calculator-title" data-i18n="calc_title">Efficiency calculator</h2>
+          <h2 class="calculator-title">Efficiency calculator</h2>
           <div class="amount-stepper">
-            <span class="amount-label" data-i18n="calc_amount">Amount</span>
+            <span class="amount-label">Amount</span>
             <button type="button" class="stepper-btn" id="qtyMinus" aria-label="Decrease">−</button>
             <span class="stepper-value" id="qtyValue">1</span>
             <button type="button" class="stepper-btn" id="qtyPlus" aria-label="Increase">+</button>
           </div>
         </div>
         <ul class="calculator-stats">
-          <li><span class="stat-icon" aria-hidden="true">💧</span> <span class="stat-label" data-i18n="calc_water">Saved water</span> <strong id="statWater">—</strong></li>
-          <li><span class="stat-icon" aria-hidden="true">⚡</span> <span class="stat-label" data-i18n="calc_energy">Saved energy</span> <strong id="statEnergy">—</strong></li>
-          <li><span class="stat-icon" aria-hidden="true">☁</span> <span class="stat-label" data-i18n="calc_co2">Saved CO₂</span> <strong id="statCo2">—</strong></li>
+          <li><span class="stat-icon" aria-hidden="true">💧</span> Saved water: <strong id="statWater">—</strong></li>
+          <li><span class="stat-icon" aria-hidden="true">⚡</span> Saved energy: <strong id="statEnergy">—</strong></li>
+          <li><span class="stat-icon" aria-hidden="true">☁</span> Saved CO₂: <strong id="statCo2">—</strong></li>
         </ul>
         <p class="calculator-footnote" id="calculatorFootnote"></p>
       </section>
 
-      <!-- Map -->
       <section class="map-panel glass-panel" aria-label="Deposit map placeholder">
-        <h2 class="map-title" data-i18n="map_title">Find the closest deposit point!</h2>
+        <h2 class="map-title">Find the closest deposit point!</h2>
         <div class="map-placeholder" id="mapPlaceholder">
-          <p data-i18n="map_placeholder">Connect Mapbox or Google Maps and load pins from Supabase. Your design goes here.</p>
+          <p>Connect Mapbox or Google Maps and load pins from Supabase. Your design goes here.</p>
         </div>
         <label class="map-address-row">
-          <span class="visually-hidden" data-i18n="map_address_ph">Your full address</span>
-          <input type="text" class="map-address-input" data-i18n-placeholder="map_address_ph" placeholder="Your full address:" readonly>
+          <span class="visually-hidden">Your full address</span>
+          <input type="text" class="map-address-input" placeholder="Your full address:" readonly>
           <span class="search-input-icon" aria-hidden="true">🔍</span>
         </label>
       </section>
     </div>
   </main>
 
-  <p class="site-footer-cta" data-i18n="footer_cta">EVERY RECYCLED ITEM MAKES A DIFFERENCE. ACT NOW!</p>
+  <p class="site-footer-cta">EVERY RECYCLED ITEM MAKES A DIFFERENCE. ACT NOW!</p>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // подключаем Supabase
-    const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6..."; // твой ключ
-    window.supabase = Supabase.createClient(supabaseUrl, supabaseKey);
-    console.log("Supabase initialized:", window.supabase);
-  </script>
-  <script>
-    // Загрузка данных для item.html
-    async function loadItem() {
-      const params = new URLSearchParams(window.location.search);
-      const itemId = params.get("id");
-
-      if (!itemId) return;
-
-      // Получаем item
-      const { data: items } = await supabase
-        .from("items")
-        .select("*")
-        .eq("items_id", itemId)
-        .limit(1);
-
-      if (!items || items.length === 0) {
-        document.getElementById("itemLoadError").hidden = false;
-        document.getElementById("itemLoadError").textContent = "Item not found";
-        return;
-      }
-
-      const item = items[0];
-      document.getElementById("itemName").textContent = item.name;
-
-      // Materials
-      const { data: materials } = await supabase
-        .from("materials")
-        .select("*")
-        .eq("items_id", itemId);
-
-      const matGrid = document.getElementById("materialsGrid");
-      matGrid.innerHTML = "";
-      materials?.forEach(mat => {
-        const div = document.createElement("div");
-        div.className = "material-card";
-        div.textContent = mat.material_name;
-        matGrid.appendChild(div);
-      });
-      document.getElementById("materialsSection").hidden = !materials?.length;
-
-      // DIY
-      const { data: diy } = await supabase
-        .from("diy")
-        .select("*")
-        .eq("items_id", itemId);
-
-      const diyGrid = document.getElementById("diyCards");
-      diyGrid.innerHTML = "";
-      diy?.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "diy-card";
-        div.innerHTML = `<h4>${d.idea_name}</h4><p>${d.materials_list}</p>
-                         <ol>
-                           ${[d.step1,d.step2,d.step3,d.step4,d.step5].filter(Boolean).map(s=>`<li>${s}</li>`).join('')}
-                         </ol>`;
-        diyGrid.appendChild(div);
-      });
-      document.getElementById("diySection").hidden = !diy?.length;
-
-      // Calculator
-      const { data: calc } = await supabase
-        .from("calculator")
-        .select("*")
-        .eq("items_id", itemId)
-        .limit(1);
-
-      if (calc && calc.length) {
-        document.getElementById("calculatorSection").hidden = false;
-        document.getElementById("statWater").textContent = calc[0].water_saved_liters || "—";
-        document.getElementById("statEnergy").textContent = calc[0].energy_saved_kwh || "—";
-        document.getElementById("statCo2").textContent = calc[0].co2_saved_kg || "—";
-      }
-    }
-
-    loadItem();
-  </script>
-
-  <script src="js/language.js"></script>
-  <script src="js/theme.js"></script>
+  <script src="js/item.js"></script>
 </body>
 </html>
