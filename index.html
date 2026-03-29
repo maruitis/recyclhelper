@@ -14,12 +14,7 @@
   <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6eWN4dGx4aHJ0Z2NmZHpnY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg0MzksImV4cCI6MjA5MDI4NDQzOX0.HdgX9ErkXLtUCOIO20TUPor0lz3kHI_JHQe7AFq42B8"; // твой ключ
-  window.supabase = Supabase.createClient(supabaseUrl, supabaseKey);
-  console.log("Supabase initialized:", window.supabase);
-
-  async function searchItem() {
+    async function searchItem() {
     const query = document.getElementById("searchInput").value.trim().toLowerCase();
     const resultsEl = document.getElementById("searchResults");
     resultsEl.innerHTML = "";
@@ -127,9 +122,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/main.js"></script>
-  <script src="js/item.js" type="text/javascript"></script>
+  <script src="js/items2.js" type="text/javascript"></script>
   <script src="js/language.js"></script>
   <script src="js/theme.js"></script>
-  <script src="js/search.js"></script>
+  <script src="js/search2.js"></script>
 </body>
 </html>
