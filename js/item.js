@@ -5,7 +5,6 @@ if (!supabase) {
 }
 
 (async () => {
-  const supabase = window.supabaseClient;
   const state = {
     itemId: null,
     itemRow: null,
