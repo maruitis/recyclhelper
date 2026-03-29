@@ -10,6 +10,52 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Gasoek+One&family=Inter:wght@600;800;900&family=Jomhuria&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mansstils.css">
+  
+  <!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6eWN4dGx4aHJ0Z2NmZHpnY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg0MzksImV4cCI6MjA5MDI4NDQzOX0.HdgX9ErkXLtUCOIO20TUPor0lz3kHI_JHQe7AFq42B8"; // твой ключ
+  window.supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+  console.log("Supabase initialized:", window.supabase);
+
+  async function searchItem() {
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    const resultsEl = document.getElementById("searchResults");
+    resultsEl.innerHTML = "";
+    resultsEl.hidden = true;
+
+    if (!query) return;
+
+    const { data: items, error } = await supabase
+      .from("items")
+      .select("*")
+      .ilike("name", `%${query}%`);
+
+    if (error) {
+      console.error(error);
+      resultsEl.innerHTML = "<p>Error loading items.</p>";
+      resultsEl.hidden = false;
+      return;
+    }
+
+    if (!items || items.length === 0) {
+      resultsEl.innerHTML = "<p>No results found.</p>";
+      resultsEl.hidden = false;
+      return;
+    }
+
+    items.forEach(item => {
+      const a = document.createElement("a");
+      a.href = `item.html?id=${item.items_id || item.id}`;
+      a.textContent = item.name;
+      a.className = "search-result-link";
+      resultsEl.appendChild(a);
+    });
+
+    resultsEl.hidden = false;
+  }
+</script>
 </head>
 <body class="page-home">
 
