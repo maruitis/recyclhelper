@@ -58,7 +58,7 @@
       theme_go_dark: "Switch to dark mode",
       theme_go_light: "Switch to light mode"
     },
-      lv: {
+    lv: {
       nav_about: "PAR MUMS",
       nav_mission: "MŪSU MISIJA",
       nav_donate: "ZIEDOT",
@@ -68,7 +68,7 @@
       scan_title: "Kameras skenēšana drīzumā",
       footer_cta: "KATRA PĀRSTRĀDĀTA LIETA IR SVARĪGA. RĪKOJIES TAGAD!",
       card_containers: "UZZINI PAR PAREIZO ATKRITUMU TVERTNI",
-      card_items: "UZZINI PAR <br> LIETĀM, <br> KO PĀRS <br> TRĀDĀT",
+      card_items: "UZZINI PAR <br> LIETĀM, <br> KO PĀRSTRĀDĀT",
       card_benefits: "UZZINI PAR <br> IEGUVUMIEM",
       item_search_placeholder: "Meklēt citu lietu…",
       item_search_btn: "Meklēt",
@@ -138,7 +138,7 @@
 
   function t(lang, key) {
     const pack = STRINGS[lang] || STRINGS.en;
-    return pack[key] !== null ? pack[key] : STRINGS.en[key] || key;
+    return (pack[key] !== undefined && pack[key] !== null) ? pack[key] : (STRINGS.en[key] || key);
   }
 
   function applyTranslations(lang) {
