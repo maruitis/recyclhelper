@@ -1101,4 +1101,27 @@ body:not(.page-home):not(.page-item) > h2:last-of-type {
 
 .map-address-row .search-input-icon {
     right: 12px;
+}.calculator-panel {
+  display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--calc-li-border);
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.95rem;  
+
+}
+
+.item-hero-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+.lifehacks-banner {
+display: block;
+    font-weight: 800;
+    color: var(--material-name-fg);
+    font-size: 1.05rem;
 }
