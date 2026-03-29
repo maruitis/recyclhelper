@@ -1,4 +1,8 @@
-/* global supabaseClient */
+const supabase = window.supabaseClient;
+
+if (!supabase) {
+  console.error("❌ Supabase client not initialized");
+}
 
 (async () => {
   const supabase = window.supabaseClient;
@@ -159,7 +163,7 @@
 
   async function load() {
     const params = new URLSearchParams(location.search);
-    const id = params.get("id");
+    const id = Number(params.get("id"));
     if (!id) { document.getElementById("itemLoadError").hidden = false; return; }
     state.itemId = id;
 
