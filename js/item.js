@@ -207,3 +207,29 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMaterials();
 
 });
+
+const minus = document.getElementById("qtyMinus");
+const plus = document.getElementById("qtyPlus");
+const value = document.getElementById("qtyValue");
+
+if(minus && plus){
+
+minus.onclick = () => {
+
+  if(quantity > 1){
+    quantity--;
+    value.textContent = quantity;
+    loadCalculator();
+  }
+
+};
+
+plus.onclick = () => {
+
+  quantity++;
+  value.textContent = quantity;
+  loadCalculator();
+
+};
+
+}
