@@ -15,7 +15,7 @@
     quantity: 1,
     baseWater: null,
     baseEnergy: null,
-    baseCo2Kg: null,
+    baseCo2Kg: null
   };
 
   function escapeHtml(s) {
@@ -37,7 +37,7 @@
   }
 
   function formatEnergy(v) {
-    if (v == null) return "—";
+    if (v === null) return "—";
     const val = v * state.quantity;
     return val % 1 === 0 ? `${val} kWh` : `${val.toFixed(1)} kWh`;
   }
