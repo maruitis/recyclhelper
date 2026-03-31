@@ -50,7 +50,18 @@ h2{
 
     white-space: nowrap;    /* запрещает перенос строки */
 }
-
+h4 { 
+    background-image: linear-gradient(90deg, #89F19E, #0E0973);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 20px;
+    margin: 0;
+    text-align: center;
+    font-family: "Gasoek One", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+    margin-top: 3px;
+}
 /* 1. Полоса навигации: сверху и слева */
 nav {
     display: flex;
@@ -229,19 +240,6 @@ html{
     animation: fadeUp 0.8s ease forwards;
 }
 
-body {
-    margin: 0;
-    font-family: 'Arial Black', sans-serif;
-    background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 50%, #90EE90 100%);
-    min-height: 100vh;
-    color: #2D4059;
-}
-
-header nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
 
 button {
     background: rgba(255, 255, 255, 0.7);
@@ -263,6 +261,14 @@ button {
     display: flex;
 }
 
+.search-container.small {
+    width: 600px;
+    height: 35px;
+    padding: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+     margin-top: 0px;
+}
+
 .search-container input {
     width: 100%;
     background: transparent;
@@ -270,6 +276,11 @@ button {
     padding: 10px 20px;
     font-size: 1.2rem;
     outline: none;
+    
+}
+.search-container.small input {
+    font-size: 0.9rem;
+    padding: 5px 15px;
 }
 
 .glass-panel {
@@ -294,19 +305,6 @@ button {
     font-size: 0.8rem;
 }
 
-.diy-cards {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-}
-
-.diy-card {
-    min-width: 200px;
-    background: rgba(173, 216, 230, 0.5);
-    padding: 15px;
-    border-radius: 15px;
-}
-
 .bottom-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -316,5 +314,109 @@ button {
     font-size: 4rem;
     color: #00FF7F;
     text-shadow: 2px 2px #2D4059;
+    text-align: center;
+}
+.diy-section {
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    margin-left: 500px;
+margin-top: -60px;
+          
+}
+
+.diy-title {
+    font-family: 'Jomhuria', cursive;
+    font-size: 48px;
+    margin-bottom: 10px;
+    color: #0E0973;
+    text-align: center;
+    width: 100%;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.diy-cards {
+    display: flex;
+    justify-content: flex-end; /* карточки строго справа */
+    align-items: center;
+    position: relative;
+    gap: -60px; /* заход друг за друга */
+}
+
+/* Базовые стили карточки */
+.diy-card {
+    background-color: #829DD9;
+    border-radius: 30px;
+    width: 350px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Jomhuria', cursive;
+    font-size: 24px;
+    color: #C7D6FA;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+
+    /* Stroke */
+    border: 1px solid transparent;
+    background-clip: padding-box;
+}
+
+.diy-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    padding: 2px; /* ширина stroke */
+    background: linear-gradient(135deg, #89F19E, #0E0973);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Заходящие карточки */
+.diy-card:nth-child(1) {
+    transform: scale(1) translateX(0);
+    opacity: 1;
+    z-index: 3;
+}
+
+.diy-card:nth-child(2) {
+    transform: scale(1) translateX(-60px); /* заход плавный */
+    opacity: 0.8;
+     width: 320px;
+    height: 140px;
+    z-index: 2;
+}
+
+.diy-card:nth-child(3) {
+    transform: scale(1) translateX(-120px); /* заход ещё больше */
+    opacity: 0.6;
+    width: 300px;
+    height: 130px;
+    z-index: 1;
+    gap: -70px;
+}
+
+/* Click эффект */
+.diy-card:active {
+    transform: scale(1.1) translateX(0);
+    z-index: 10;
+}
+
+.idea-title {
+    text-align: center;
+}
+.diy-cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрируем title относительно карточек */
+}
+.idea-title {
     text-align: center;
 }
