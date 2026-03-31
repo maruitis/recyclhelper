@@ -1,132 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" data-default-lang="en">
-<script>
-try {
-  if (localStorage.getItem("recycle_theme") === "dark") document.documentElement.setAttribute("data-theme", "dark");
-} catch (e) {}
-</script>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Item Recyclehelper.com</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Gasoek+One&family=Inter:wght@600;800;900&family=Jomhuria&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mansstils.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Recycle | Item Details</title>
+    <link rel="stylesheet" href="mansstils.css">
+    <!-- Google Maps API for the recycling points -->
+    <script src="https://googleapis.com"></script>
 </head>
- <body class="page-item">
 
-  <div class="cloud cloud-left" aria-hidden="true">
-    <img src="images/cloud.png" alt="">
-  </div>
-  <div class="cloud cloud-right" aria-hidden="true">
-    <img src="images/cloud.png" alt="">
-  </div>
-
-  <header class="site-header">
-    <nav class="nav-row" aria-label="Main">
-      <div class="nav-pills">
-        <a href="aboutus.html" class="nav-link" data-i18n="nav_about">ABOUT US</a>
-        <a href="ourmission.html" class="nav-link" data-i18n="nav_mission">OUR MISSION</a>
-        <a href="donate.html" class="nav-link" data-i18n="nav_donate">DONATE</a>
-      </div>
-      <div class="nav-utilities">
-        <div class="lang-switch" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-set-lang="en" id="langEn">EN</button>
-          <button type="button" class="lang-btn" data-set-lang="lv" id="langLv">LV</button>
-        </div>
-        <span class="nav-utility-icon" title="Settings">⚙</span>
-        <button type="button" class="nav-utility-icon theme-toggle" aria-pressed="false" aria-label="Toggle theme">🌙</button>
-      </div>
+    <nav class="glass-nav">
+        <button onclick="window.location.href='index.html'">← BACK</button>
+        <h2 id="display-item-name">Loading Item...</h2>
     </nav>
 
-    <a href="index.html" class="brand-title-link brand-title-link--compact">
-      <h1 class="brand-title brand-title--compact">RECYCLEHELPER.COM</h1>
-    </a>
+    <main class="container">
+        <!-- 1. MATERIAL INFO CARD -->
+        <section class="glass-card info-grid">
+            <div class="material-details">
+                <h3 id="full-name">Searching...</h3>
+                <p><strong>Material:</strong> <span id="material-type">---</span></p>
+                <p><strong>Feel:</strong> <span id="item-feel">---</span></p>
+                <div class="recycling-advice">
+                    <h4>How to Recycle:</h4>
+                    <p id="advice-text">Analyzing material properties...</p>
+                </div>
+            </div>
+            
+            <!-- 2. EFFICIENCY CALCULATOR -->
+            <div class="calculator-box">
+                <h3>Impact Saved (per kg)</h3>
+                <div class="stat"><i class="blue">💧</i> Water: <span id="water-val">0</span> L</div>
+                <div class="stat"><i class="yellow">⚡</i> Energy: <span id="energy-val">0</span> kWh</div>
+                <div class="stat"><i class="green">🌿</i> CO2: <span id="co2-val">0</span> kg</div>
+            </div>
+        </section>
 
-    <div class="hero-search-block hero-search-block--tight">
-      <form class="hero-search-row" action="index.html" method="get">
-        <label class="search-field-wrap" for="itemSearchInput">
-          <input id="itemSearchInput" name="q" type="search" class="search-input" placeholder="Search another item…" autocomplete="off">
-          <span class="search-input-icon" aria-hidden="true">🔍</span>
-        </label>
-        <button type="submit" class="btn-pill btn-search-main">Search</button>
-      </form>
-    </div>
-  </header>
+        <!-- 3. DIY IDEAS SECTION -->
+        <section class="diy-section">
+            <h2>3 DIY Upcycling Ideas</h2>
+            <div id="diy-container" class="diy-grid">
+                <!-- AI Ideas will be injected here -->
+            </div>
+        </section>
 
-  <main class="item-main">
-    <p id="itemLoadError" class="item-error" hidden></p>
+        <!-- 4. MAP SECTION -->
+        <section class="glass-card map-section">
+            <h3>Find 5 Closest Recycling Points</h3>
+            <div class="map-input-group">
+                <input type="text" id="user-address" placeholder="Enter your full address...">
+                <button id="find-map-btn">FIND POINTS</button>
+            </div>
+            <ul id="map-list" class="points-list"></ul>
+        </section>
+    </main>
 
-    <section class="item-hero-grid" id="itemHero" hidden>
-      <div class="item-visual">
-        <img id="itemImage" src="" alt="" class="item-image" hidden>
-        <div id="itemImagePlaceholder" class="item-image-placeholder" aria-hidden="true"></div>
-      </div>
-      <div class="item-hero-side">
-        <h2 class="item-name" id="itemName"></h2>
-        <div class="cap-block" id="variantBlock">
-          <p class="cap-label" id="variantLabel">Any details?</p>
-          <div id="variantChoices" class="variant-choices" role="group" aria-label="Item variant"></div>
-          <div id="capFallback" class="cap-toggle" role="group" aria-label="Cap on bottle" hidden>
-            <button type="button" class="cap-btn cap-yes" id="capYes" aria-pressed="false" title="With cap">✓</button>
-            <button type="button" class="cap-btn cap-no" id="capNo" aria-pressed="false" title="Without cap">✕</button>
-          </div>
-        </div>
-        <div class="lifehacks-banner glass-panel">
-          <h3 class="lifehacks-title">Lifehacks for recycling</h3>
-          <div class="lifehacks-columns" id="lifehacksText"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="materials-section" id="materialsSection" hidden>
-      <h2 class="section-title">Possible materials</h2>
-      <p class="section-hint">Choose up to one type that matches your item (max 4 shown).</p>
-      <div class="materials-grid" id="materialsGrid"></div>
-    </section>
-
-    <section class="diy-section" id="diySection" hidden>
-      <h2 class="section-title section-title--diy">Lifehacks and homemade ideas</h2>
-      <div class="diy-cards" id="diyCards"></div>
-    </section>
-
-    <div class="item-bottom-grid">
-      <section class="calculator-panel glass-panel" id="calculatorSection" hidden>
-        <div class="calculator-head">
-          <h2 class="calculator-title">Efficiency calculator</h2>
-          <div class="amount-stepper">
-            <span class="amount-label">Amount</span>
-            <button type="button" class="stepper-btn" id="qtyMinus" aria-label="Decrease">−</button>
-            <span class="stepper-value" id="qtyValue">1</span>
-            <button type="button" class="stepper-btn" id="qtyPlus" aria-label="Increase">+</button>
-          </div>
-        </div>
-        <ul class="calculator-stats">
-          <li><span class="stat-icon" aria-hidden="true">💧</span> Saved water: <strong id="statWater">—</strong></li>
-          <li><span class="stat-icon" aria-hidden="true">⚡</span> Saved energy: <strong id="statEnergy">—</strong></li>
-          <li><span class="stat-icon" aria-hidden="true">☁</span> Saved CO₂: <strong id="statCo2">—</strong></li>
-        </ul>
-        <p class="calculator-footnote" id="calculatorFootnote"></p>
-      </section>
-
-      <section class="map-panel glass-panel" aria-label="Deposit map placeholder">
-        <h2 class="map-title">Find the closest deposit point!</h2>
-        <div class="map-placeholder" id="mapPlaceholder">
-          <p>Connect Mapbox or Google Maps and load pins from Supabase. Your design goes here.</p>
-        </div>
-        <label class="map-address-row">
-          <span class="visually-hidden">Your full address</span>
-          <input type="text" class="map-address-input" placeholder="Your full address:" readonly>
-          <span class="search-input-icon" aria-hidden="true">🔍</span>
-        </label>
-      </section>
-    </div>
-  </main>
-
-  <p class="site-footer-cta">EVERY RECYCLED ITEM MAKES A DIFFERENCE. ACT NOW!</p>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/main.js"></script>
-<script src="js/item.js"></script>
+    <script src="main.js"></script>
+    <script src="map.js"></script>
+    <script src="items.js"></script>
 </body>
 </html>

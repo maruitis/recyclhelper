@@ -1,84 +1,30 @@
-if (!supabase) {
-  console.error("❌ Supabase client not initialized");
-}
+window.onload = async () => {
+    const itemToFind = localStorage.getItem('currentUserSearch');
+    if (!itemToFind) return;
 
-// item.js
-import { createClient } from '@supabase/supabase-js';
+    const data = await fetchItemData(itemToFind);
+    if (!data) return;
 
-const supabaseUrl = "https://zzycxtlxhrtgcfdzgcsb.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6eWN4dGx4aHJ0Z2NmZHpnY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MDg0MzksImV4cCI6MjA5MDI4NDQzOX0.HdgX9ErkXLtUCOIO20TUPor0lz3kHI_JHQe7AFq42B8";
-const supabase = createClient(supabaseUrl, supabaseKey);
+    // 1. Fill Identity & Details
+    document.getElementById('item-name').innerText = data.fullName;
+    document.getElementById('material-type').innerText = data.material;
+    document.getElementById('item-feel').innerText = data.feel;
 
-const currentItemId = 1; 
+    // 2. Update Efficiency Calculator
+    document.getElementById('water-val').innerText = `${data.savings.water}L`;
+    document.getElementById('energy-val').innerText = `${data.savings.energy}kWh`;
+    document.getElementById('co2-val').innerText = `${data.savings.co2}kg`;
 
+    // 3. Populate DIY Section
+    const diyGrid = document.getElementById('diy-container');
+    diyGrid.innerHTML = data.diy.map(idea => `
+        <div class="diy-card">
+            <h4>${idea.name}</h4>
+            <p><strong>Needs:</strong> ${idea.materials}</p>
+            <ol>${idea.steps.map(step => `<li>${step}</li>`).join('')}</ol>
+        </div>
+    `).join('');
 
-const materialsGrid = document.getElementById("materialsGrid");
-const diyCards = document.getElementById("diyCards");
-const lifehacksColumns = document.getElementById("lifehacksColumns");
-const calculatorSection = document.getElementById("calculator");
-
-async function loadMaterials() {
-  const { data: materials, error } = await supabase
-    .from("materials")
-    .select("*")
-    .eq("items_id", currentItemId);
-
-  if (error) return console.error("Materials error:", error);
-
- 
-  materialsGrid.innerHTML = "";
-
-  materials.forEach(mat => {
-    const btn = document.createElement("button");
-    btn.textContent = mat.name; 
-    btn.className = "material-card";
-    btn.onclick = () => selectMaterial(mat.id);
-    materialsGrid.appendChild(btn);
-  });
-}
-
-
-async function selectMaterial(materialId) {
-  console.log("Выбран материал:", materialId);
-
- 
-  const { data: lifehacks, error: lhError } = await supabase
-    .from("diy")
-    .select("*")
-    .eq("material_id", materialId);
-
-  if (lhError) return console.error("Lifehacks error:", lhError);
-
-  lifehacksColumns.innerHTML = "";
-  lifehacks.forEach(lh => {
-    const li = document.createElement("li");
-    li.textContent = lh.text;
-    lifehacksColumns.appendChild(li);
-  });
-
-
-  const { data: calcData, error: calcError } = await supabase
-    .from("calculator")
-    .select("*")
-    .eq("material_id", materialId);
-
-  if (calcError) return console.error("Calculator error:", calcError);
-
-  renderCalculator(calcData);
-}
-
-
-function renderCalculator(calcData) {
-  calculatorSection.innerHTML = "";
-  calcData.forEach(item => {
-    const div = document.createElement("div");
-    div.textContent = `${item.name}: ${item.value}`;
-    calculatorSection.appendChild(div);
-  });
-}
-
-
-loadMaterials();
-
-
-
+    // 4. Recycling Advice
+    document.getElementById('advice-box').innerText = data.recyclingAdvice;
+};

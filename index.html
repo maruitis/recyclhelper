@@ -1,131 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" data-default-lang="en">
-<script>try{if(localStorage.getItem("recycle_theme")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
+<html lang="en"> 
 <head>
-    <link rel="icon" href="favicon.ico">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recyclehelper.com</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Gasoek+One&family=Inter:wght@600;800;900&family=Jomhuria&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/mansstils.css">
-  
-  <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    async function searchItem() {
-    const query = document.getElementById("searchInput").value.trim().toLowerCase();
-    const resultsEl = document.getElementById("searchResults");
-    resultsEl.innerHTML = "";
-    resultsEl.hidden = true;
+   <meta charset="UTF-8">
+   <title>Recyclehelper.com</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/mansstils.css"></head>
+<script src="js/main.js" type="text/javascript"></script>
+<script src="js/search.js" type="text/javascript"></script>
+<script src="js/item.js" type="text/javascript"></script>
+<script src="js/map.js" type="text/javascript"></script>
+<body>
 
-    if (!query) return;
+<nav>
+<a href="index.html" class="nav-link">Home</a>
+<a href="aboutus.html" class="nav-link">About us</a>
+<a href="ourmission.html" class="nav-link">Our mission</a>
+<a href="donate.html" class="nav-link">Donate</a>
+</nav>
+    
+<div class="cloud cloud-left">
+    <img src="images/cloud.png" alt="cloud">
+</div>
+<div class="cloud cloud-right">
+    <img src="images/cloud.png" alt="cloud">
+</div>
+    <h1>RECYCLEHELPER.COM</h1>
+<div class="search">
+<input id="searchInput" placeholder="Search (plastic bottle, glass jar...)">
+<button onclick="searchItem()">Search</button>
+</div>
 
-    const { data: items, error } = await supabase
-      .from("items")
-      .select("*")
-      .ilike("name", `%${query}%`);
+<div class="cards-container">
+<a href="containers.html" class="info-card">
+<span class="card-text">LEARN ABOUT THE RIGHT TRASH CONTAINER</span>
+<div class="img-wrapper">
+<img src="images/trashcan.png" alt="Bin" class="card-img">
+</div>
+</a>
 
-    if (error) {
-      console.error(error);
-      resultsEl.innerHTML = "<p>Error loading items.</p>";
-      resultsEl.hidden = false;
-      return;
-    }
+<a href="whichitems.html" class="info-card">
+<span class="card-text">LEARN ABOUT THE ITEMS TO RECYCLE</span>
+<div class="img-wrapper">
+    <img src="images/itemstorecycle.png" alt="Benefits" class="card-img">
+</div>
+</a>
+<a href="benefits.html" class="info-card">
+<span class="card-text">LEARN ABOUT THE BENEFITS</span>
+<div class="img-wrapper">
+<img src="images/benefits.png" alt="Benefits" class="card-img">
+</div>
+</a>
 
-    if (!items || items.length === 0) {
-      resultsEl.innerHTML = "<p>No results found.</p>";
-      resultsEl.hidden = false;
-      return;
-    }
-
-    items.forEach(item => {
-      const a = document.createElement("a");
-      a.href = `item.html?id=${item.items_id || item.id}`;
-      a.textContent = item.name;
-      a.className = "search-result-link";
-      resultsEl.appendChild(a);
-    });
-
-    resultsEl.hidden = false;
-  }
-</script>
-</head>
-<body class="page-home">
-
-  <div class="cloud cloud-left" aria-hidden="true">
-    <img src="images/cloud.png" alt="">
-  </div>
-  <div class="cloud cloud-right" aria-hidden="true">
-    <img src="images/cloud.png" alt="">
-  </div>
-
-  <header class="site-header">
-    <nav class="nav-row" aria-label="Main">
-      <div class="nav-pills">
-        <a href="aboutus.html" class="nav-link" data-i18n="nav_about">ABOUT US</a>
-        <a href="ourmission.html" class="nav-link" data-i18n="nav_mission">OUR MISSION</a>
-        <a href="donate.html" class="nav-link" data-i18n="nav_donate">DONATE</a>
-      </div>
-      <div class="nav-utilities">
-        <div class="lang-switch" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-set-lang="en" id="langEn">EN</button>
-          <button type="button" class="lang-btn" data-set-lang="lv" id="langLv">LV</button>
-        </div>
-        <span class="nav-utility-icon" title="Settings">⚙</span>
-        <button type="button" class="nav-utility-icon theme-toggle" aria-pressed="false" aria-label="Toggle theme">🌙</button>
-      </div>
-    </nav>
-  </header>
-
-    <a href="index.html" class="brand-title-link">
-      <h1 class="brand-title">RECYCLEHELPER.COM</h1>
-    </a>
-
-    <div class="hero-search-block">
-      <div class="hero-search-row">
-        <label class="search-field-wrap" for="searchInput">
-          <input id="searchInput" type="search" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search (e.g. plastic bottle, book, etc.)" autocomplete="off">
-          <span class="search-input-icon" aria-hidden="true">🔍</span>
-        </label>
-        <button type="button" class="btn-pill btn-search-main" onclick="searchItem()" data-i18n="search_btn">Search</button>
-        <button type="button" class="btn-pill btn-scan" data-i18n-title="scan_title" title="Camera scan coming soon" data-i18n="scan_btn">Scan!</button>
-      </div>
-      <div id="searchResults" class="search-results" hidden></div>
-    </div>
-
-  <main class="home-main">
-    <div class="cards-container">
-      <a href="containers.html" class="info-card">
-        <span class="card-text" data-i18n-html="card_containers">LEARN ABOUT THE RIGHT TRASH CONTAINER</span>
-        <div class="img-wrapper">
-          <img src="images/trashcan.png" alt="" class="card-img">
-        </div>
-      </a>
-      <a href="whichitems.html" class="info-card">
-        <span class="card-text" data-i18n-html="card_items">LEARN ABOUT <br> THE <br> ITEMS TO RECYCLE</span>
-        <div class="img-wrapper">
-          <img src="images/itemstorecycle.png" alt="" class="card-img">
-        </div>
-      </a>
-      <a href="benefits.html" class="info-card">
-        <span class="card-text">LEARN ABOUT <br> THE BENEFITS</span>
-        <div class="img-wrapper">
-          <img src="images/benefits.png" alt="" class="card-img">
-        </div>
-      </a>
-    </div>
-  </main>
-
-  <p class="site-footer-cta" data-i18n="footer_cta">EVERY RECYCLED ITEM MAKES A DIFFERENCE. ACT NOW!</p>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/main.js"></script>
-  <script src="js/item.js" type="text/javascript"></script>
-  <script src="js/language.js"></script>
-  <script src="js/theme.js"></script>
-  <script src="js/search.js"></script>
+</div>
+<h2> EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
 </body>
-</html>
-
