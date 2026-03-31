@@ -240,3 +240,62 @@ padding:12px;
 border-radius:25px;
 border:none;
 }
+.glass-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    margin: 15px 0;
+}
+
+.diy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 ideas across */
+    gap: 20px;
+}
+
+.item-page-bg {
+    background: linear-gradient(to bottom, #94b9ff, #ffffff); /* Sky Blue to White */
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+/* Search Bar Styling */
+.search-container {
+    display: flex;
+    gap: 10px;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50px; /* Rounded pill shape */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+#main-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    padding: 10px;
+    color: #333;
+}
+
+#search-btn {
+    background: #4CAF50; /* Green theme */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#search-btn:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
