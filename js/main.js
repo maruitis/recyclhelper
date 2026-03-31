@@ -1,5 +1,5 @@
 // Replace with your actual OpenRouter key
-const OPENROUTER_API_KEY = "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";
+const OPENROUTER_API_KEY = "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";
 
 async function fetchItemData(itemName) {
     // This prompt forces the AI to be your database for "any" item

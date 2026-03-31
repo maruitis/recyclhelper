@@ -2,61 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eco-Recycle | Item Details</title>
-    <link rel="stylesheet" href="mansstils.css">
-    <!-- Google Maps API for the recycling points -->
-    <script src="https://googleapis.com"></script>
+    <title>RecycleHelper - Item Details</title>
+    <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-links"><button onclick="location.href='index.html'">HOME</button></div>
+        </nav>
+        <div class="search-container mini">
+            <input type="text" id="itemSearchInput">
+        </div>
+    </header>
 
-    <nav class="glass-nav">
-        <button onclick="window.location.href='index.html'">← BACK</button>
-        <h2 id="display-item-name">Loading Item...</h2>
-    </nav>
+    <div class="container">
+        <div class="sidebar">
+            <img id="itemImage" src="https://via.placeholder.com/200x400?text=Item" alt="Item">
+            <div class="detail-spec">
+                <label>Detail Spec:</label>
+                <select id="detailToggle">
+                    <option value="default">Standard</option>
+                    <option value="option1">With Cap/Detail</option>
+                </select>
+            </div>
+        </div>
 
-    <main class="container">
-        <!-- 1. MATERIAL INFO CARD -->
-        <section class="glass-card info-grid">
-            <div class="material-details">
-                <h3 id="full-name">Searching...</h3>
-                <p><strong>Material:</strong> <span id="material-type">---</span></p>
-                <p><strong>Feel:</strong> <span id="item-feel">---</span></p>
-                <div class="recycling-advice">
-                    <h4>How to Recycle:</h4>
-                    <p id="advice-text">Analyzing material properties...</p>
+        <div class="content-grid">
+            <section class="materials-grid" id="materialsContainer">
+                </section>
+
+            <section class="glass-panel lifehacks">
+                <h3>LIFEHACKS FOR RECYCLING</h3>
+                <div id="lifehacksContent">Loading...</div>
+            </section>
+
+            <section class="diy-section">
+                <h3>DIY IDEAS</h3>
+                <div class="diy-cards" id="diyContainer"></div>
+            </section>
+
+            <div class="bottom-row">
+                <div class="glass-panel calculator">
+                    <h3>Efficiency Calculator</h3>
+                    <div class="calc-input">
+                        Amount: <input type="number" id="calcQty" value="1" min="1">
+                    </div>
+                    <p>Saved Water: <span id="saveWater">0</span>L</p>
+                    <p>Saved Energy: <span id="saveEnergy">0</span>kWh</p>
+                    <p>Saved CO2: <span id="saveCO2">0</span>g</p>
+                </div>
+
+                <div class="glass-panel map-container">
+                    <h3>Find closest deposit point</h3>
+                    <input type="text" id="addressInput" placeholder="Your full address...">
+                    <div id="map" style="height: 200px; border-radius: 15px;"></div>
                 </div>
             </div>
-            
-            <!-- 2. EFFICIENCY CALCULATOR -->
-            <div class="calculator-box">
-                <h3>Impact Saved (per kg)</h3>
-                <div class="stat"><i class="blue">💧</i> Water: <span id="water-val">0</span> L</div>
-                <div class="stat"><i class="yellow">⚡</i> Energy: <span id="energy-val">0</span> kWh</div>
-                <div class="stat"><i class="green">🌿</i> CO2: <span id="co2-val">0</span> kg</div>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- 3. DIY IDEAS SECTION -->
-        <section class="diy-section">
-            <h2>3 DIY Upcycling Ideas</h2>
-            <div id="diy-container" class="diy-grid">
-                <!-- AI Ideas will be injected here -->
-            </div>
-        </section>
-
-        <!-- 4. MAP SECTION -->
-        <section class="glass-card map-section">
-            <h3>Find 5 Closest Recycling Points</h3>
-            <div class="map-input-group">
-                <input type="text" id="user-address" placeholder="Enter your full address...">
-                <button id="find-map-btn">FIND POINTS</button>
-            </div>
-            <ul id="map-list" class="points-list"></ul>
-        </section>
-    </main>
-
-    <script src="main.js"></script>
-    <script src="map.js"></script>
-    <script src="items.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/item.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

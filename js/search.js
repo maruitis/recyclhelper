@@ -1,28 +1,16 @@
-// searc.js
-const searchInput = document.getElementById('main-search-input');
-const searchBtn = document.getElementById('search-btn');
+// search.js
+document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
 
-function performSearch() {
-    const query = searchInput.value.trim();
-
-    if (query !== "") {
-        // 1. Save the item name so item.html can read it
-        localStorage.setItem('userSearch', query);
-        
-        // 2. Redirect the user to the results page
-        window.location.href = 'item.html';
-    } else {
-        alert("Please type an item name first!");
-    }
-}
-
-// Trigger search on button click
-searchBtn.addEventListener('click', performSearch);
-
-// Trigger search when user presses "Enter" key
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        performSearch();
+    if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                // Redirects to item.html with the search word attached
+                window.location.href = `item.html?query=${encodeURIComponent(query)}`;
+            }
+        });
     }
 });
-

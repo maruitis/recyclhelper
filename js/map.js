@@ -1,21 +1,14 @@
-document.getElementById('find-map-btn').addEventListener('click', () => {
-    const address = document.getElementById('user-address').value;
-    const material = document.getElementById('material-type').innerText;
-    
-    if(!address) return alert("Please enter your address!");
+function initMap() {
+    const map = L.map('map').setView([56.9496, 24.1052], 12); // Default to Riga
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const request = {
-        query: `${material} recycling center near ${address}`,
-        fields: ['name', 'formatted_address']
-    };
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            const list = document.getElementById('map-list');
-            list.innerHTML = results.slice(0, 5).map(place => `
-                <li><strong>${place.name}</strong><br>${place.formatted_address}</li>
-            `).join('');
-        }
-    });
-});
+    // Mock markers for "recycling points"
+    const points = [
+        [56.95, 24.11], [56.96, 24.09], [56.94, 24.12]
+    ];
+
+    points.forEach(p => L.marker(p).addTo(map));
+}
+
+window.onload = initMap;

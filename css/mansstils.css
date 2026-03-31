@@ -229,73 +229,92 @@ html{
     animation: fadeUp 0.8s ease forwards;
 }
 
-.search{
-text-align:center;
-margin:30px;
-}
-
-.search input{
-width:400px;
-padding:12px;
-border-radius:25px;
-border:none;
-}
-.glass-card {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-    margin: 15px 0;
-}
-
-.diy-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* 3 ideas across */
-    gap: 20px;
-}
-
-.item-page-bg {
-    background: linear-gradient(to bottom, #94b9ff, #ffffff); /* Sky Blue to White */
+body {
+    margin: 0;
+    font-family: 'Arial Black', sans-serif;
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 50%, #90EE90 100%);
     min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
+    color: #2D4059;
 }
-/* Search Bar Styling */
-.search-container {
+
+header nav {
     display: flex;
-    gap: 10px;
-    max-width: 600px;
-    margin: 50px auto;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+button {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
     padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50px; /* Rounded pill shape */
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-#main-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 18px;
-    padding: 10px;
-    color: #333;
-}
-
-#search-btn {
-    background: #4CAF50; /* Green theme */
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 30px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.3s;
+    margin-right: 10px;
 }
 
-#search-btn:hover {
-    background: #45a049;
-    transform: scale(1.05);
+.search-container {
+    text-align: center;
+    margin: 50px auto;
+    width: 60%;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 10px;
+    border-radius: 50px;
+    display: flex;
+}
+
+.search-container input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    outline: none;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin: 10px;
+}
+
+.materials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.material-card {
+    background: #D1F2D1;
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 0.8rem;
+}
+
+.diy-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.diy-card {
+    min-width: 200px;
+    background: rgba(173, 216, 230, 0.5);
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.logo-text {
+    font-size: 4rem;
+    color: #00FF7F;
+    text-shadow: 2px 2px #2D4059;
+    text-align: center;
 }
