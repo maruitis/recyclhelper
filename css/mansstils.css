@@ -455,13 +455,13 @@ button {
     flex-direction: column; /* Stacks header above cards */
     align-items: center;    /* Centers header and cards horizontally relative to each other */
     justify-content: center;
-    transform: translateY(-350px);
+    transform: translateY(-280px);
     margin-right: 0;
-    padding-left: 190px;
+    padding-left: 110px;
 }
 
 .lifehack-image img{
-    width:450px;
+    min-width:450px;
     border-radius:25px;
     object-fit: cover;
     padding-left: 200px;
@@ -539,4 +539,8 @@ button {
     font-family:'Jomhuria', cursive;
     font-size:26px;
     margin-top:10px;
+}
+
+.item-image{
+    min-width: 450px;
 }
