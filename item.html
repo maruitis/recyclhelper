@@ -3,94 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>RecycleHelper - Item Details</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-  
-       <nav>
-<a href="index.html" class="nav-link">Home</a>
-<a href="aboutus.html" class="nav-link">About us</a>
-<a href="ourmission.html" class="nav-link">Our mission</a>
-<a href="donate.html" class="nav-link">Donate</a>
-</nav>
-  <div class="cloud cloud-left">
-    <img src="images/cloud.png" alt="cloud">
-</div>
-<div class="cloud cloud-right">
-    <img src="images/cloud.png" alt="cloud">
-</div>
-    <h4>RECYCLEHELPER</h4>
-   <form id="searchForm" class="search-container small">
-    <input type="text" id="searchInput" placeholder="Search (e.g. plastic bottle, book etc.)" required>
-    <button type="submit">🔍</button>
-</form>
-    
- <section class="diy-section">
-        <div class="diy-cards-container">
-    <h3 class="diy-title">lifehacks and homemade ideas</h3>
-    <div class="diy-cards">
-        <div class="diy-card"><span class="idea-title">Idea 1</span></div>
-        <div class="diy-card"><span class="idea-title">Idea 2</span></div>
-        <div class="diy-card"><span class="idea-title">Idea 3</span></div>
-    </div>
-        </div>
-</section>
+    <nav>
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="aboutus.html" class="nav-link">About us</a>
+        <a href="ourmission.html" class="nav-link">Our mission</a>
+        <a href="donate.html" class="nav-link">Donate</a>
+    </nav>
+
+    <div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
+    <div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
+
+    <h4 id="displayItemName">RECYCLEHELPER</h4>
+
+    <form id="searchForm" class="search-container small">
+        <input type="text" id="searchInput" placeholder="Search another item..." required>
+        <button type="submit">🔍</button>
+    </form>
 
     <div class="container">
         <div class="sidebar">
-            <img id="itemImage" src="https://via.placeholder.com/200x400?text=Item" alt="Item">
             <div class="detail-spec">
-                <label>Detail Spec:</label>
-                <select id="detailToggle">
-                    <option value="default">Standard</option>
-                    <option value="option1">With Cap/Detail</option>
+                <label id="detailQuestion">Detail Spec:</label>
+                <select id="detailSelect">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
                 </select>
             </div>
         </div>
 
         <div class="content-grid">
-            <section class="materials-grid" id="materialsContainer">
-                </section>
-
-            <section class="glass-panel lifehacks">
-                <h3>LIFEHACKS FOR RECYCLING</h3>
-                <div id="lifehacksContent">Loading...</div>
-            </section>
-
-  
-
-            <div class="bottom-row">
-                <div class="glass-panel calculator">
-                    <h3>Efficiency Calculator</h3>
-                    <div class="calc-input">
-                        Amount: <input type="number" id="calcQty" value="1" min="1">
-                    </div>
-                    <p>Saved Water: <span id="saveWater">0</span>L</p>
-                    <p>Saved Energy: <span id="saveEnergy">0</span>kWh</p>
-                    <p>Saved CO2: <span id="saveCO2">0</span>g</p>
-                </div>
-
-                <div class="glass-panel map-container">
-                    <h3>Find closest deposit point</h3>
-                    <input type="text" id="addressInput" placeholder="Your full address...">
-                    <div id="map" style="height: 200px; border-radius: 15px;"></div>
-                </div>
+            <h3>Choose the most popular material for this item:</h3>
+            <section class="materials-grid" id="materialGrid"></section>
+            
+            <div class="action-btn-container">
+                <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Options</button>
             </div>
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/item.js"></script>
-    <script src="js/search.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/item.js"></script>
 </body>
 </html>
