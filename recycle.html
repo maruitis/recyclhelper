@@ -8,7 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:wght@400;700&family=Gasoek+One&family=Inter:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
+
     <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
@@ -34,31 +42,22 @@
 
     <main class="container">
         
-        <section class="diy-section">
-    <div class="diy-cards-container">
-        <h4 class="diy-title" id="diyHeader">Lifehacks and Homemade Ideas</h4>
-        
-        <div class="diy-cards">
-            <div class="diy-card" id="diy-0">
-                <div class="idea-content">
-                    <span class="idea-title">Loading Idea 1...</span>
-                </div>
-            </div>
-
-            <div class="diy-card" id="diy-1">
-                <div class="idea-content">
-                    <span class="idea-title">Loading Idea 2...</span>
-                </div>
-            </div>
-
-            <div class="diy-card" id="diy-2">
-                <div class="idea-content">
-                    <span class="idea-title">Loading Idea 3...</span>
-                </div>
-            </div>
-        </div>
-    </div>
+       <section class="lifehack-section">
+           <div class="lifehack-layout">
+<div class="lifehack-image">
+<img id="itemImage" src="images/placeholder.png">
+</div>
+<div class="lifehack-right">
+<h5 class="lifehack-header">Lifehacks and Homemade Ideas</h5>
+<div class="lifehack-cards">
+<div class="lifehack-card" id="diy-0"></div>
+<div class="lifehack-card" id="diy-1"></div>
+<div class="lifehack-card" id="diy-2"></div>
+</div>
+</div>
+ </div>
 </section>
+        
 
         <div class="bottom-row">
             <div class="glass-panel calculator">
@@ -101,16 +100,5 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/map.js"></script>
     
-    <div id="diyModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle" style="font-family: 'Gasoek One'; color: #0E0973;"></h2>
-        <p><strong>What you need:</strong> <span id="modalNeeds"></span></p>
-        <hr>
-        <h3 style="color: #0E0973;">Steps:</h3>
-        <ol id="modalSteps" style="line-height: 1.6;"></ol>
-    </div>
-</div>
-
 </body>
 </html>

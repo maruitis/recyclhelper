@@ -50,6 +50,14 @@ h2{
 
     white-space: nowrap;    /* запрещает перенос строки */
 }
+h3{
+    font-family: "Jomhuria", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    color: #0C365F;
+    
+    
+}
 h4 { 
     background-image: linear-gradient(90deg, #89F19E, #0E0973);
     -webkit-background-clip: text;
@@ -62,6 +70,23 @@ h4 {
     font-style: normal;
     margin-top: 3px;
 }
+
+h6{
+   font-family: "Jomhuria", sans-serif;
+    font-weight: 400;
+    font-size: 40px;
+    color: #384C3F;
+    line-height: 0.0002;
+     
+}
+h7{
+  font-family: "Inter", sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    color: #0C365F; 
+    line-height: 0.0002;
+}
+
 /* 1. Полоса навигации: сверху и слева */
 nav {
     display: flex;
@@ -292,17 +317,18 @@ button {
     margin: 10px;
 }
 
-.materials-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.materials-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
 }
 
-.material-card {
-    background: #D1F2D1;
-    border-radius: 15px;
-    padding: 10px;
-    font-size: 0.8rem;
+.material-card{
+    background:#D1F2D1;
+    border-radius:20px;
+    padding:12px;
+    min-height:90px;
+    text-align:center;
 }
 
 .bottom-row {
@@ -315,65 +341,6 @@ button {
     color: #00FF7F;
     text-shadow: 2px 2px #2D4059;
     text-align: center;
-}
-/* --- DIY SECTION & STACKING --- */
-.diy-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 40px;
-    z-index: 100;
-}
-
-.diy-title {
-    font-family: 'Jomhuria', cursive;
-    font-size: 64px; /* Larger for your font choice */
-    margin-bottom: 20px;
-    color: #0E0973;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.diy-cards {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 200px; /* Space for the stack */
-    padding-left: 120px; /* Offsets the translateX overlap */
-}
-
-.diy-card {
-    background-color: #829DD9;
-    border-radius: 30px;
-    width: 350px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Jomhuria', cursive;
-    font-size: 32px;
-    color: #0E0973;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 2px solid #0E0973;
-    text-align: center;
-    padding: 10px;
-}
-
-/* Stacking Logic */
-.diy-card:nth-child(1) { z-index: 3; transform: translateX(0); }
-.diy-card:nth-child(2) { z-index: 2; transform: translateX(-80px) scale(0.95); opacity: 0.9; }
-.diy-card:nth-child(3) { z-index: 1; transform: translateX(-160px) scale(0.9); opacity: 0.7; }
-
-/* Interaction: Pop out on hover */
-.diy-card:hover {
-    transform: translateY(-20px) scale(1.05) !important;
-    z-index: 10 !important;
-    opacity: 1 !important;
-    background-color: #A2B9EB;
 }
 
 /* --- CALCULATOR STYLES --- */
@@ -404,28 +371,6 @@ button {
     text-shadow: 1px 1px 2px #0E0973;
 }
 
-/* --- MODAL (POPUP) STYLES --- */
-.modal {
-    display: none; 
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(14, 9, 115, 0.8);
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: #C7D6FA;
-    margin: 10% auto;
-    padding: 40px;
-    border-radius: 40px;
-    width: 50%;
-    max-width: 600px;
-    border: 4px solid #89F19E;
-    position: relative;
-    font-family: 'Inter', sans-serif;
-}
 
 .close-btn {
     position: absolute;
@@ -433,4 +378,165 @@ button {
     font-size: 40px;
     cursor: pointer;
     color: #0E0973;
+}
+
+.item-layout{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:40px;
+    margin-top:40px;
+}
+
+.item-image img{
+    width:260px;
+    border-radius:20px;
+}
+
+.materials-section{
+    width:600px;
+}
+
+.material-name{
+    font-family:'Jomhuria', cursive;
+    font-size:28px;
+    color:#0E0973;
+}
+
+.material-abbr{
+    font-family:'Jomhuria', cursive;
+    font-size:20px;
+    color:#0E0973;
+    line-height: 1;
+    margin:2px 0;
+}
+
+.material-title{
+    font-family:'Jomhuria', cursive;
+    color:#4A7CE0;
+    font-size:20px;
+    line-height: 1;
+    margin:2px 0;
+}
+
+.material-text{
+    font-family:'Inter', sans-serif;
+    color:#2D4059;
+    font-size:13px;
+}
+
+.lifehack-section{
+    margin-top:50px;
+    padding: 50px;
+    
+   
+}
+
+.lifehack-header{
+    font-family:'Jomhuria', cursive;
+    font-size:70px;
+    text-align:center;
+    color:#0E0973;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+.lifehack-layout{
+    display:flex;
+    align-items:center;
+    justify-content: center; /* Pushes image left and cards right */
+    width: 100%;
+    max-width: 1200px; /* Keeps layout from getting too wide */
+    gap: 0px;
+}
+.lifehack-right{
+    flex:1;
+    display:flex;
+    flex-direction: column; /* Stacks header above cards */
+    align-items: center;    /* Centers header and cards horizontally relative to each other */
+    justify-content: center;
+    transform: translateY(-350px);
+    margin-right: 0;
+    padding-left: 190px;
+}
+
+.lifehack-image img{
+    width:450px;
+    border-radius:25px;
+    object-fit: cover;
+    padding-left: 200px;
+}
+.lifehack-cards{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    position:relative;
+    padding-left: 60px;
+}
+
+.lifehack-card{
+    width:260px;
+    height:150px;
+    background:#829DD9;
+    border-radius:25px;
+    padding:15px;
+    transition: all 0.4s ease;
+    cursor:pointer;
+    overflow:hidden;
+    position:relative;
+     background:
+        linear-gradient(#829DD9,#829DD9) padding-box,
+        linear-gradient(45deg,#89F19E,#4A7CE0,#00FF7F) border-box;
+
+    padding:15px;
+}
+
+.lifehack-card:nth-child(1){
+    z-index:3;
+    transform:scale(1);
+    opacity:1;
+    border:1px solid transparent;
+    position:relative;
+    overflow:hidden;
+}
+
+.lifehack-card:nth-child(2){
+    margin-left:-120px;
+    z-index:2;
+    transform:scale(0.9);
+    opacity:0.7;
+    border:1px solid transparent;
+}
+
+.lifehack-card:nth-child(3){
+    margin-left:-120px;
+    z-index:1;
+    transform:scale(0.8);
+    opacity:0.4;
+     border:1px solid transparent;
+}
+.lifehack-card:hover{
+    height:210px;
+    transform:scale(1.1) translateY(-10px);
+    z-index:10;
+    overflow:visible;
+    opacity: 1;
+}
+.idea-title{
+    font-family:'Jomhuria', cursive;
+    font-size:40px;
+    color:#0E0973;
+}
+
+.idea-needs{
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    color:#1f2b45;
+    margin-top:5px;
+}
+
+.idea-steps{
+    font-family:'Jomhuria', cursive;
+    font-size:26px;
+    margin-top:10px;
 }

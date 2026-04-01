@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const itemData = itemDatabase[itemName];
 
     if (!itemData) return;
+    // --- ADD THIS PART TO SHOW THE IMAGE ---
+    const mainImg = document.getElementById('itemImage'); // Make sure your HTML has this ID
+    if (mainImg && itemData.image) {
+        mainImg.src = itemData.image;
+        mainImg.alt = itemName;
+    }
 
     // 1. FILL DIY CARDS
     const cards = [
@@ -14,7 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
     itemData.diys.forEach((project, index) => {
         if (cards[index]) {
             // Set Title inside card
-            cards[index].innerHTML = `<span>${project.name}</span>`;
+          cards[index].innerHTML = `
+<div class="idea-content">
+    <div class="idea-title">${project.name}</div>
+    <div class="idea-needs">${project.needs}</div>
+    <div class="idea-steps">
+        ${project.steps.map(step => `<div>${step}</div>`).join("")}
+    </div>
+</div>
+`;
             
             // Set Click Event to open Modal
             cards[index].onclick = () => {

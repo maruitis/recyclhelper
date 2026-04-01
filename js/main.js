@@ -2,6 +2,7 @@ const itemDatabase = {
     "plastic bottle": {
         detail: "Is the cap still on?",
         group: "plastic",
+        image:"images/plasticbottle.png",
         savings: { water: 5, co2: 0.1, energy: 0.5 },
         map: "plastic recycling",
        diys: [
@@ -14,6 +15,7 @@ const itemDatabase = {
         detail: "Is it non-tempered glass?",
         group: "glass",
         savings: { water: 2, co2: 0.3, energy: 1.2 },
+        image:"images/glassbottle.png",
         map: "glass recycling",
       diys: [
     { name: "Dish Soap Dispenser", needs: "Bottle, pour spout", steps: ["Clean bottle thoroughly.", "Remove all labels.", "Fill with liquid soap.", "Insert pour spout.", "Place by the sink."] },
@@ -25,6 +27,7 @@ const itemDatabase = {
         detail: "Is it a hardcover book?",
         group: "paper",
         savings: { water: 10, co2: 0.5, energy: 2 },
+        image:"images/book.png",
         map: "library donation",
        diys: [
     { name: "Hidden Safe", needs: "Old book, glue, cutter", steps: ["Glue page edges shut.", "Draw rectangle on page 1.", "Cut out center of pages.", "Let dry for 24 hours.", "Hide your valuables."] },
@@ -36,6 +39,7 @@ const itemDatabase = {
         detail: "Is it glossy or matte?",
         group: "paper",
         savings: { water: 1, co2: 0.05, energy: 0.2 },
+        image:"images/paper.png",
         map: "paper recycling bin",
         diys: [
     { name: "Seed Paper", needs: "Scraps, water, seeds", steps: ["Blend paper into pulp.", "Mix in flower seeds.", "Press flat on a towel.", "Let dry for 2 days.", "Plant it in the ground."] },
@@ -47,6 +51,7 @@ const itemDatabase = {
         detail: "Is it 100% wool?",
         group: "textile",
         savings: { water: 2000, co2: 15, energy: 40 },
+        image:"images/sweater.png",
         map: "textile recycling",
        diys: [
     { name: "Cozy Cushion", needs: "Sweater, pillow, thread", steps: ["Cut square from body.", "Turn inside out.", "Sew 3 sides shut.", "Insert pillow insert.", "Sew final side closed."] },
@@ -58,6 +63,7 @@ const itemDatabase = {
         detail: "Is it a rechargeable type?",
         group: "special",
         savings: { water: 0, co2: 2, energy: 5 },
+        image:"images/batteries.png",
         map: "battery drop-off",
         diys: [
     { name: "Emergency Light", needs: "Battery, LED, tape", steps: ["Check battery charge.", "Touch LED to terminals.", "Tape wires securely.", "Keep in a small tin.", "Use during power cuts."] },
@@ -69,6 +75,7 @@ const itemDatabase = {
         detail: "Does the screen still work?",
         group: "electronics",
         savings: { water: 500, co2: 150, energy: 300 },
+        image:"images/laptop.png",
         map: "e-waste recycling",
        diys: [
     { name: "Digital Photo Frame", needs: "Screen, wooden frame", steps: ["Remove LCD panel.", "Connect controller board.", "Set up photo loop.", "Mount in wood frame.", "Hang on your wall."] },
@@ -80,6 +87,7 @@ const itemDatabase = {
         detail: "Is it 100% cotton?",
         group: "textile",
         savings: { water: 2500, co2: 5, energy: 15 },
+        image:"images/shirt.png",
         map: "clothing donation",
       diys: [
     { name: "Produce Bag", needs: "T-shirt, scissors", steps: ["Cut off sleeves/neck.", "Turn inside out.", "Sew bottom shut.", "Cut small slits in body.", "Stretch for a mesh bag."] },
@@ -91,6 +99,7 @@ const itemDatabase = {
         detail: "Is it labeled 'BPA free'?",
         group: "plastic",
         savings: { water: 3, co2: 0.2, energy: 0.8 },
+        image:"images/plasticbox.png",
         map: "plastic recycling",
        diys: [
     { name: "First Aid Kit", needs: "Box, labels, supplies", steps: ["Clean box thoroughly.", "Apply red cross label.", "Pack with bandages.", "Store in the car.", "Keep in reach of kids."] },
@@ -102,6 +111,7 @@ const itemDatabase = {
         detail: "Is it corrugated (thick)?",
         group: "paper",
         savings: { water: 2, co2: 0.1, energy: 0.4 },
+        image:"images/crdboardbox.png",
         map: "cardboard collection",
        diys: [
     { name: "Cat Scratcher", needs: "Box strips, glue", steps: ["Cut into 4cm strips.", "Roll strips tightly.", "Glue next strip around.", "Continue until wide.", "Set on floor for cat."] },
@@ -113,6 +123,7 @@ const itemDatabase = {
         detail: "Is the barrel metal or plastic?",
         group: "plastic",
         savings: { water: 0.1, co2: 0.02, energy: 0.1 },
+        image:"images/pen.png",
         map: "stationery recycling",
         diys: [
     { name: "Cable Springs", needs: "Pen spring", steps: ["Remove spring from pen.", "Twist onto cable end.", "Prevents cable fraying.", "Slid to the connector.", "Extend charger life."] },
@@ -124,6 +135,7 @@ const itemDatabase = {
         detail: "Is it a graphite pencil?",
         group: "wood",
         savings: { water: 0.1, co2: 0.01, energy: 0.05 },
+        image:"images/pencil.png",
         map: "compost heap",
        diys: [
     { name: "Garden Markers", needs: "Pencil, paint", steps: ["Paint flat side white.", "Write plant name.", "Seal with varnish.", "Stick in soil.", "Identify your herbs."] },
@@ -135,20 +147,31 @@ const itemDatabase = {
         detail: "Are the soles made of rubber?",
         group: "textile",
         savings: { water: 100, co2: 8, energy: 20 },
+        image:"images/shoes.png",
         map: "shoe donation",
-        
+     diys: [
+    { name: "Fence Planter", needs: "Old boot, nail", steps: ["Poke holes in sole.", "Fill with soil.", "Plant a flower.", "Nail heel to fence.", "Water regularly."] },
+    { name: "Door Stop", needs: "Heavy shoe, stones", steps: ["Fill shoe with sand.", "Seal the opening.", "Place behind door.", "Heavy enough to hold.", "Fun conversation piece."] },
+    { name: "Key Holder", needs: "Sneaker, wall hook", steps: ["Clean shoe surface.", "Mount hook to wall.", "Hang shoe by the heel.", "Drop keys into toe.", "Easy entry storage."] }
+]   
     },
     "wooden furniture": {
         detail: "Is it solid wood (not MDF)?",
         group: "wood",
         savings: { water: 0, co2: 20, energy: 50 },
+        image:"images/woodenstool.png",
         map: "furniture donation",
-        
+     diys: [
+    { name: "Wall Shelf", needs: "Drawer, paint", steps: ["Remove drawer handle.", "Paint inside/outside.", "Screw bottom to wall.", "Use as a shadow box.", "Display small photos."] },
+    { name: "Coat Rack", needs: "Chair back, hooks", steps: ["Saw off chair back.", "Sand and paint.", "Attach metal hooks.", "Mount to the wall.", "Hang coats and hats."] },
+    { name: "Garden Bench", needs: "Table, saw", steps: ["Cut table in half.", "Attach halves to wall.", "Reinforce the legs.", "Paint for outdoors.", "Space-saving seat."] }
+]   
     },
     "house textile": {
         detail: "Is it a towel or curtain?",
         group: "textile",
         savings: { water: 1500, co2: 12, energy: 30 },
+        image:"images/textile.png",
         map: "textile recycling",
        diys: [
     { name: "Cleaning Rags", needs: "Textile, scissors", steps: ["Wash fabric hot.", "Cut into squares.", "Trim with zig-zags.", "Stack in a basket.", "Stop using paper towels."] },

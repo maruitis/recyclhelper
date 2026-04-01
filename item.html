@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RecycleHelper - Item Details</title>
+    <title>Item Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
     <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
@@ -33,16 +41,24 @@
                 </select>
             </div>
         </div>
+        
+      <div class="item-layout">
 
-        <div class="content-grid">
-            <h3>Choose the most popular material for this item:</h3>
-            <section class="materials-grid" id="materialGrid"></section>
+    <div class="item-image">
+        <img id="itemPicture" src="" alt="Loading...">
+    </div>
+
+    <div class="materials-section">
+        <h3>POSSIBLE MATERIALS</h3>
+        <section class="materials-grid" id="materialGrid"></section>
+    </div>
+
+</div>
             
             <div class="action-btn-container">
                 <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Options</button>
             </div>
         </div>
-    </div>
 
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>
