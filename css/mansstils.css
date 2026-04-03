@@ -317,19 +317,6 @@ button {
     margin: 10px;
 }
 
-.materials-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-}
-
-.material-card{
-    background:#D1F2D1;
-    border-radius:20px;
-    padding:12px;
-    min-height:90px;
-    text-align:center;
-}
 
 .bottom-row {
     display: grid;
@@ -393,40 +380,9 @@ button {
     border-radius:20px;
 }
 
-.materials-section{
-    width:600px;
-}
-
-.material-name{
-    font-family:'Jomhuria', cursive;
-    font-size:28px;
-    color:#0E0973;
-}
-
-.material-abbr{
-    font-family:'Jomhuria', cursive;
-    font-size:20px;
-    color:#0E0973;
-    line-height: 1;
-    margin:2px 0;
-}
-
-.material-title{
-    font-family:'Jomhuria', cursive;
-    color:#4A7CE0;
-    font-size:20px;
-    line-height: 1;
-    margin:2px 0;
-}
-
-.material-text{
-    font-family:'Inter', sans-serif;
-    color:#2D4059;
-    font-size:13px;
-}
 
 .lifehack-section{
-    margin-top:50px;
+    margin-top:10px;
     padding: 50px;
     
    
@@ -437,7 +393,7 @@ button {
     font-size:70px;
     text-align:center;
     color:#0E0973;
-    margin-bottom: 10px;
+    margin-bottom: 0;
     line-height: 1;
 }
 
@@ -471,7 +427,7 @@ button {
     align-items:center;
     justify-content: center;
     position:relative;
-    padding-left: 60px;
+    padding-left: 120px;
 }
 
 .lifehack-card{
@@ -543,4 +499,207 @@ button {
 
 .item-image{
     min-width: 450px;
+}
+
+/* The Main Split */
+.item-layout-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* LEFT IMAGE: Fixed at 450px, aligned left */
+.item-left-side {
+    flex: 0 0 450px; /* Does not shrink, stays 450px */
+}
+
+.item-left-side img {
+    width: 450px;
+    height: auto;
+    border-radius: 25px;
+    object-fit: contain;
+}
+
+/* RIGHT CONTENT */
+.item-right-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* Question Section Box */
+.detail-spec-section {
+    background: transparent;
+    padding: 25px;
+    border-radius: 20px;
+    height: 40px;
+    width: 300px;
+    line-height: 1;
+    transform: translateY(-110px);
+}
+
+.detail-options {
+    display: flex;
+    gap: 15px;
+      margin-top:0px;
+}
+
+.detail-option-btn {
+    font-family: "Jomhuria",sans-serif;
+    color: white;
+    font-size: 40px;
+    font-weight: 300;
+    padding: 10px 30px;
+    border-radius: 50px;
+    background: transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: -60px;
+}
+
+.detail-option-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+.detail-option-btn.active:nth-child(1){
+  background-color:#4AB58A;   
+}
+.detail-option-btn.active:nth-child(2){
+  background-color:#D22D40;   
+}
+
+/* MATERIALS GRID: Square layout */
+.materials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);/* 2x2 Square layout */
+    gap: 20px;
+    justify-items: center; /* Ensures the cards stay centered in their columns */
+    width: 100%;
+    margin: 0 auto;
+}
+
+.material-card {
+    background:#D0EEDA;
+    border-radius: 29px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateY(60px);
+    overflow:hidden;
+    position:relative;
+     background:
+        linear-gradient(#D0EEDA,#D0EEDA) padding-box,
+        linear-gradient(135deg,#89F19E,#4A7CE0,#00FF7F) border-box;
+
+     border:1px solid transparent;
+}
+.mat-name{
+   font-family: "Jomhuria" ,sans-serif;
+   font-size: 50px;
+   text-align: center;
+   margin-top: 2px;
+   color: #465D39;
+   transform: translateY(-50px);
+}
+.mat-label{
+  font-family: "Jaldi" ,sans-serif;
+  font-weight: bold;
+   font-size: 27px;
+   text-align: left;
+   color: #0C365F;
+   line-height: 0.7;
+   justify-content: flex-start; /* Start from top */
+    padding-top: 10px;
+   
+}
+
+.mat-value{
+  font-family: "Jaldi" ,sans-serif;
+  font-weight: normal;
+   font-size: 27px;
+   text-align: left;
+   color:#000;  
+   line-height: 0.7;
+   justify-content: flex-start; /* Start from top */
+    padding-top: 10px;
+  
+}
+
+.material-card.active {
+    border-color: #4A7CE0;
+    background: #f0f4ff;
+}
+
+.mat-abbr-circle {
+    transform: translateX(-120px);
+    width: 70px;
+    height: 70px;
+    background: #eee;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+    font-family: "Jomhuria" ,sans-serif;
+   font-size: 40px;
+   text-align: center;
+   color: #465D39;
+    
+}
+.possible-materials{
+ font-family: "Jomhuria", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    color: #0C365F;   
+    transform: translateY(69px);
+}
+#filterTags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+    margin-left: 455px;
+    transform: translateY(-40px);
+
+}
+
+.filter-tag {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0E0973;
+}
+
+.filter-tag .rm {
+    cursor: pointer;
+    font-weight: bold;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.filter-tag .rm:hover {
+    opacity: 1;
+    color: #ff4d4d;
 }

@@ -30,35 +30,32 @@
         <input type="text" id="searchInput" placeholder="Search another item..." required>
         <button type="submit">🔍</button>
     </form>
-
     <div class="container">
-        <div class="sidebar">
-            <div class="detail-spec">
-                <label id="detailQuestion">Detail Spec:</label>
-                <select id="detailSelect">
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>
-        </div>
+    <div class="item-layout-wrapper">
         
-      <div class="item-layout">
+        <div class="item-left-side">
+            <img id="itemPicture" src="" alt="Item">
+        </div>
 
-    <div class="item-image">
-        <img id="itemPicture" src="" alt="Loading...">
-    </div>
+        <div class="item-right-side">
+            <div id="detailsSection"></div>
 
-    <div class="materials-section">
-        <h3>POSSIBLE MATERIALS</h3>
-        <section class="materials-grid" id="materialGrid"></section>
-    </div>
-
-</div>
-            
-            <div class="action-btn-container">
-                <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Options</button>
+            <div class="materials-section">
+                <div class="possible-materials">POSSIBLE MATERIALS</div>
+                <div class="materials-grid" id="materialGrid"></div>
             </div>
         </div>
+
+    </div>
+
+    <div class="action-btn-container">
+        <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Impact ➜</button>
+    </div>
+</div>
+
+    <div class="action-btn-container">
+        <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Options</button>
+    </div>
 
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>

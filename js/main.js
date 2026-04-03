@@ -225,3 +225,4 @@ const materialGroups = {
         { name: "Cadmium", abbr: "Cd", use: "Industrial", feel: "Heavy metal" }
     ]
 };
+
