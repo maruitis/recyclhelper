@@ -213,9 +213,9 @@ nav {
     top: -41px; 
 }
 
-/* Поднимаем картинку только в третьей карточке */
+
 .info-card:nth-child(3) .img-wrapper {
-    top: -35px; /* Еще выше, если нужно */
+    top: -35px; 
 }
 
 .info-card:nth-child(3) .img-wrapper {
@@ -234,19 +234,31 @@ nav {
     width: min(720px, 95vw);
     max-width: 900px;
     height: auto;
-    filter: blur(4px);
-    opacity: var(--cloud-opacity);
+    opacity: 40%;
 }
 
-/* Позиция левого */
 .cloud-left {
     left: max(-220px, -32vw);
 }
 
-/* Позиция правого */
+
 .cloud-right {
     right: max(-220px, -32vw);
 }
+
+.cloud-left  { left: -80px;  animation: floatL 5s ease-in-out infinite; }
+.cloud-right { right: -80px; animation: floatR 5s ease-in-out infinite; }
+
+
+@keyframes floatL {
+  0%,100% { transform: translateX(0px); }
+  50%      { transform: translateX(-29px); }
+}
+@keyframes floatR {
+  0%,100% { transform: translateX(0px) }
+  50%      { transform: translateX(23px)  }
+}
+
 html{
     scroll-behavior: smooth;
 }
@@ -315,6 +327,13 @@ button {
     padding: 20px;
     border: 1px solid rgba(255, 255, 255, 0.5);
     margin: 10px;
+    width: 450px;
+    height: 470px;
+    transform: translateY(-370px) translateX(230px);
+    gap: 30px;
+}
+.glass-panel:nth-child(1){
+transform: translateY(-395px) translateX(530px);
 }
 
 
@@ -335,9 +354,33 @@ button {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 30px;
-    padding: 30px;
+    padding: 16px 20px 20px;
     border: 1px solid rgba(255, 255, 255, 0.4);
     margin-top: 50px;
+    color: #0E0973;
+    width: 380px;
+    height: auto;
+}
+
+.glass-panel.calculator h3 {
+    text-align: center;
+    font-family: 'Jomhuria', sans-serif;
+    font-size: 44px;
+    color: #0E0973;
+    margin: 0 0 8px 0;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.calc-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
     color: #0E0973;
 }
 
@@ -345,28 +388,73 @@ button {
     background: #C7D6FA;
     border: 2px solid #0E0973;
     border-radius: 10px;
-    padding: 5px 10px;
+    padding: 3px 8px;
     font-family: 'Inter', sans-serif;
     font-weight: bold;
-    width: 80px;
+    font-size: 16px;
+    color: black;
+    width: 64px;
+}
+
+.results-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.stat-text {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.stat-label {
+    font-family: 'Jomhuria', sans-serif;
+    font-size: 42px;
+    color: #0E0973;
+    line-height: 1;
 }
 
 .stat-value {
-    font-family: 'Gasoek One', sans-serif;
-    font-size: 24px;
-    color: #89F19E;
+    font-family: 'Jomhuria', sans-serif;
+    font-size: 42px;
+    color: black;
     text-shadow: 1px 1px 2px #0E0973;
+    line-height: 1;
 }
 
+.img-wrappers {
+    position: static;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.calc-img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+}
 
 .close-btn {
     position: absolute;
     right: 20px; top: 10px;
-    font-size: 40px;
     cursor: pointer;
-    color: #0E0973;
+    font-family: 'Jomhuria', sans-serif;
+    font-weight: bold;
+    font-size: 40px;
+    color: lightskyblue;
+    width: 80px;
 }
-
 .item-layout{
     display:flex;
     align-items:flex-start;
@@ -384,8 +472,6 @@ button {
 .lifehack-section{
     margin-top:10px;
     padding: 50px;
-    
-   
 }
 
 .lifehack-header{
@@ -400,16 +486,17 @@ button {
 .lifehack-layout{
     display:flex;
     align-items:center;
-    justify-content: center; /* Pushes image left and cards right */
+    justify-content: center;
     width: 100%;
-    max-width: 1200px; /* Keeps layout from getting too wide */
+    max-width: 1200px;
     gap: 0px;
+    margin-left: -80px;
 }
 .lifehack-right{
     flex:1;
     display:flex;
-    flex-direction: column; /* Stacks header above cards */
-    align-items: center;    /* Centers header and cards horizontally relative to each other */
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     transform: translateY(-280px);
     margin-right: 0;
@@ -426,7 +513,6 @@ button {
     display:flex;
     align-items:center;
     justify-content: center;
-    position:relative;
     padding-left: 120px;
 }
 
@@ -479,6 +565,7 @@ button {
     opacity: 1;
 }
 .idea-title{
+    
     font-family:'Jomhuria', cursive;
     font-size:40px;
     color:#0E0973;
@@ -501,7 +588,7 @@ button {
     min-width: 450px;
 }
 
-/* The Main Split */
+
 .item-layout-wrapper {
     display: flex;
     align-items: flex-start;
@@ -512,9 +599,9 @@ button {
     padding: 0 20px;
 }
 
-/* LEFT IMAGE: Fixed at 450px, aligned left */
+
 .item-left-side {
-    flex: 0 0 450px; /* Does not shrink, stays 450px */
+    flex: 0 0 450px; 
 }
 
 .item-left-side img {
@@ -524,42 +611,57 @@ button {
     object-fit: contain;
 }
 
-/* RIGHT CONTENT */
+/* sprava kontent */
 .item-right-side {
     flex: 1;
     display: flex;
     flex-direction: column;
 
 }
+.questions-tips-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+    width: 100%;
+    
+    
+}
 
-/* Question Section Box */
+/* da net vopros*/
 .detail-spec-section {
     background: transparent;
-    padding: 25px;
+    padding: 0;
     border-radius: 20px;
-    height: 40px;
     width: 300px;
     line-height: 1;
-    transform: translateY(-110px);
+    transform: none;
+    text-align: center;
+}
+
+.detail-spec-section h3 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
 }
 
 .detail-options {
     display: flex;
-    gap: 15px;
-      margin-top:0px;
+    gap: 10px;
+    margin-top: 0;
+    justify-content: center;
 }
 
 .detail-option-btn {
-    font-family: "Jomhuria",sans-serif;
+    font-family: "Jomhuria", sans-serif;
     color: white;
-    font-size: 40px;
+    font-size: 50px;
     font-weight: 300;
-    padding: 10px 30px;
+    padding: 4px 22px;
     border-radius: 50px;
     background: transparent;
     cursor: pointer;
     transition: 0.3s;
-    margin-top: -60px;
+    margin-top: 0;
 }
 
 .detail-option-btn.active {
@@ -574,68 +676,64 @@ button {
   background-color:#D22D40;   
 }
 
-/* MATERIALS GRID: Square layout */
+/* dlja materialov */
 .materials-grid {
     display: grid;
-    grid-template-columns: repeat(2, max-content);/* 2x2 Square layout */
-    gap: 20px;
-    justify-items: center; /* Ensures the cards stay centered in their columns */
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 20px;
+    column-gap: 28px;
     width: 100%;
     margin: 0 auto;
+    padding: 6px;
 }
 
 .material-card {
-    background:#D0EEDA;
-    border-radius: 29px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-radius: 18px;
+    padding: 10px 14px;
     cursor: pointer;
-    border: 2px solid transparent;
     transition: 0.3s;
     width: 100%;
-    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transform: translateY(60px);
-    overflow:hidden;
-    position:relative;
-     background:
+    transform: none;
+    overflow: hidden;
+    position: relative;
+    background:
         linear-gradient(#D0EEDA,#D0EEDA) padding-box,
         linear-gradient(135deg,#89F19E,#4A7CE0,#00FF7F) border-box;
-
-     border:1px solid transparent;
+    border: 1px solid transparent;
+    box-shadow:
+        0 0 10px 2px rgba(74, 124, 224, 0.6),
+        0 0 20px 3px rgba(0, 120, 255, 0.25);
 }
 .mat-name{
    font-family: "Jomhuria" ,sans-serif;
-   font-size: 50px;
+   font-size: 34px;
    text-align: center;
-   margin-top: 2px;
+   margin-top: 0;
    color: #465D39;
-   transform: translateY(-50px);
+   transform: none;
+   line-height: 1;
 }
 .mat-label{
   font-family: "Jaldi" ,sans-serif;
   font-weight: bold;
-   font-size: 27px;
+   font-size: 18px;
    text-align: left;
    color: #0C365F;
-   line-height: 0.7;
-   justify-content: flex-start; /* Start from top */
-    padding-top: 10px;
-   
+   line-height: 1.1;
+   padding-top: 4px;
 }
 
 .mat-value{
   font-family: "Jaldi" ,sans-serif;
   font-weight: normal;
-   font-size: 27px;
+   font-size: 18px;
    text-align: left;
-   color:#000;  
-   line-height: 0.7;
-   justify-content: flex-start; /* Start from top */
-    padding-top: 10px;
-  
+   color:#000;
+   line-height: 1.1;
+   padding-top: 4px;
 }
 
 .material-card.active {
@@ -644,28 +742,30 @@ button {
 }
 
 .mat-abbr-circle {
-    transform: translateX(-120px);
-    width: 70px;
-    height: 70px;
+    transform: none;
+    width: 46px;
+    height: 46px;
     background: #eee;
     border-radius: 50%;
-    margin: 0 auto 10px;
+    margin: 0 auto 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 400;
     font-family: "Jomhuria" ,sans-serif;
-   font-size: 40px;
-   text-align: center;
-   color: #465D39;
-    
+    font-size: 26px;
+    text-align: center;
+    color: #465D39;
 }
 .possible-materials{
- font-family: "Jomhuria", sans-serif;
+    font-family: "Jomhuria", sans-serif;
     font-weight: 400;
     font-size: 60px;
-    color: #0C365F;   
-    transform: translateY(69px);
+    color: #0C365F;
+    transform: none;
+    margin-top: -10px;
+    text-align: center;
+    width: 100%;
 }
 #filterTags {
     display: flex;
@@ -680,7 +780,11 @@ button {
 .filter-tag {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background:
+        linear-gradient(#F7F7F7,#F7F7F7) padding-box,
+        linear-gradient(135deg,#89F19E,#4A7CE0,#00FF7F) border-box;
+
+     border:1px solid transparent;
     padding: 8px 15px;
     border-radius: 20px;
     font-family: 'DM Sans', sans-serif;
@@ -702,4 +806,122 @@ button {
 .filter-tag .rm:hover {
     opacity: 1;
     color: #ff4d4d;
+}
+.action-btn-container { text-align: center; margin-top: 22px; }
+
+/* dlja knopok */
+#nextBtn {
+    transform: none !important;
+    animation: none !important;
+    display: block;
+    margin: 4px 0;
+    padding: 6px 20px;
+    font-size: 0.78rem;
+    border-radius: 50px;
+}
+.primary-btn {
+  background: linear-gradient(135deg, #3db870, #2da890);
+  border: none; border-radius: 50px; padding: 13px 34px;
+  font-family: 'Oswald', sans-serif; font-weight: 700;
+  font-size: 1rem; letter-spacing: 0.07em; color: white;
+  cursor: pointer; box-shadow: 0 6px 24px rgba(45,168,100,0.35);
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  transform: translateY(-650px) translateX(990px);
+  animation: slideUp 0.8s ease-out forwards;
+  
+}
+.primary-btn:hover { transform: translateY(-653px) translateX(990px) scale(1.04); box-shadow: 0 10px 32px rgba(45,168,100,0.45); }
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(0px); 
+        opacity: 1;                   
+    }
+    100% {
+        transform: translateY(-653px);     
+        opacity: 1;                  
+    }
+}
+
+
+.item-right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+}
+
+#detailsSection {
+    flex: 0 0 auto; 
+    min-width: 250px;
+}
+
+.tips-sidebar {
+    flex: 0 0 500px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tips-heading {
+    font-family: 'Jomhuria', sans-serif;
+    font-size: 52px;
+    color: #0C365F;
+    line-height: 1;
+    padding-left: 4px;
+}
+
+/* dlja sovetov */
+.tips-panel {
+    background-color: #D0EEDA;
+    border-radius: 20px;
+    padding: 8px 12px;
+    border: 2px solid rgba(74,181,138,0.4);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    display: block;
+    overflow: hidden;
+}
+
+.tips-two-col {
+    display: flex;
+    gap: 10px;
+}
+
+.tips-col {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* eto tip bez znachkov */
+.col-label {
+    display: none;
+}
+
+.tips-list-ol {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: #1a3a1a;
+    padding-left: 12px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.tips-list-ol li {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+/* tenj sinjaa tipo*/
+.tips-col.glow-active {
+    background-color: #ADD8E6 !important;
+    box-shadow: 0 0 25px #87CEFA; 
+    transform: scale(1.05);
+    border: 2px solid #000;
 }

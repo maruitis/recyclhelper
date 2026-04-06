@@ -41,7 +41,7 @@
     </header>
     <div id="filterTags"></div>
 
-    <main class="container">
+    <div class="container">
         
        <section class="lifehack-section">
            <div class="lifehack-layout">
@@ -70,36 +70,53 @@
                 
                 <div class="results-display">
                     <div class="stat-item">
-                        <span class="stat-label">Saved Water:</span>
-                        <span class="stat-value"><span id="saveWater">0</span> L</span>
+                        <div class="stat-text">
+                            <span class="stat-label">Saved Water</span>
+                            <span class="stat-value"><span id="saveWater">0</span> L</span>
+                        </div>
+                        <div class="img-wrappers">
+                            <img src="images/water 3d.png" alt="water" class="calc-img">
+                        </div>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Saved Energy:</span>
-                        <span class="stat-value"><span id="saveEnergy">0</span> kWh</span>
+                        <div class="stat-text">
+                            <span class="stat-label">Saved Energy</span>
+                            <span class="stat-value"><span id="saveEnergy">0</span> kWh</span>
+                        </div>
+                        <div class="img-wrappers">
+                            <img src="images/energy.png" alt="energy" class="calc-img">
+                        </div>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Saved CO2:</span>
-                        <span class="stat-value"><span id="saveCO2">0</span> kg</span>
+                        <div class="stat-text">
+                            <span class="stat-label">Saved CO2</span>
+                            <span class="stat-value"><span id="saveCO2">0</span> kg</span>
+                        </div>
+                        <div class="img-wrappers">
+                            <img src="images/co2.png" alt="co2" class="calc-img">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="glass-panel map-container">
-                <h3>Find Closest Deposit Point</h3>
-                <div class="map-controls">
-                    <input type="text" id="addressInput" placeholder="Enter address...">
-                    <button onclick="findCenters()" class="map-btn">Find Points</button>
-                </div>
-                <div id="map" style="height: 250px; width: 100%; border-radius: 15px; margin-top: 15px;"></div>
-            </div>
-        </div>
-    </main>
+      <h3>Find the closest deposit points</h3>
+      <div class="map-controls">
+        <input type="text" id="addressInput" placeholder="Enter your address...">
+        <button class="map-btn" onclick="findCenters()">Find Points</button>
+      </div>
+      <div id="map" style="height:250px;width:100%;border-radius:12px;margin-top:10px;"></div>
+    </div>
 
+  </div>
+</main>
+
+    
+    </div>
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>
     <script src="js/recycle.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/map.js"></script>
-    
+<script src="js/map.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. GET DATA
+    // tjanet dannie
     const params = new URLSearchParams(window.location.search);
     const itemName = params.get('item')?.toLowerCase() || localStorage.getItem('currentItem') || "plastic bottle";
     const itemData = itemDatabase[itemName];
@@ -10,33 +10,33 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 2. SHOW MAIN IMAGE
+    // 2. dlja kartinki
     const mainImg = document.getElementById('itemImage'); 
     if (mainImg && itemData.image) {
         mainImg.src = itemData.image;
         mainImg.alt = itemName;
     }
 
-    // 3. GENERATE FILTER TAGS
+    // 3. dlja filtertags
     const tagsEl = document.getElementById('filterTags');
     if (tagsEl) {
-        // Find the material object to get the abbreviation (PET, HDPE, etc.)
+        // dlja abbreviation
         let material = null;
         if (itemData.group && selectedMatName) {
             material = materialGroups[itemData.group].find(m => m.name === selectedMatName);
         }
 
-        // Load the "Yes/No" details from state
-        const details = JSON.parse(localStorage.getItem('selectedDetails')) || {};
-        
-        // Build the tags array
+        // dlja yes/no otvetiv
+        const userChoiceTag = localStorage.getItem('userChoiceTag') || null;
+
+        // dlja tags aray tipo
         const tags = [
-            itemName, 
+            itemName,
             material ? `${material.abbr} — ${material.name}` : null,
-            ...Object.values(details)
+            userChoiceTag
         ].filter(Boolean);
 
-        tagsEl.innerHTML = ''; // Clear existing
+        tagsEl.innerHTML = ''; 
 
         tags.forEach((t, i) => {
             const tag = document.createElement('span');
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. FILL DIY CARDS
+    // 4. dlja diy kartochek
     const cards = [
         document.getElementById('diy-0'),
         document.getElementById('diy-1'),
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. CALCULATOR LOGIC
+    // 5. calculjator
     const qtyInput = document.getElementById('calcQty');
     const updateStats = () => {
         if (!qtyInput) return;
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// MODAL FUNCTIONS (Keep these outside the listener)
+// modalnije funkcii
 function showModal(project) {
     const modal = document.getElementById('diyModal');
     if (!modal) return;

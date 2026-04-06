@@ -1,6 +1,14 @@
 const itemDatabase = {
     "plastic bottle": {
         detail: "Is the cap still on?",
+        prepTips: {
+            "With cap":     ["Remove cap before recycling", "Caps often go in separate bin", "Twist off to save time at depot"],
+            "No cap":       ["Cap-free is ideal for recycling", "Rinse inside with water", "Ready to crush & go"],
+            "Has label":    ["Peel paper labels if possible", "Labels can jam machinery", "Plastic labels are usually OK"],
+            "No label":     ["Label-free is perfect condition", "Just rinse the bottle clean", "Straight in the recycling bin"],
+            "Crushed":      ["Crushed bottles save bin space", "Makes transport more efficient", "Keep cap OFF when crushing"],
+            "Intact shape": ["Try to crush flat to save space", "Easier for collection trucks", "Doesn't need to be perfect"]
+        },
         group: "plastic",
         image:"images/plasticbottle.png",
         savings: { water: 5, co2: 0.1, energy: 0.5 },
@@ -13,6 +21,14 @@ const itemDatabase = {
     },
     "glass bottle": {
         detail: "Is it non-tempered glass?",
+        prepTips: {
+            "Standard glass": ["Standard glass is fully recyclable", "Most bottles are standard glass", "Goes in the glass/bottle bank"],
+            "Tempered glass": ["Tempered glass cannot be recycled", "Has a different melting point", "Consider repurposing instead"],
+            "Clean":          ["Rinsed bottles are ideal", "Prevents contamination of other glass", "No need to dry it after rinsing"],
+            "Has residue":    ["Please rinse before recycling", "Food residue contaminates loads", "Quick rinse is all it needs"],
+            "Has lid":        ["Remove metal or plastic lid", "Lid goes in a separate bin", "Some facilities accept lids on"],
+            "No lid":         ["Lid-free is fine for recycling", "Just ensure bottle is clean", "Ready for the bottle bank"]
+        },
         group: "glass",
         savings: { water: 2, co2: 0.3, energy: 1.2 },
         image:"images/glassbottle.png",
@@ -25,6 +41,14 @@ const itemDatabase = {
     },
     "book": {
         detail: "Is it a hardcover book?",
+        prepTips: {
+            "Hardcover":      ["Remove hardcover before paper recycling", "Covers often have different materials", "Cardboard cover can go separately"],
+            "Paperback":      ["Paperbacks recycle easily whole", "Goes directly in paper bin", "No need to remove cover"],
+            "Good condition": ["Donate before recycling — someone needs it", "Libraries and schools love donations", "Charity shops accept good books"],
+            "Damaged":        ["Damaged books go to paper recycling", "Remove any metal bookmarks first", "Tear in half if very thick"],
+            "Yellowed pages": ["Yellowed paper is still recyclable", "It's just aged cellulose", "Goes in standard paper bin"],
+            "White pages":    ["White pages are premium recyclable", "High value material for paper mills", "Clean paper = better quality fibre"]
+        },
         group: "paper",
         savings: { water: 10, co2: 0.5, energy: 2 },
         image:"images/book.png",
@@ -37,6 +61,14 @@ const itemDatabase = {
     },
     "paper": {
         detail: "Is it glossy or matte?",
+        prepTips: {
+            "Glossy":    ["Glossy paper is harder to recycle", "Check if your facility accepts it", "Magazines and catalogs are glossy"],
+            "Matte":     ["Matte paper recycles very easily", "Goes straight in the paper bin", "Great quality recyclable"],
+            "Has ink":   ["Ink is removed during de-inking process", "No need to remove ink yourself", "Standard recycling handles it"],
+            "Blank":     ["Blank paper is premium recyclable", "Reuse as scrap paper first", "Very easy for mills to process"],
+            "Wet":       ["Dry before recycling if possible", "Wet paper clumps and jams machines", "Spread out to dry first"],
+            "Dry":       ["Dry paper is ideal for recycling", "Goes straight in the paper bin", "Keep covered until collection day"]
+        },
         group: "paper",
         savings: { water: 1, co2: 0.05, energy: 0.2 },
         image:"images/paper.png",
@@ -49,6 +81,14 @@ const itemDatabase = {
     },
     "sweater": {
         detail: "Is it 100% wool?",
+        prepTips: {
+            "Natural fibre":   ["Natural fibres compost or recycle well", "Wool and cotton are most valuable", "Separate from synthetic items"],
+            "Synthetic blend": ["Synthetics still go to textile recycling", "Cannot be composted", "Most textile banks accept blends"],
+            "Has damage":      ["Still recyclable even if damaged", "Holes don't matter for fibre recycling", "Too damaged to donate — recycle it"],
+            "Good condition":  ["Donate instead of recycling if possible", "Charity shops welcome wearable jumpers", "Helps someone stay warm"],
+            "Machine washable": ["Wash before donating or recycling", "Clean items are always preferred", "Remove pins and decorations first"],
+            "Hand wash only":   ["Still can be donated or recycled", "Tell donation centre about care label", "Handle gently when cleaning"]
+        },
         group: "textile",
         savings: { water: 2000, co2: 15, energy: 40 },
         image:"images/sweater.png",
@@ -61,6 +101,14 @@ const itemDatabase = {
     },
     "batteries": {
         detail: "Is it a rechargeable type?",
+         prepTips: {
+            "Rechargeable":   ["Rechargeable batteries need specialist recycling", "Never put in regular trash", "Electronics shops often have drop boxes"],
+            "Single-use":     ["Single-use still need proper disposal", "Many supermarkets have battery banks", "Never mix with regular recycling"],
+            "Corroded":       ["Wear gloves — leaking batteries are hazardous", "Tape both terminals with electrical tape", "Take to hazardous waste facility"],
+            "Clean":          ["Store in cool dry place until disposal", "Tape terminals before storing to prevent shorting", "Keep away from metal objects"],
+            "Discharged":     ["Discharged batteries are safer to transport", "Still need proper battery disposal", "Tape ends as a safety precaution"],
+            "Has charge":     ["Tape BOTH terminals with electrical tape", "Prevents short circuit during transport", "Never store loose with metal items"]
+        },
         group: "special",
         savings: { water: 0, co2: 2, energy: 5 },
         image:"images/batteries.png",
@@ -73,6 +121,14 @@ const itemDatabase = {
     },
     "laptop": {
         detail: "Does the screen still work?",
+        prepTips: {
+            "Screen works":   ["Working laptop — consider donating first", "Refurbishment centres accept working units", "Charities give them to schools"],
+            "Broken screen":  ["E-waste facility is the right place", "Components are still very valuable", "Never put electronics in regular trash"],
+            "Data wiped":     ["Good — privacy protected before recycling", "Now safe to donate or drop off", "Include charger if donating"],
+            "Data on device": ["WIPE data before recycling — important!", "Use factory reset or secure erase tool", "Protect your personal information"],
+            "Good battery":   ["Remove battery for separate recycling", "Li-ion batteries need special handling", "Tape battery terminals before disposal"],
+            "Dead battery":   ["Remove and recycle battery separately", "Tape terminals before transport", "Dedicated battery recycling required"]
+        },
         group: "electronics",
         savings: { water: 500, co2: 150, energy: 300 },
         image:"images/laptop.png",
@@ -85,6 +141,14 @@ const itemDatabase = {
     },
     "shirts": {
         detail: "Is it 100% cotton?",
+        prepTips: {
+            "Pure cotton":    ["Cotton textiles have very high recycling value", "Can also be composted in garden", "High demand from textile recyclers"],
+            "Synthetic blend": ["Still recyclable at textile facilities", "Cannot be composted", "Look for textile drop-off points nearby"],
+            "Wearable":       ["Please donate before recycling", "Someone else will use it", "Charity shops and clothes banks"],
+            "Too worn":       ["Textile recycling is perfect for this", "Gets shredded into new padding fibre", "Much better than going to landfill"],
+            "Has stains":     ["Small stains are OK for recycling", "Not suitable for donation with stains", "Textile recyclers accept stained items"],
+            "Clean":          ["Clean items can be donated or recycled", "Wash before donating — appreciated", "Clean shirts = higher quality fibre"]
+        },
         group: "textile",
         savings: { water: 2500, co2: 5, energy: 15 },
         image:"images/shirt.png",
@@ -97,6 +161,14 @@ const itemDatabase = {
     },
     "plastic box": {
         detail: "Is it labeled 'BPA free'?",
+         prepTips: {
+            "BPA free":        ["BPA-free plastics are safer to recycle", "Usually PP (code 05) or HDPE (code 02)", "Check local recycling guidelines"],
+            "May have BPA":    ["Some facilities won't accept BPA plastic", "Check with your local recycling centre", "Consider repurposing rather than recycling"],
+            "Has symbol":      ["The number in the triangle tells you the type", "Match symbol number to local guidelines", "Makes sorting and processing much easier"],
+            "No symbol":       ["Harder to sort without the symbol", "Contact your local recycling centre", "May still be accepted — check first"],
+            "Clean":           ["Clean containers are ideal", "Ready to go in the recycling bin", "No further preparation needed"],
+            "Has food residue": ["Rinse all food residue before recycling", "Dirty containers contaminate whole loads", "Quick rinse is all it takes"]
+        },
         group: "plastic",
         savings: { water: 3, co2: 0.2, energy: 0.8 },
         image:"images/plasticbox.png",
@@ -109,6 +181,14 @@ const itemDatabase = {
     },
     "cardboard box": {
         detail: "Is it corrugated (thick)?",
+        prepTips: {
+            "Corrugated":      ["Corrugated cardboard is highly recyclable", "Flatten first then put in bin", "High demand from paper mills"],
+            "Single layer":    ["Single-layer card also recycles well", "Cereal boxes, shoeboxes — all accepted", "Remove any plastic liners first"],
+            "Water damaged":   ["Wet cardboard is harder to recycle", "Try to dry it out if possible", "If mushy, it may go to composting"],
+            "Dry":             ["Dry cardboard is perfect for recycling", "Ready to flatten and bin immediately", "Keep dry on collection day"],
+            "Flattened":       ["Great — flat boxes save huge space", "Makes collection more efficient", "Stack with other flat cardboard"],
+            "Still assembled": ["Please flatten before putting in bin", "Saves enormous amounts of space", "Fold flat along the crease lines"]
+        },
         group: "paper",
         savings: { water: 2, co2: 0.1, energy: 0.4 },
         image:"images/crdboardbox.png",
@@ -121,6 +201,14 @@ const itemDatabase = {
     },
     "pens": {
         detail: "Is the barrel metal or plastic?",
+         prepTips: {
+            "Metal barrel":  ["Metal pens have more recyclable value", "Separate metal from plastic parts", "Metal body goes to metal recycling"],
+            "Plastic barrel": ["Plastic pen barrels can be recycled", "Some brands have take-back programs", "TerraCycle collects old pens"],
+            "Ink empty":     ["Empty pens are ready to recycle", "No contamination from leftover ink", "Disassemble and sort materials"],
+            "Has ink":       ["Use up remaining ink first", "Or find a pen take-back program", "Don't pour ink down the drain"],
+            "Refillable":    ["Best environmental choice — keep it!", "Just buy replacement cartridges", "Much less waste over time"],
+            "Disposable":    ["Consider switching to refillable pens", "TerraCycle has free pen drop-off programs", "Some brands accept returns by post"]
+        },
         group: "plastic",
         savings: { water: 0.1, co2: 0.02, energy: 0.1 },
         image:"images/pen.png",
@@ -133,6 +221,14 @@ const itemDatabase = {
     },
     "pencils": {
         detail: "Is it a graphite pencil?",
+        prepTips: {
+            "Graphite":       ["Graphite pencils can be composted", "The wood barrel decomposes naturally", "Tiny graphite tip is harmless in soil"],
+            "Coloured pencil": ["Coloured pencils contain wax and pigment", "Best composted or disposed normally", "Not standard recycling stream"],
+            "Has eraser":     ["Remove metal ferrule and eraser if possible", "Metal band can go to metal recycling", "Eraser itself is usually not recyclable"],
+            "No eraser":      ["Straight to composting or wood recycling", "Pure wood item — very easy to handle", "Can also be used as plant marker"],
+            "Full length":    ["Donate to schools or art clubs", "Kids and artists always need pencils", "Still has years of useful life left"],
+            "Short stub":     ["Too short to use — time to compost it", "Break in half to speed up composting", "Or bundle stubs for art mosaic projects"]
+        },
         group: "wood",
         savings: { water: 0.1, co2: 0.01, energy: 0.05 },
         image:"images/pencil.png",
@@ -145,6 +241,14 @@ const itemDatabase = {
     },
     "shoes": {
         detail: "Are the soles made of rubber?",
+         prepTips: {
+            "Rubber soles":   ["Rubber soles are recyclable material", "Gets turned into playground surfaces", "Separate upper from sole if possible"],
+            "Synthetic soles": ["Synthetic soles go to textile recycling", "Nike Grind accepts many shoe types", "Cannot go in standard bins"],
+            "Wearable":       ["Donate — don't recycle wearable shoes", "Shoe banks and charity shops take them", "They'll last many more years"],
+            "Worn out":       ["Worn shoes can still be recycled for fibre", "Soles become playground/road material", "Upper fabric becomes new padding"],
+            "Full pair":      ["Keep pairs together when donating", "Much more useful to the next person", "Tie laces together to keep them paired"],
+            "Single shoe":    ["Single shoes won't be donated", "Best to recycle the materials separately", "Rubber sole, fabric upper, metal eyelets"]
+        },
         group: "textile",
         savings: { water: 100, co2: 8, energy: 20 },
         image:"images/shoes.png",
@@ -157,6 +261,14 @@ const itemDatabase = {
     },
     "wooden furniture": {
         detail: "Is it solid wood (not MDF)?",
+        prepTips: {
+            "Solid wood":        ["Solid wood is highly recyclable material", "Can be chipped into mulch or biomass", "Great for donation or repurposing too"],
+            "MDF or chipboard":  ["MDF contains glue and formaldehyde", "Many facilities won't accept MDF", "Check with your local authority first"],
+            "Treated or painted": ["Painted wood can still be recycled", "Remove all hardware first (screws, hinges)", "Some paint types may restrict chipping use"],
+            "Untreated":         ["Untreated wood is the best for recycling", "Can also be composted if small pieces", "High-value material for wood chippers"],
+            "Sturdy":            ["Donate sturdy furniture before recycling", "Facebook Marketplace and charity shops", "Someone will gladly take it for free"],
+            "Broken":            ["Break down into manageable pieces", "Remove all metal hardware first", "Smaller pieces are easier to chip or compost"]
+        },
         group: "wood",
         savings: { water: 0, co2: 20, energy: 50 },
         image:"images/woodenstool.png",
@@ -169,6 +281,14 @@ const itemDatabase = {
     },
     "house textile": {
         detail: "Is it a towel or curtain?",
+         prepTips: {
+            "Towel or curtain": ["Towels and curtains can be donated", "Animal shelters love old towels", "Curtains repurpose well into fabric"],
+            "Other textile":    ["Most household textiles can be recycled", "Check for textile drop-off points", "Avoid mixing with regular recycling"],
+            "Usable":           ["Animal shelters love old towels and fabric", "Check if charity accepts home textiles", "Great for donation even if old-looking"],
+            "Too worn":         ["Worn textiles still have fibre value", "Gets shredded into insulation padding", "Much better than sending to landfill"],
+            "Natural fibre":    ["Natural fibre composts well in garden", "Also accepted at textile recyclers", "Highest value for recycling process"],
+            "Synthetic":        ["Synthetic textiles go to fibre recycling", "Cannot be composted", "Look for textile collection bags at shops"]
+        },
         group: "textile",
         savings: { water: 1500, co2: 12, energy: 30 },
         image:"images/textile.png",

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const itemName = params.get('item')?.toLowerCase();
     
-    // 1. Get the data from main.js
+    // tjanjet dannie
     const data = itemDatabase[itemName];
 
     if (!data) {
@@ -13,20 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
      const imgElement = document.getElementById('itemPicture'); 
     
     if (imgElement && data.image) {
-        imgElement.src = data.image; // Pulls from main.js (e.g., "images/plasticbottle.png")
+        imgElement.src = data.image; // dlja kartinok
         imgElement.alt = itemName;
-        imgElement.style.display = "block"; // Ensure it is visible
+        imgElement.style.display = "block"; 
     }
-    // -------------------------
 
     document.getElementById('displayItemName').innerText = itemName.toUpperCase();
 
+    // save item
+    localStorage.setItem('currentItem', itemName);
 
-    // 2. Display the Item Name
+    // dlja imeni
     document.getElementById('displayItemName').innerText = itemName.toUpperCase();
 
-    // 3. Display the Detail Question (e.g., "Is the cap still on?")
- // Inside your DOMContentLoaded...
+    // detali
 const detailsContainer = document.getElementById('detailsSection');
 if (detailsContainer && data.detail) {
     detailsContainer.innerHTML = `
@@ -39,28 +39,75 @@ if (detailsContainer && data.detail) {
         </div>
     `;
     
-    // Add event listeners to the buttons
     detailsContainer.querySelectorAll('.detail-option-btn').forEach(btn => {
         btn.onclick = () => {
+            // odin vibor
             detailsContainer.querySelectorAll('.detail-option-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            checkIfReady(); // Check if material is also selected to show nextBtn
+
+            // dlja glow
+            const choice = btn.getAttribute('data-val');
+            const yesCol = document.getElementById('yesCol');
+            const noCol = document.getElementById('noCol');
+
+            if (choice === 'yes') {
+              document.getElementById('yesCol').classList.add('glow-active');
+              document.getElementById('noCol').classList.remove('glow-active');
+            } else {
+              document.getElementById('noCol').classList.add('glow-active');
+              document.getElementById('yesCol').classList.remove('glow-active');  
+            }
+
+            // sohronjaet dlja filtertags
+            const savedTag = (choice === 'yes') ? Object.keys(data.prepTips)[0] : Object.keys(data.prepTips)[1];
+            localStorage.setItem('userChoiceTag', savedTag);
+            localStorage.setItem('userChoiceBinary', choice); // Saves 'yes' or 'no'
+
+            checkIfReady(); 
         };
     });
 }
 
-    // 4. Generate Materials Grid
+// soveti
+const tipsPanel = document.getElementById('tipsPanel');
+if (tipsPanel && data.prepTips) {
+    tipsPanel.style.display = 'block';
+    
+    const keys = Object.keys(data.prepTips);
+    const yesTag = keys[0] || "Yes";
+    const noTag = keys[1] || "No";
+
+    const yesTips = data.prepTips[yesTag] || [];
+    const noTips  = data.prepTips[noTag]  || [];
+
+    tipsPanel.innerHTML = `
+        <div class="tips-two-col">
+            <div class="tips-col" id="yesCol">
+                <div class="col-label yes-label">✓ ${yesTag}</div>
+                <ul class="tips-list-ol">
+                    ${yesTips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="tips-col" id="noCol">
+                <div class="col-label no-label">✗ ${noTag}</div>
+                <ul class="tips-list-ol">
+                    ${noTips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+}
+    // materiali
     const grid = document.getElementById('materialGrid');
     const materials = materialGroups[data.group];
 
     if (grid && materials) {
-        grid.innerHTML = ""; // Clear existing content
-       // Inside your materialGroups.forEach loop in item.js
+        grid.innerHTML = ""; 
+       
 materials.forEach(m => {
     const card = document.createElement('div');
     card.className = 'material-card';
     
-    // We break everything into separate spans/divs with unique classes
     card.innerHTML = `
         <div class="mat-abbr-circle">${m.abbr}</div>
         <div class="mat-name">${m.name}</div>
@@ -84,7 +131,7 @@ materials.forEach(m => {
 }); 
     }
 
-    // 5. Show button only when selections are made
+    //dlja knopki
     function checkIfReady() {
         const materialSelected = document.querySelector('.material-card.active');
         const detailSelected = document.querySelector('.detail-option-btn.active');
