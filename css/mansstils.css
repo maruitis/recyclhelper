@@ -921,7 +921,105 @@ transform: translateY(-395px) translateX(530px);
 /* tenj sinjaa tipo*/
 .tips-col.glow-active {
     background-color: #ADD8E6 !important;
-    box-shadow: 0 0 25px #87CEFA; 
+    box-shadow: 0 0 25px #87CEFA;
     transform: scale(1.05);
     border: 2px solid #000;
+}
+
+/* ── Scanner button ─────────────────────────────────────── */
+.scan-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 50px;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+}
+.scan-btn:hover {
+    background: rgba(255, 255, 255, 0.55);
+    transform: scale(1.1);
+}
+.search-container.small .scan-btn {
+    font-size: 1rem;
+    padding: 2px 8px;
+}
+
+/* ── Scanner modal ──────────────────────────────────────── */
+#scannerModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+}
+.scanner-box {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 22px;
+    padding: 28px 30px 24px;
+    text-align: center;
+    color: #fff;
+    min-width: 320px;
+}
+.scanner-box h3 {
+    margin: 0 0 16px;
+    font-size: 1.25rem;
+    font-family: 'DM Sans', sans-serif;
+}
+.scanner-viewport {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 14px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    background: #000;
+}
+#scannerVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.scanner-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(80, 255, 120, 0.9);
+    box-shadow: 0 0 10px rgba(80, 255, 120, 0.8);
+    animation: scanLine 2s ease-in-out infinite;
+    top: 20%;
+}
+@keyframes scanLine {
+    0%   { top: 20%; }
+    50%  { top: 78%; }
+    100% { top: 20%; }
+}
+#scannerStatus {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.92rem;
+    margin: 0 0 16px;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 1.2em;
+}
+#closeScannerBtn {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 25px;
+    padding: 8px 22px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+#closeScannerBtn:hover {
+    background: rgba(255, 255, 255, 0.38);
 }
