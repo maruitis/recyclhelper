@@ -338,8 +338,13 @@ transform: translateY(-395px) translateX(530px);
 
 
 .bottom-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;   /* map far right, calculator beside it */
+    align-items: flex-start;
+    gap: 80px;
+    padding: 0 60px 80px;
+    flex-wrap: wrap;
 }
 
 .logo-text {
@@ -359,7 +364,10 @@ transform: translateY(-395px) translateX(530px);
     margin-top: 50px;
     color: #0E0973;
     width: 380px;
+    flex-shrink: 0;
     height: auto;
+    transform: translateX(-10px) translateY(-373px);
+    position: relative;
 }
 
 .glass-panel.calculator h3 {
@@ -472,6 +480,7 @@ transform: translateY(-395px) translateX(530px);
 .lifehack-section{
     margin-top:10px;
     padding: 50px;
+    position: relative;
 }
 
 .lifehack-header{
@@ -641,7 +650,8 @@ transform: translateY(-395px) translateX(530px);
 
 .detail-spec-section h3 {
     margin: 0 0 6px 0;
-    font-size: 18px;
+    font-size: 60px;
+    line-height: 1.1;
 }
 
 .detail-options {
@@ -665,15 +675,19 @@ transform: translateY(-395px) translateX(530px);
 }
 
 .detail-option-btn.active {
-    background: #000;
     color: #fff;
-    border-color: #000;
 }
-.detail-option-btn.active:nth-child(1){
-  background-color:#4AB58A;   
+.detail-option-btn.active:nth-child(1) {
+    background: #00dd55;
+    border-color: #00ff66;
+    box-shadow: 0 0 20px rgba(0,220,80,0.65), 0 0 40px rgba(0,180,60,0.3);
+    color: #001a0a;
 }
-.detail-option-btn.active:nth-child(2){
-  background-color:#D22D40;   
+.detail-option-btn.active:nth-child(2) {
+    background: #ff1133;
+    border-color: #ff3355;
+    box-shadow: 0 0 20px rgba(255,20,50,0.65), 0 0 40px rgba(200,0,30,0.3);
+    color: #001a0a;
 }
 
 /* dlja materialov */
@@ -691,6 +705,7 @@ transform: translateY(-395px) translateX(530px);
     border-radius: 18px;
     padding: 10px 14px;
     cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     transition: 0.3s;
     width: 100%;
     display: flex;
@@ -1106,4 +1121,462 @@ transform: translateY(-395px) translateX(530px);
 }
 .scanner-close-btn:hover {
     background: rgba(255, 255, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAV CONTROLS  (theme toggle + language selector)
+   Injected dynamically by theme.js and language.js
+   ═══════════════════════════════════════════════════════════ */
+nav {
+    /* allow controls to sit on the right side */
+    justify-content: flex-start;
+}
+.nav-ctrl-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+    color: #fff;
+    transition: background 0.2s;
+    line-height: 1;
+    margin-left: auto;   /* pushes theme button to the right */
+}
+.nav-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.lang-selector {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-left: 8px;
+}
+.lang-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.5px;
+}
+.lang-btn:hover    { background: rgba(255, 255, 255, 0.3); }
+.lang-btn.lang-active {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE  –  NEON EDITION  v2
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Base ──────────────────────────────────────────────────── */
+[data-theme="dark"] body {
+    background: linear-gradient(to top, #020c08 0%, #030e16 55%, #04081a 100%);
+    color: #e8f4ff;
+}
+
+/* ── Nav: neon blue panel, darker muted links ─────────────── */
+[data-theme="dark"] nav {
+    background: linear-gradient(to bottom, rgba(0,18,55,0.96), rgba(0,12,40,0.72));
+    box-shadow: 0 2px 28px rgba(0,150,255,0.35);
+}
+[data-theme="dark"] .nav-link {
+    color: #3a6a9a;   /* dark — user asked "navigation font darker" */
+}
+[data-theme="dark"] .nav-link:hover {
+    color: #60d0ff;
+    text-shadow: 0 0 10px rgba(0,180,255,0.7);
+}
+
+/* ── Headings – plain bright white, NO neon glow ─────────── */
+[data-theme="dark"] h1, [data-theme="dark"] h2,
+[data-theme="dark"] h3, [data-theme="dark"] h4,
+[data-theme="dark"] h5 {
+    color: #f0f8ff;
+    text-shadow: none;
+}
+
+/* ── Search bar ────────────────────────────────────────────── */
+[data-theme="dark"] .search-container {
+    background: rgba(0,20,50,0.65);
+    border: 1px solid rgba(0,180,255,0.28);
+    box-shadow: 0 0 22px rgba(0,130,255,0.22), inset 0 0 12px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .search-container input          { color: #e8f4ff; }
+[data-theme="dark"] .search-container input::placeholder { color: rgba(140,200,255,0.42); }
+[data-theme="dark"] .search-container button         { color: #60d0ff; }
+
+/* ── Scan button ───────────────────────────────────────────── */
+[data-theme="dark"] .scan-item-btn {
+    background: rgba(0,15,40,0.75);
+    color: #60d0ff;
+    border-color: rgba(0,180,255,0.4);
+    box-shadow: 0 0 14px rgba(0,150,255,0.25);
+}
+[data-theme="dark"] .scan-item-btn:hover {
+    box-shadow: 0 0 24px rgba(0,180,255,0.45);
+    border-color: rgba(0,200,255,0.65);
+}
+
+/* ── Info cards – neon blue glow ──────────────────────────── */
+[data-theme="dark"] .info-card {
+    background: rgba(0,12,30,0.85);
+    border: 1px solid rgba(0,160,255,0.45);
+    box-shadow: 0 0 22px rgba(0,100,255,0.32), 0 4px 24px rgba(0,0,0,0.55);
+}
+[data-theme="dark"] .card-text {
+    color: #a8daff;
+    text-shadow: none;
+    font-weight: 700;
+}
+
+/* ── Glass panels (calculator, map) – neon blue ───────────── */
+[data-theme="dark"] .glass-panel {
+    background: rgba(0,10,28,0.82);
+    border: 1px solid rgba(0,160,255,0.38);
+    box-shadow: 0 0 26px rgba(0,100,255,0.28), 0 4px 22px rgba(0,0,0,0.5);
+    color: #e8f4ff;
+}
+[data-theme="dark"] .stat-label { color: #70c8ff; font-weight: 600; }
+[data-theme="dark"] .stat-value { color: #e8f4ff; font-weight: 700; }
+
+/* ── Primary / map buttons ─────────────────────────────────── */
+[data-theme="dark"] .primary-btn {
+    background: rgba(0,65,145,0.78);
+    color: #c0e8ff;
+    border: 1px solid rgba(0,180,255,0.55);
+    box-shadow: 0 0 16px rgba(0,150,255,0.4);
+    font-weight: 700;
+}
+[data-theme="dark"] .primary-btn:hover {
+    box-shadow: 0 0 28px rgba(0,180,255,0.6);
+}
+[data-theme="dark"] .map-btn {
+    background: rgba(0,65,145,0.75);
+    color: #c0e8ff;
+    border: 1px solid rgba(0,180,255,0.48);
+    box-shadow: 0 0 12px rgba(0,150,255,0.32);
+    font-weight: 600;
+}
+
+/* ── Yes/No detail buttons – neon red & green ─────────────── */
+[data-theme="dark"] .detail-option-btn {
+    background: rgba(0,10,25,0.7);
+    color: #c0e8ff;
+    border: 1px solid rgba(0,160,255,0.35);
+}
+[data-theme="dark"] .detail-option-btn.active:nth-child(1) {
+    background: #00e055;
+    border-color: #00ff66;
+    box-shadow: 0 0 24px rgba(0,255,100,0.75), 0 0 48px rgba(0,200,70,0.35);
+    color: #001a0a;
+}
+[data-theme="dark"] .detail-option-btn.active:nth-child(2) {
+    background: #ff1133;
+    border-color: #ff3355;
+    box-shadow: 0 0 24px rgba(255,20,55,0.75), 0 0 48px rgba(200,0,30,0.35);
+    color: #fff;
+}
+
+/* ── Filter tags ───────────────────────────────────────────── */
+[data-theme="dark"] .filter-tag {
+    background: rgba(0,8,22,0.8);
+    color: #70c8ff;
+    border-color: rgba(0,150,255,0.5);
+    box-shadow: 0 0 10px rgba(0,100,255,0.22);
+    font-weight: 600;
+}
+
+/* ── Lifehacks – bright, readable ─────────────────────────── */
+[data-theme="dark"] .lifehack-card {
+    background: rgba(0,12,30,0.88);
+    color: #e8f4ff;
+    border: 1px solid rgba(0,150,255,0.4);
+    box-shadow: 0 0 20px rgba(0,100,255,0.28), 0 3px 14px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .lifehack-header {
+    color: #55ccff;
+    text-shadow: none;
+    font-weight: 700;
+}
+
+/* ── Tips sidebar – neon green, NO frame on columns ──────── */
+[data-theme="dark"] .tips-sidebar {
+    background: rgba(0,16,6,0.65);
+    border: none;
+    box-shadow: none;
+    color: #c8ffd8;
+}
+[data-theme="dark"] .tips-heading {
+    color: #00ee80;
+    text-shadow: 0 0 10px rgba(0,238,120,0.6);
+    font-weight: 700;
+}
+[data-theme="dark"] .tips-panel { color: #c8ffd8; }
+[data-theme="dark"] .tips-col {
+    background: transparent;
+    color: #c8ffd8;
+    border: none;         /* frame deleted */
+    box-shadow: none;
+    font-weight: 500;
+}
+
+/* ── Materials – purple-blue, hover, readable text ────────── */
+[data-theme="dark"] .possible-materials {
+    color: #c080ff;
+    text-shadow: none;
+    font-weight: 700;
+}
+[data-theme="dark"] .materials-section { color: #e8dcff; }
+
+[data-theme="dark"] .material-card {
+    background: rgba(12,0,32,0.88);
+    border: 1px solid rgba(140,70,240,0.55);
+    box-shadow: 0 0 16px rgba(120,0,240,0.28), 0 2px 10px rgba(0,0,0,0.5);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+[data-theme="dark"] .material-card:hover {
+    background: rgba(25,0,55,0.92);
+    border-color: rgba(190,120,255,0.78);
+    box-shadow: 0 0 28px rgba(170,80,255,0.52), 0 4px 16px rgba(0,0,0,0.5);
+    transform: translateY(-3px);
+}
+[data-theme="dark"] .material-card.active {
+    background: rgba(45,0,90,0.95);
+    border-color: rgba(210,150,255,0.9);
+    box-shadow: 0 0 34px rgba(190,100,255,0.6);
+}
+[data-theme="dark"] .mat-name   { color: #e8d8ff; font-weight: 700; }
+[data-theme="dark"] .mat-label  { color: #b898e8; font-weight: 600; }
+[data-theme="dark"] .mat-value  { color: #dcceff; }
+[data-theme="dark"] .mat-abbr-circle {
+    background: rgba(110,45,200,0.55);
+    color: #f0e4ff;
+    border: 1px solid rgba(190,120,255,0.55);
+}
+
+/* ── Text inputs ───────────────────────────────────────────── */
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="text"]:not(#searchInput) {
+    background: rgba(0,8,22,0.65);
+    color: #e8f4ff;
+    border: 1px solid rgba(0,150,255,0.32);
+    box-shadow: 0 0 8px rgba(0,100,255,0.14);
+}
+
+/* ── Lang buttons ──────────────────────────────────────────── */
+[data-theme="dark"] .lang-btn { color: #a8daff; }
+[data-theme="dark"] .lang-btn.lang-active {
+    background: rgba(0,65,145,0.55);
+    border-color: rgba(0,180,255,0.68);
+    box-shadow: 0 0 10px rgba(0,150,255,0.32);
+    color: #e8f4ff;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAP SECTION  –  borderless, overlay address input
+   ═══════════════════════════════════════════════════════════ */
+
+/* Wrapper column */
+.map-section {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 420px;
+    flex-shrink: 0;
+    position: relative; 
+    transform: translateY(-390px);/* needed so ::before is positioned inside */
+}
+
+/* Blue blurry box sitting underneath the map (not a shadow – real element) */
+.map-section::before {
+    content: '';
+    position: absolute;
+    top: 50px;          /* clears the heading */
+    left: -22px;
+    right: -22px;
+    bottom: -22px;
+    background: #232DE9;
+    border-radius: 28px;
+    filter: blur(30px);   /* very blurry */
+    opacity: 0.78;
+    z-index: 0;
+    transform: translateY(10px);
+}
+
+/* Map frame – sits above the blurry box */
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 290px;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 1;
+    /* dark offset shadow (x -19, y 18) */
+    box-shadow: -19px 18px 30px rgba(0, 0, 0, 0.55);
+}
+
+/* Leaflet map fills the entire wrapper */
+#map {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+/* ── Purple overlay (visible when no address is set) ── */
+.map-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 48%;
+
+    /* clean gradient: transparent → #917ADF, no blur */
+    background: linear-gradient(to bottom, transparent 0%, #917ADF 100%);
+
+    display: flex;
+    align-items: flex-end;        /* stick input to the bottom */
+    justify-content: flex-start;  /* stick input to the left */
+    padding: 0 14px 14px 14px;
+    gap: 8px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
+    /* above ALL Leaflet layers (markers = z-index 600) */
+    z-index: 1000;
+
+    /* slide-down transition */
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.45s ease;
+}
+
+/* State: address submitted → overlay slides off the bottom */
+.map-overlay.revealed {
+    transform: translateY(110%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ── Address input – glass with gradient stroke ─────────────── */
+#addressInput {
+    /* limit width so it stays in the bottom-left corner */
+    width: 200px;
+    flex-shrink: 0;
+
+    /* gradient border trick: solid inner bg + gradient outer border */
+    background:
+        linear-gradient(rgba(145, 122, 223, 0.28), rgba(145, 122, 223, 0.28)) padding-box,
+        linear-gradient(135deg, #917ADF, #232DE9) border-box;
+    border: 2px solid transparent;
+    border-radius: 50px;
+
+    padding: 8px 16px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+#addressInput::placeholder {
+    color: rgba(255, 240, 255, 0.7);
+}
+#addressInput:focus {
+    box-shadow: 0 0 14px rgba(145, 122, 223, 0.6);
+}
+
+/* ── Find button – circular icon, gradient stroke ───────────── */
+.map-find-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    /* gradient border matching the input */
+    background:
+        linear-gradient(rgba(145, 122, 223, 0.35), rgba(145, 122, 223, 0.35)) padding-box,
+        linear-gradient(135deg, #917ADF, #232DE9) border-box;
+    border: 2px solid transparent;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+.map-find-btn:hover {
+    box-shadow: 0 0 16px rgba(145, 122, 223, 0.65);
+    transform: scale(1.08);
+}
+.map-find-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Heading ABOVE the map – plain white ────────────────────── */
+.map-heading {
+    font-family: 'Gasoek One', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+    margin: 0 0 10px;
+    line-height: 1.15;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE – MAP OVERRIDES
+   ═══════════════════════════════════════════════════════════ */
+
+/* Dark mode: deepen the dark shadow, blurry box stays blue */
+[data-theme="dark"] .map-wrapper {
+    box-shadow: -19px 18px 38px rgba(0, 0, 0, 0.75);
+}
+[data-theme="dark"] .map-section::before {
+    background: #232DE9;
+    opacity: 0.6;
+    filter: blur(45px);
+}
+
+/* Dark mode: deeper purple gradient on overlay */
+[data-theme="dark"] .map-overlay {
+    background: linear-gradient(to bottom, transparent 0%, rgba(80, 40, 160, 0.95) 100%);
+}
+
+/* Override the generic dark blue input rule → keep purple gradient stroke */
+[data-theme="dark"] #addressInput {
+    background:
+        linear-gradient(rgba(80, 40, 160, 0.4), rgba(80, 40, 160, 0.4)) padding-box,
+        linear-gradient(135deg, #917ADF, #232DE9) border-box !important;
+    border: 2px solid transparent !important;
+    color: #f0e0ff !important;
+    box-shadow: none;
+}
+[data-theme="dark"] #addressInput::placeholder {
+    color: rgba(220, 190, 255, 0.65) !important;
+}
+[data-theme="dark"] #addressInput:focus {
+    box-shadow: 0 0 14px rgba(145, 122, 223, 0.55) !important;
+}
+
+[data-theme="dark"] .map-find-btn {
+    background:
+        linear-gradient(rgba(80, 40, 160, 0.45), rgba(80, 40, 160, 0.45)) padding-box,
+        linear-gradient(135deg, #917ADF, #232DE9) border-box;
+    border: 2px solid transparent;
+    box-shadow: 0 0 10px rgba(145, 122, 223, 0.35);
+}
+[data-theme="dark"] .map-find-btn:hover {
+    box-shadow: 0 0 22px rgba(145, 122, 223, 0.6);
+}
+
+/* Heading stays white in dark mode */
+[data-theme="dark"] .map-heading {
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
 }
