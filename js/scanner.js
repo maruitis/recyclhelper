@@ -1,4 +1,10 @@
-// ─── scanner.js – AI visual recognition, flicker-free & stable ───────────────
+// ─── scanner.js – AI visual recognition (COCO-SSD + MobileNet auto-fallback) ──
+//
+// Strategy:
+//   • COCO-SSD runs every 700 ms  → fast detection of bottles, books, laptops, furniture
+//   • After 2 consecutive COCO misses, MobileNet fires automatically → catches
+//     shoes, shirts, sweaters, batteries, pens, pencils, textiles, boxes, etc.
+//   • Same stability counter (hitCount ≥ 2) prevents flickering results.
 
 // ─── COCO-SSD (80 classes) → itemDatabase key ────────────────────────────────
 const COCO_MAP = {
@@ -28,22 +34,38 @@ const COCO_MAP = {
 };
 
 // ─── MobileNet (1000 ImageNet classes) → itemDatabase key ────────────────────
+// Keys are substrings of actual ImageNet class labels (case-insensitive match).
 const MOBILENET_MAP = [
-    { keys: ['water bottle','pop bottle','pill bottle','medicine bottle','plastic bottle','canteen','carboy','jug','bucket'], item: 'plastic bottle' },
-    { keys: ['wine bottle','beer bottle','whiskey jug','wine glass','beer glass','goblet','cocktail shaker'],               item: 'glass bottle'   },
-    { keys: ['book jacket','book','library','comic book','binder','bookshelf','bookcase'],                                  item: 'book'           },
-    { keys: ['running shoe','sandal','boot','loafer','clog','sneaker','moccasin','shoe','slipper'],                        item: 'shoes'          },
-    { keys: ['t-shirt','jersey','polo shirt','suit','shirt','blouse','tank top','lab coat','military uniform'],            item: 'shirts'         },
-    { keys: ['sweatshirt','cardigan','pullover','wool','sweater','jumper','knitwear'],                                     item: 'sweater'        },
-    { keys: ['laptop','notebook computer','desktop computer','monitor','computer tablet','personal computer'],              item: 'laptop'         },
-    { keys: ['electric battery','battery'],                                                                                item: 'batteries'      },
-    { keys: ['ballpoint pen','fountain pen','quill','marker','felt pen'],                                                  item: 'pens'           },
-    { keys: ['pencil box','pencil','crayon'],                                                                              item: 'pencils'        },
-    { keys: ['carton','cardboard','corrugated','crate','packing box'],                                                     item: 'cardboard box'  },
-    { keys: ['plastic bag','shopping bag','barrel','tub','plastic container'],                                             item: 'plastic box'    },
-    { keys: ['desk','folding chair','rocking chair','cabinet','wardrobe','chest of drawers','stool','park bench','coffee table','cedar'], item: 'wooden furniture' },
-    { keys: ['bath towel','beach towel','shower curtain','curtain','blanket','quilt','pillow','dishcloth','dishrag'],      item: 'house textile'  },
-    { keys: ['newspaper','envelope','paper bag'],                                                                          item: 'paper'          },
+    // Plastic bottles
+    { keys: ['water bottle','pop bottle','pill bottle','medicine bottle','plastic bottle','canteen','carboy','jug'], item: 'plastic bottle' },
+    // Glass bottles / glassware
+    { keys: ['wine bottle','beer bottle','whiskey jug','wine glass','beer glass','goblet','cocktail shaker'],       item: 'glass bottle'   },
+    // Books
+    { keys: ['book jacket','book','library','comic book','binder','bookshelf','bookcase'],                          item: 'book'           },
+    // Shoes  – ImageNet: "running shoe", "sandal", "loafer", "clog", "moccasin", etc.
+    { keys: ['running shoe','sandal','boot','loafer','clog','sneaker','moccasin','shoe','slipper','oxford'],        item: 'shoes'          },
+    // Shirts – ImageNet: "jersey, T-shirt, tee shirt", "polo shirt", etc.
+    { keys: ['jersey','t-shirt','tee shirt','polo shirt','suit','shirt','blouse','tank top','lab coat'],            item: 'shirts'         },
+    // Sweaters – ImageNet: "sweatshirt", "cardigan", "wool"
+    { keys: ['sweatshirt','cardigan','pullover','wool','sweater','jumper','knitwear'],                              item: 'sweater'        },
+    // Laptops / electronics
+    { keys: ['laptop','notebook computer','desktop computer','monitor','computer tablet','personal computer'],       item: 'laptop'         },
+    // Batteries – ImageNet: "electric battery, voltaic battery, galvanic battery, galvanic pile, pile"
+    { keys: ['electric battery','voltaic battery','galvanic battery','battery','galvanic pile'],                    item: 'batteries'      },
+    // Pens – ImageNet: "ballpoint, ballpoint pen, ballpen, Biro", "fountain pen"
+    { keys: ['ballpoint','ballpen','biro','fountain pen','quill','marker','felt pen'],                              item: 'pens'           },
+    // Pencils – ImageNet: "pencil box, pencil case"
+    { keys: ['pencil box','pencil case','pencil','crayon'],                                                         item: 'pencils'        },
+    // Cardboard boxes – ImageNet: "carton, cardboard", "crate, packing box, packing case"
+    { keys: ['carton','cardboard','crate','packing box','packing case','corrugated'],                               item: 'cardboard box'  },
+    // Plastic boxes / containers – ImageNet: "plastic bag, polybag", "barrel", etc.
+    { keys: ['plastic bag','polybag','shopping bag','barrel','tub','bucket','plastic container'],                   item: 'plastic box'    },
+    // Wooden furniture
+    { keys: ['desk','stool','rocking chair','folding chair','cabinet','wardrobe','chest of drawers','park bench','coffee table','cedar'], item: 'wooden furniture' },
+    // House textiles – ImageNet: "bath towel", "beach towel", "shower curtain"
+    { keys: ['bath towel','beach towel','shower curtain','curtain','blanket','quilt','pillow','dishcloth','dishrag'], item: 'house textile' },
+    // Paper
+    { keys: ['newspaper','envelope','paper bag'],                                                                   item: 'paper'          },
 ];
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -52,33 +74,24 @@ let mobileNet    = null;
 let modelsLoaded = false;
 let activeStream = null;
 let loopTimer    = null;
-
-// Bug fix #2: guard flag so detections never overlap
-let isDetecting  = false;
-
-// Bug fix #3: stability counter – same item must appear twice before showing
-let hitCount     = 0;
+let isDetecting  = false;   // guard: only one detection at a time
+let hitCount     = 0;       // stability counter
 let lastHitItem  = null;
+let noCocoCount  = 0;       // how many consecutive COCO-miss cycles
+let canvasW      = 0;
+let canvasH      = 0;
 
-// Bug fix #1: track canvas size separately so we only reset when it changes
-let canvasW = 0;
-let canvasH = 0;
-
-// ─── Lazy-load TF.js + models on first use (cached by browser after that) ─────
+// ─── Lazy-load TF.js scripts on first use ────────────────────────────────────
 function loadScript(src) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
         const s = document.createElement('script');
-        s.src = src;
-        s.onload = resolve;
-        s.onerror = reject;
+        s.src = src; s.onload = resolve; s.onerror = reject;
         document.head.appendChild(s);
     });
 }
-
 async function ensureModels() {
     if (modelsLoaded) return;
-    // TF core must finish before model scripts start
     await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
     await Promise.all([
         loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js'),
@@ -88,7 +101,7 @@ async function ensureModels() {
     modelsLoaded = true;
 }
 
-// ─── Map any label string to an itemDatabase key ──────────────────────────────
+// ─── Label → itemDatabase key ─────────────────────────────────────────────────
 function resolveItem(label) {
     const cn = label.toLowerCase();
     if (COCO_MAP[cn]) return COCO_MAP[cn];
@@ -100,7 +113,7 @@ function resolveItem(label) {
     return null;
 }
 
-// ─── Build modal (only once) ──────────────────────────────────────────────────
+// ─── Build modal ──────────────────────────────────────────────────────────────
 function buildModal() {
     if (document.getElementById('scannerModal')) return;
     const m = document.createElement('div');
@@ -130,41 +143,28 @@ function buildModal() {
     document.body.appendChild(m);
 }
 
-// ─── Draw bounding boxes ──────────────────────────────────────────────────────
-// FIX #1: canvas.width/height are ONLY updated when the element actually
-// changes size — NOT every frame. clearRect() clears without any reflow/flash.
+// ─── Draw COCO bounding boxes (flicker-free) ──────────────────────────────────
 function drawBoxes(canvas, video, preds) {
     const dw = canvas.offsetWidth  || 320;
     const dh = canvas.offsetHeight || 240;
-
-    // Only reset the bitmap when dimensions genuinely change (avoids the flash)
-    if (canvasW !== dw || canvasH !== dh) {
-        canvas.width  = dw;
-        canvas.height = dh;
-        canvasW = dw;
-        canvasH = dh;
+    if (canvasW !== dw || canvasH !== dh) {     // only reset bitmap when size changes
+        canvas.width = dw; canvas.height = dh;
+        canvasW = dw; canvasH = dh;
     }
-
-    const sx  = dw / (video.videoWidth  || dw);
-    const sy  = dh / (video.videoHeight || dh);
+    const sx = dw / (video.videoWidth  || dw);
+    const sy = dh / (video.videoHeight || dh);
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, dw, dh);   // ← no bitmap reset, no flash
+    ctx.clearRect(0, 0, dw, dh);
 
     for (const p of preds) {
         const item = resolveItem(p.class);
-        if (!item && p.score < 0.65) continue;   // skip unrelated low-conf objects
-
+        if (!item && p.score < 0.65) continue;
         const [x, y, w, h] = p.bbox;
         const col = item ? 'rgba(80,255,120,0.92)' : 'rgba(255,200,70,0.8)';
-
-        ctx.strokeStyle = col;
-        ctx.lineWidth   = 2.5;
+        ctx.strokeStyle = col; ctx.lineWidth = 2.5;
         ctx.strokeRect(x * sx, y * sy, w * sx, h * sy);
-
-        const lbl = item
-            ? `${item}  ${Math.round(p.score * 100)}%`
-            : `${p.class}  ${Math.round(p.score * 100)}%`;
-
+        const lbl = item ? `${item}  ${Math.round(p.score * 100)}%`
+                         : `${p.class}  ${Math.round(p.score * 100)}%`;
         ctx.font = 'bold 12px sans-serif';
         const tw = ctx.measureText(lbl).width + 10;
         ctx.fillStyle = col;
@@ -174,87 +174,106 @@ function drawBoxes(canvas, video, preds) {
     }
 }
 
-// ─── Update UI after each detection batch ─────────────────────────────────────
-// FIX #3: result only shows after same item detected TWICE in a row
-function updateUI(preds) {
-    const canvas     = document.getElementById('scannerCanvas');
-    const video      = document.getElementById('scannerVideo');
+// ─── Update result UI (with stability debounce) ───────────────────────────────
+function updateUI(detectedItem) {
     const statusEl   = document.getElementById('scannerStatus');
     const resultDiv  = document.getElementById('scannerResult');
     const resultText = document.getElementById('resultText');
     const identBtn   = document.getElementById('identifyBtn');
     if (!statusEl) return;
 
-    if (canvas && video) drawBoxes(canvas, video, preds);
-
-    // Best confident detection that maps to a known item
-    const best = preds
-        .filter(p => p.score > 0.42 && resolveItem(p.class))
-        .sort((a, b) => b.score - a.score)[0];
-
-    const detected = best ? resolveItem(best.class) : null;
-
-    // Stability counter: only commit to a result after 2 consecutive hits
-    if (detected && detected === lastHitItem) {
+    if (detectedItem && detectedItem === lastHitItem) {
         hitCount++;
     } else {
-        lastHitItem = detected;
-        hitCount    = detected ? 1 : 0;
+        lastHitItem = detectedItem;
+        hitCount    = detectedItem ? 1 : 0;
     }
 
-    if (detected && hitCount >= 2) {
-        // Stable detection → show result and arm the button
-        statusEl.textContent          = `Detected: ${best.class}`;
+    if (detectedItem && hitCount >= 2) {
+        statusEl.textContent          = `✅ Detected: ${detectedItem}`;
         resultDiv.style.display       = 'flex';
-        resultText.textContent        = detected;
-        identBtn.textContent          = `➜ Go to: ${detected}`;
-        identBtn.dataset.confirmed    = detected;
+        resultText.textContent        = detectedItem;
+        identBtn.textContent          = `➜ Go to: ${detectedItem}`;
+        identBtn.dataset.confirmed    = detectedItem;
         identBtn.disabled             = false;
-    } else if (!detected && hitCount === 0) {
-        // Nothing seen for two consecutive frames → clear result
+    } else if (!detectedItem && hitCount === 0) {
         statusEl.textContent    = 'Point camera at your item…';
         resultDiv.style.display = 'none';
         if (!identBtn.dataset.confirmed) {
             identBtn.textContent = '🔍 Scan Now';
         }
     }
-    // (if hitCount===1 we do nothing — wait for the next frame to confirm)
 }
 
-// ─── Detection loop ───────────────────────────────────────────────────────────
-// FIX #2: isDetecting guard ensures only ONE cocoModel.detect() runs at a time
+// ─── Main detection loop ──────────────────────────────────────────────────────
 async function detectionLoop() {
     if (!document.getElementById('scannerModal')) return;
 
-    if (!isDetecting && cocoModel) {
-        const video = document.getElementById('scannerVideo');
+    if (!isDetecting) {
+        const video  = document.getElementById('scannerVideo');
+        const canvas = document.getElementById('scannerCanvas');
+
         if (video && video.videoWidth > 0) {
             isDetecting = true;
-            try {
-                const preds = await cocoModel.detect(video);
-                updateUI(preds);
-            } catch (_) { /* swallow transient errors */ }
+            let detectedItem = null;
+
+            // ── Step 1: COCO-SSD (fast, 80 classes) ────────────────────────
+            if (cocoModel) {
+                try {
+                    const cocoPreds = await cocoModel.detect(video);
+                    if (canvas) drawBoxes(canvas, video, cocoPreds);
+
+                    const best = cocoPreds
+                        .filter(p => p.score > 0.42 && resolveItem(p.class))
+                        .sort((a, b) => b.score - a.score)[0];
+
+                    if (best) {
+                        detectedItem = resolveItem(best.class);
+                        noCocoCount  = 0;
+                    } else {
+                        noCocoCount++;
+                    }
+                } catch (_) {}
+            }
+
+            // ── Step 2: MobileNet auto-fallback after 2 COCO misses ─────────
+            // This catches: shoes, shirts, sweaters, batteries, pens, pencils,
+            // cardboard boxes, plastic boxes, house textiles, glass bottles, etc.
+            if (!detectedItem && noCocoCount >= 2 && mobileNet) {
+                noCocoCount = 0;
+                try {
+                    const mobilePreds = await mobileNet.classify(video, 10);
+                    for (const p of mobilePreds) {
+                        const item = resolveItem(p.className);
+                        if (item && p.probability > 0.05) {
+                            detectedItem = item;
+                            break;
+                        }
+                    }
+                } catch (_) {}
+            }
+
+            updateUI(detectedItem);
             isDetecting = false;
         }
     }
 
-    // Schedule next cycle only while modal is still open
     if (document.getElementById('scannerModal')) {
-        loopTimer = setTimeout(detectionLoop, 600);
+        loopTimer = setTimeout(detectionLoop, 700);
     }
 }
 
-// ─── "Scan Now" / "Go to item" button ────────────────────────────────────────
+// ─── Manual "Scan Now" / "Go to item" button ─────────────────────────────────
 async function onIdentifyClick() {
     const identBtn = document.getElementById('identifyBtn');
 
-    // COCO already locked on something → navigate right away
+    // Already confirmed by COCO → navigate immediately
     if (identBtn.dataset.confirmed) {
         navigateToItem(identBtn.dataset.confirmed);
         return;
     }
 
-    // Nothing locked → run MobileNet for a single deep classification pass
+    // No COCO result → force a MobileNet deep scan right now
     const video    = document.getElementById('scannerVideo');
     const statusEl = document.getElementById('scannerStatus');
     if (!video || !mobileNet) return;
@@ -267,12 +286,8 @@ async function onIdentifyClick() {
         let bestItem = null, bestScore = 0;
         for (const p of preds) {
             const item = resolveItem(p.className);
-            if (item && p.probability > bestScore) {
-                bestItem  = item;
-                bestScore = p.probability;
-            }
+            if (item && p.probability > bestScore) { bestItem = item; bestScore = p.probability; }
         }
-
         if (bestItem) {
             navigateToItem(bestItem);
         } else {
@@ -285,52 +300,36 @@ async function onIdentifyClick() {
     }
 }
 
-// ─── Navigate to identified item ──────────────────────────────────────────────
 function navigateToItem(name) {
     stopScanner();
     const inp  = document.getElementById('searchInput');
     const form = document.getElementById('searchForm');
-    if (inp && form) {
-        inp.value = name;
-        form.dispatchEvent(new Event('submit'));
-    }
+    if (inp && form) { inp.value = name; form.dispatchEvent(new Event('submit')); }
 }
 
-// ─── Stop everything cleanly ──────────────────────────────────────────────────
 function stopScanner() {
     if (loopTimer)    { clearTimeout(loopTimer); loopTimer = null; }
     if (activeStream) { activeStream.getTracks().forEach(t => t.stop()); activeStream = null; }
-    isDetecting = false;
-    hitCount    = 0;
-    lastHitItem = null;
-    canvasW     = 0;
-    canvasH     = 0;
+    isDetecting = false; hitCount = 0; lastHitItem = null;
+    noCocoCount = 0; canvasW = 0; canvasH = 0;
     const modal = document.getElementById('scannerModal');
     if (modal) modal.remove();
 }
 
-// ─── Entry point ──────────────────────────────────────────────────────────────
 async function startScanner() {
     buildModal();
-
     const video    = document.getElementById('scannerVideo');
     const statusEl = document.getElementById('scannerStatus');
     const identBtn = document.getElementById('identifyBtn');
-
     document.getElementById('closeScannerBtn').addEventListener('click', stopScanner);
     identBtn.addEventListener('click', onIdentifyClick);
 
-    // 1. Start camera (prefer rear-facing on phones)
+    // 1. Camera
     try {
         activeStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: { ideal: 'environment' },
-                width:  { ideal: 1280 },
-                height: { ideal: 720  },
-            }
+            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
         });
         video.srcObject = activeStream;
-        // Wait for video to be ready — check readyState first to avoid a missed event
         await new Promise(r => {
             if (video.readyState >= 2) { r(); return; }
             video.addEventListener('loadeddata', r, { once: true });
@@ -340,7 +339,7 @@ async function startScanner() {
         return;
     }
 
-    // 2. Load TF.js + AI models (downloaded once, then browser-cached)
+    // 2. Load AI models (cached after first download)
     if (!modelsLoaded) {
         statusEl.textContent = '⏳ Loading AI models (first time only, ~5 s)…';
         try {
@@ -351,15 +350,13 @@ async function startScanner() {
         }
     }
 
-    // 3. Ready — start the detection loop
+    // 3. Go
     statusEl.textContent = '✅ Point camera at your item.';
     identBtn.disabled    = false;
-    hitCount    = 0;
-    lastHitItem = null;
+    hitCount = 0; lastHitItem = null; noCocoCount = 0;
     detectionLoop();
 }
 
-// ─── Wire up the scan button ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('scanBtn');
     if (btn) btn.addEventListener('click', startScanner);

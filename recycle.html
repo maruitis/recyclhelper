@@ -41,82 +41,86 @@
     </header>
     <div id="filterTags"></div>
 
-    <div class="container">
-        
-       <section class="lifehack-section">
-           <div class="lifehack-layout">
-<div class="lifehack-image">
-<img id="itemImage" src="images/placeholder.png">
-</div>
-<div class="lifehack-right">
-<h5 class="lifehack-header">Lifehacks and Homemade Ideas</h5>
-<div class="lifehack-cards">
-<div class="lifehack-card" id="diy-0"></div>
-<div class="lifehack-card" id="diy-1"></div>
-<div class="lifehack-card" id="diy-2"></div>
-</div>
-</div>
- </div>
-</section>
-        
+    <div class="recycle-layout">
 
-        <div class="bottom-row">
-            <div class="glass-panel calculator">
-                <h3>Efficiency Calculator</h3>
-                <div class="calc-input-group">
-                    <label for="calcQty">Amount of Items:</label>
-                    <input type="number" id="calcQty" value="1" min="1">
+        <!-- FAR LEFT: item image -->
+        <div class="recycle-img-col">
+            <img id="itemImage" src="images/placeholder.png">
+        </div>
+
+        <!-- RIGHT: lifehacks on top, calc+map on bottom -->
+        <div class="recycle-content-col">
+
+            <!-- Lifehacks -->
+            <section class="lifehack-section">
+                <h5 class="lifehack-header">Lifehacks and Homemade Ideas</h5>
+                <div class="lifehack-cards">
+                    <div class="lifehack-card" id="diy-0"></div>
+                    <div class="lifehack-card" id="diy-1"></div>
+                    <div class="lifehack-card" id="diy-2"></div>
                 </div>
-                
-                <div class="results-display">
-                    <div class="stat-item">
-                        <div class="stat-text">
-                            <span class="stat-label">Saved Water</span>
-                            <span class="stat-value"><span id="saveWater">0</span> L</span>
+            </section>
+
+            <!-- Calculator + Map -->
+            <div class="calc-map-row">
+                <div class="glass-panel calculator">
+                    <h3>Efficiency Calculator</h3>
+                    <div class="calc-input-group">
+                        <label for="calcQty">Amount of Items:</label>
+                        <input type="number" id="calcQty" value="1" min="1">
+                    </div>
+                    <div class="results-display">
+                        <div class="stat-item">
+                            <div class="stat-text">
+                                <span class="stat-label">Saved <span class="label-water">Water</span></span>
+                                <span class="stat-value"><span id="saveWater">0</span> L</span>
+                            </div>
+                            <div class="img-wrappers">
+                                <img src="images/water 3d.png" alt="water" class="calc-img">
+                            </div>
                         </div>
-                        <div class="img-wrappers">
-                            <img src="images/water 3d.png" alt="water" class="calc-img">
+                        <div class="stat-item">
+                            <div class="stat-text">
+                                <span class="stat-label">Saved <span class="label-energy">Energy</span></span>
+                                <span class="stat-value"><span id="saveEnergy">0</span> kWh</span>
+                            </div>
+                            <div class="img-wrappers">
+                                <img src="images/energy.png" alt="energy" class="calc-img">
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-text">
+                                <span class="stat-label">Saved <span class="label-co2">CO2</span></span>
+                                <span class="stat-value"><span id="saveCO2">0</span> kg</span>
+                            </div>
+                            <div class="img-wrappers">
+                                <img src="images/co2.png" alt="co2" class="calc-img">
+                            </div>
                         </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-text">
-                            <span class="stat-label">Saved Energy</span>
-                            <span class="stat-value"><span id="saveEnergy">0</span> kWh</span>
-                        </div>
-                        <div class="img-wrappers">
-                            <img src="images/energy.png" alt="energy" class="calc-img">
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-text">
-                            <span class="stat-label">Saved CO2</span>
-                            <span class="stat-value"><span id="saveCO2">0</span> kg</span>
-                        </div>
-                        <div class="img-wrappers">
-                            <img src="images/co2.png" alt="co2" class="calc-img">
+                </div>
+
+                <div class="map-section">
+                    <h3 class="map-heading">Find the closest deposit points</h3>
+                    <div class="map-wrapper" id="mapWrapper">
+                        <div id="map"></div>
+                        <div class="map-overlay" id="mapOverlay">
+                            <input type="text" id="addressInput" placeholder="Enter your address..." autocomplete="off">
+                            <button class="map-find-btn" onclick="findCenters()">🔍</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel map-container">
-      <h3>Find the closest deposit points</h3>
-      <div class="map-controls">
-        <input type="text" id="addressInput" placeholder="Enter your address...">
-        <button class="map-btn" onclick="findCenters()">Find Points</button>
-      </div>
-      <div id="map" style="height:250px;width:100%;border-radius:12px;margin-top:10px;"></div>
+        </div>
     </div>
-
-  </div>
-</main>
-
-    
-    </div>
+    <h2> EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>
     <script src="js/recycle.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/map.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/language.js"></script>
 </body>
 </html>

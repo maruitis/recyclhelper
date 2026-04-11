@@ -49,6 +49,8 @@ h2{
     text-align: center;     /* центр текста */
 
     white-space: nowrap;    /* запрещает перенос строки */
+    z-index: -1;
+    
 }
 h3{
     font-family: "Jomhuria", sans-serif;
@@ -337,10 +339,53 @@ transform: translateY(-395px) translateX(530px);
 }
 
 
+/* ── Recycle page master layout ──────────────────────────────── */
+.recycle-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;                 /* 20px between image and the rest */
+    padding: 20px 30px 50px 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Far-left image column — same size as item.html (450px) */
+.recycle-img-col {
+    flex-shrink: 0;
+    width: 450px;
+}
+.recycle-img-col img {
+    width: 450px;
+    height: auto;
+    border-radius: 25px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Right column: lifehacks on top, calc+map on bottom */
+.recycle-content-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+/* Calculator + Map side by side */
+.calc-map-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 38px;
+    flex-wrap: nowrap;
+}
+
+/* Keep bottom-row for other pages if needed */
 .bottom-row {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;   /* map far right, calculator beside it */
+    justify-content: flex-end;
     align-items: flex-start;
     gap: 80px;
     padding: 0 60px 80px;
@@ -356,18 +401,41 @@ transform: translateY(-395px) translateX(530px);
 
 /* --- CALCULATOR STYLES --- */
 .glass-panel.calculator {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-radius: 30px;
-    padding: 16px 20px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    margin-top: 50px;
+    padding: 20px 26px 24px;
+    margin-top: 0;
     color: #0E0973;
-    width: 380px;
+    width: 420px;
+    height: 470px;
     flex-shrink: 0;
-    height: auto;
-    transform: translateX(-10px) translateY(-373px);
+    transform: none;
     position: relative;
+    z-index: 1;               /* sits above the ::before blue glow */
+    box-sizing: border-box;
+    /* pure glass fill (no solid colour) + 1px gradient stroke */
+    
+    border: 1px solid lightblue;
+}
+
+/* Blue blurry glow behind the calculator */
+.glass-panel.calculator::before {
+    content: '';
+    position: absolute;
+    inset: -18px;
+    background: #232DE9;
+    border-radius: 36px;
+    filter: blur(36px);
+    opacity: 0.45;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* keep all calculator children above the blue ::before glow */
+.glass-panel.calculator > * {
+    position: relative;
+    z-index: 1;
 }
 
 .glass-panel.calculator h3 {
@@ -386,7 +454,7 @@ transform: translateY(-395px) translateX(530px);
     justify-content: center;
     gap: 10px;
     margin-bottom: 14px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Jaldi', sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: #0E0973;
@@ -432,11 +500,16 @@ transform: translateY(-395px) translateX(530px);
     line-height: 1;
 }
 
+/* Coloured keyword spans inside stat labels */
+.label-water  { color: #1a6fff; }
+.label-energy { color: #1cb85a; }
+.label-co2    { color: #e02020; }
+
 .stat-value {
-    font-family: 'Jomhuria', sans-serif;
+    font-family: 'Jaldi', sans-serif;
+    font-weight: bold;
     font-size: 42px;
-    color: black;
-    text-shadow: 1px 1px 2px #0E0973;
+    color: skyblue;
     line-height: 1;
 }
 
@@ -477,100 +550,74 @@ transform: translateY(-395px) translateX(530px);
 }
 
 
-.lifehack-section{
-    margin-top:10px;
-    padding: 50px;
-    position: relative;
+.lifehack-section {
+    margin: 0;
+    padding: 0 0 12px 0;
 }
 
-.lifehack-header{
-    font-family:'Jomhuria', cursive;
-    font-size:70px;
-    text-align:center;
-    color:#0E0973;
-    margin-bottom: 0;
+.lifehack-header {
+    font-family: 'Jomhuria', cursive;
+    font-size: 60px;
+    text-align: center;
+    color: #0E0973;
+    margin: 0 0 8px 0;
     line-height: 1;
+    pointer-events: none;   /* no hover interaction on title */
+    user-select: none;
 }
 
-.lifehack-layout{
-    display:flex;
-    align-items:center;
+/* old layout div — not used in recycle.html anymore, keep hidden */
+.lifehack-layout { display: none; }
+.lifehack-right  { display: none; }
+.lifehack-image  { display: none; }
+
+.lifehack-cards {
+    display: flex;
+    align-items: center;       /* cards overlap at their vertical center */
     justify-content: center;
-    width: 100%;
-    max-width: 1200px;
-    gap: 0px;
-    margin-left: -80px;
-}
-.lifehack-right{
-    flex:1;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(-280px);
-    margin-right: 0;
-    padding-left: 110px;
+    padding: 0;
+    margin-top: 4px;
 }
 
-.lifehack-image img{
-    min-width:450px;
-    border-radius:25px;
-    object-fit: cover;
-    padding-left: 200px;
-}
-.lifehack-cards{
-    display:flex;
-    align-items:center;
-    justify-content: center;
-    padding-left: 120px;
-}
-
-.lifehack-card{
-    width:260px;
-    height:150px;
-    background:#829DD9;
-    border-radius:25px;
-    padding:15px;
-    transition: all 0.4s ease;
-    cursor:pointer;
-    overflow:hidden;
-    position:relative;
-     background:
-        linear-gradient(#829DD9,#829DD9) padding-box,
-        linear-gradient(45deg,#89F19E,#4A7CE0,#00FF7F) border-box;
-
-    padding:15px;
+.lifehack-card {
+    width: 320px;              /* wider */
+    height: 150px;
+    border-radius: 25px;
+    padding: 15px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(#829DD9, #829DD9) padding-box,
+        linear-gradient(45deg, #89F19E, #4A7CE0, #00FF7F) border-box;
+    /* only transition height and opacity — no transform jump */
+    transition: height 0.38s ease, opacity 0.3s ease;
 }
 
-.lifehack-card:nth-child(1){
-    z-index:3;
-    transform:scale(1);
-    opacity:1;
-    border:1px solid transparent;
-    position:relative;
-    overflow:hidden;
+.lifehack-card:nth-child(1) {
+    z-index: 3;
+    opacity: 1;
+}
+.lifehack-card:nth-child(2) {
+    margin-left: -140px;
+    z-index: 2;
+    transform: scale(0.9);
+    transform-origin: center left;
+    opacity: 0.7;
+}
+.lifehack-card:nth-child(3) {
+    margin-left: -140px;
+    z-index: 1;
+    transform: scale(0.8);
+    transform-origin: center left;
+    opacity: 0.4;
 }
 
-.lifehack-card:nth-child(2){
-    margin-left:-120px;
-    z-index:2;
-    transform:scale(0.9);
-    opacity:0.7;
-    border:1px solid transparent;
-}
 
-.lifehack-card:nth-child(3){
-    margin-left:-120px;
-    z-index:1;
-    transform:scale(0.8);
-    opacity:0.4;
-     border:1px solid transparent;
-}
-.lifehack-card:hover{
-    height:210px;
-    transform:scale(1.1) translateY(-10px);
-    z-index:10;
-    overflow:visible;
+.lifehack-card:hover {
+    height: 220px;
+    z-index: 10;
     opacity: 1;
 }
 .idea-title{
@@ -675,19 +722,19 @@ transform: translateY(-395px) translateX(530px);
 }
 
 .detail-option-btn.active {
-    color: #fff;
+    color: white;
 }
 .detail-option-btn.active:nth-child(1) {
     background: #00dd55;
     border-color: #00ff66;
     box-shadow: 0 0 20px rgba(0,220,80,0.65), 0 0 40px rgba(0,180,60,0.3);
-    color: #001a0a;
+    color: white;
 }
 .detail-option-btn.active:nth-child(2) {
     background: #ff1133;
     border-color: #ff3355;
     box-shadow: 0 0 20px rgba(255,20,50,0.65), 0 0 40px rgba(200,0,30,0.3);
-    color: #001a0a;
+    color: white;
 }
 
 /* dlja materialov */
@@ -842,11 +889,10 @@ transform: translateY(-395px) translateX(530px);
   cursor: pointer; box-shadow: 0 6px 24px rgba(45,168,100,0.35);
   transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
   text-shadow: 0 1px 3px rgba(0,0,0,0.18);
-  transform: translateY(-650px) translateX(990px);
-  animation: slideUp 0.8s ease-out forwards;
-  
+  transform: none;
+  animation: none;
 }
-.primary-btn:hover { transform: translateY(-653px) translateX(990px) scale(1.04); box-shadow: 0 10px 32px rgba(45,168,100,0.45); }
+.primary-btn:hover { transform: scale(1.04); box-shadow: 0 10px 32px rgba(45,168,100,0.45); }
 
 @keyframes slideUp {
     0% {
@@ -941,7 +987,7 @@ transform: translateY(-395px) translateX(530px);
     border: 2px solid #000;
 }
 
-/* ── Separate Scan Item button ──────────────────────────── */
+/* dlja scannera */
 .scan-item-btn {
     display: block;
     margin: -24px auto 28px;
@@ -974,7 +1020,7 @@ transform: translateY(-395px) translateX(530px);
     font-weight: 600;
 }
 
-/* ── Scanner modal overlay ──────────────────────────────── */
+/* modal dlja scannera */
 #scannerModal {
     position: fixed;
     inset: 0;
@@ -991,7 +1037,7 @@ transform: translateY(-395px) translateX(530px);
     to   { opacity: 1; }
 }
 
-/* ── Scanner card ───────────────────────────────────────── */
+/* kak scanner vigljadet*/
 .scanner-box {
     background: rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(24px);
@@ -1183,8 +1229,9 @@ nav {
 
 /* ── Nav: neon blue panel, darker muted links ─────────────── */
 [data-theme="dark"] nav {
-    background: linear-gradient(to bottom, rgba(0,18,55,0.96), rgba(0,12,40,0.72));
-    box-shadow: 0 2px 28px rgba(0,150,255,0.35);
+    background: linear-gradient(to bottom, #503ACB, transparent);
+     width: 100%;
+    height: 110px;
 }
 [data-theme="dark"] .nav-link {
     color: #3a6a9a;   /* dark — user asked "navigation font darker" */
@@ -1238,9 +1285,9 @@ nav {
 
 /* ── Glass panels (calculator, map) – neon blue ───────────── */
 [data-theme="dark"] .glass-panel {
-    background: rgba(0,10,28,0.82);
+    
     border: 1px solid rgba(0,160,255,0.38);
-    box-shadow: 0 0 26px rgba(0,100,255,0.28), 0 4px 22px rgba(0,0,0,0.5);
+   
     color: #e8f4ff;
 }
 [data-theme="dark"] .stat-label { color: #70c8ff; font-weight: 600; }
@@ -1308,7 +1355,7 @@ nav {
 
 /* ── Tips sidebar – neon green, NO frame on columns ──────── */
 [data-theme="dark"] .tips-sidebar {
-    background: rgba(0,16,6,0.65);
+    background: transparent;
     border: none;
     box-shadow: none;
     color: #c8ffd8;
@@ -1383,15 +1430,15 @@ nav {
    MAP SECTION  –  borderless, overlay address input
    ═══════════════════════════════════════════════════════════ */
 
-/* Wrapper column */
+/* Wrapper column – 483px wide */
 .map-section {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    width: 420px;
+    width: 483px;
     flex-shrink: 0;
-    position: relative; 
-    transform: translateY(-390px);/* needed so ::before is positioned inside */
+    position: relative;
+    transform: none;
 }
 
 /* Blue blurry box sitting underneath the map (not a shadow – real element) */
@@ -1403,22 +1450,21 @@ nav {
     right: -22px;
     bottom: -22px;
     background: #232DE9;
-    border-radius: 28px;
+    border-radius: 40px;
     filter: blur(30px);   /* very blurry */
     opacity: 0.78;
     z-index: 0;
     transform: translateY(10px);
 }
 
-/* Map frame – sits above the blurry box */
+/* Map frame – 483×371, round edges */
 .map-wrapper {
     position: relative;
-    width: 100%;
-    height: 290px;
+    width: 483px;
+    height: 371px;
     border-radius: 20px;
     overflow: hidden;
     z-index: 1;
-    /* dark offset shadow (x -19, y 18) */
     box-shadow: -19px 18px 30px rgba(0, 0, 0, 0.55);
 }
 
@@ -1433,7 +1479,7 @@ nav {
 .map-overlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 48%;
+    height: 67%;
 
     /* clean gradient: transparent → #917ADF, no blur */
     background: linear-gradient(to bottom, transparent 0%, #917ADF 100%);
@@ -1580,3 +1626,246 @@ nav {
     color: #ffffff;
     -webkit-text-fill-color: #ffffff;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   SKY THEME  –  light blue & white, airy, cloud-like
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Base ───────────────────────────────────────────────────── */
+[data-theme="sky"] body {
+    background: linear-gradient(to bottom,
+        #ffffff 0%,
+        #ddf0fb 30%,
+        #b8e0f7 70%,
+        #93ccf0 100%);
+    color: #1a3a52;
+}
+
+/* ── Nav ────────────────────────────────────────────────────── */
+[data-theme="sky"] nav {
+    background: linear-gradient(to bottom,
+        #93ccf0 0%,
+        transparent 100%);
+    
+}
+[data-theme="sky"] .nav-link {
+    background-color: rgba(255,255,255,0.85);
+    color: #1e6fa8;
+    box-shadow: 0 0 30px 6px rgba(100,190,255,0.35);
+}
+[data-theme="sky"] .nav-link:hover {
+    color: #0a4f8a;
+    box-shadow: 0 0 40px 10px rgba(80,170,255,0.5);
+}
+[data-theme="sky"] .nav-ctrl-btn { color: #1e6fa8; }
+[data-theme="sky"] .lang-btn {
+    color: #1e6fa8;
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(100,170,230,0.4);
+}
+[data-theme="sky"] .lang-btn.lang-active {
+    background: rgba(180,225,255,0.7);
+    border-color: rgba(80,160,230,0.7);
+    color: #0a4070;
+}
+
+/* ── Headings ───────────────────────────────────────────────── */
+[data-theme="sky"] h1 {
+    background-image: linear-gradient(to right,
+        #4ab8f0 0%, #1a78c2 30%, #0a4fa0 55%, #1a78c2 70%, #4ab8f0 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+[data-theme="sky"] h2 { color: #1e6fa8; }
+[data-theme="sky"] h3 { color: #1a3a52; }
+[data-theme="sky"] h4 {
+    background-image: linear-gradient(90deg, #4ab8f0, #1a78c2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ── Info cards ─────────────────────────────────────────────── */
+[data-theme="sky"] .info-card {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(100,180,240,0.4);
+    box-shadow: 0 0 22px rgba(80,170,255,0.2), 0 4px 16px rgba(0,0,0,0.07);
+}
+[data-theme="sky"] .card-text { color: #1e6fa8; }
+
+/* ── Search bar ─────────────────────────────────────────────── */
+[data-theme="sky"] .search-container {
+    background: rgba(255,255,255,0.75);
+    border: 1px solid rgba(100,180,240,0.35);
+    box-shadow: 0 2px 14px rgba(80,170,255,0.15);
+}
+[data-theme="sky"] .search-container input { color: #1a3a52; }
+[data-theme="sky"] .search-container input::placeholder { color: rgba(60,120,180,0.45); }
+[data-theme="sky"] .search-container button { color: #1e6fa8; }
+
+/* ── Scan button ────────────────────────────────────────────── */
+[data-theme="sky"] .scan-item-btn {
+    background: rgba(255,255,255,0.7);
+    color: #1e6fa8;
+    border-color: rgba(100,180,240,0.5);
+}
+
+/* ── Glass panels ───────────────────────────────────────────── */
+[data-theme="sky"] .glass-panel {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(120,190,240,0.45);
+    box-shadow: 0 4px 20px rgba(80,170,255,0.12);
+    color: #1a3a52;
+}
+[data-theme="sky"] .glass-panel.calculator {
+    background:
+        linear-gradient(rgba(255,255,255,0.6), rgba(220,240,255,0.4)) padding-box,
+        linear-gradient(135deg, #4ab8f0, #1a78c2) border-box;
+    border: 1px solid transparent;
+}
+[data-theme="sky"] .glass-panel.calculator h3 { color: #1a3a52; }
+[data-theme="sky"] .stat-label { color: #1a3a52; }
+[data-theme="sky"] .stat-value { color: #0a3060; text-shadow: none; }
+[data-theme="sky"] .label-water  { color: #1a78c2; }
+[data-theme="sky"] .label-energy { color: #1aaa55; }
+[data-theme="sky"] .label-co2    { color: #d03020; }
+[data-theme="sky"] .calc-input-group { color: #1a3a52; }
+[data-theme="sky"] #calcQty {
+    background: rgba(210,238,255,0.8);
+    border-color: #7ab8e0;
+    color: #0a3060;
+}
+
+/* ── Yes/No buttons ─────────────────────────────────────────── */
+[data-theme="sky"] .detail-option-btn {
+    background: rgba(255,255,255,0.55);
+    color: #1a3a52;
+    border: 1px solid rgba(100,180,240,0.4);
+}
+[data-theme="sky"] .detail-option-btn.active:nth-child(1) {
+    background: #22cc66;
+    border-color: #00ee77;
+    box-shadow: 0 0 18px rgba(0,210,80,0.5);
+    color: #002a10;
+}
+[data-theme="sky"] .detail-option-btn.active:nth-child(2) {
+    background: #ff2244;
+    border-color: #ff4466;
+    box-shadow: 0 0 18px rgba(255,30,60,0.5);
+    color: #fff;
+}
+
+/* ── Material cards ─────────────────────────────────────────── */
+[data-theme="sky"] .possible-materials { color: #1a78c2; }
+[data-theme="sky"] .material-card {
+    background:rgba(255,255,255,0.75);
+        
+    border: 1px solid transparent;
+    box-shadow: 0 2px 12px rgba(80,160,240,0.15);
+}
+[data-theme="sky"] .material-card:hover {
+    background:
+        linear-gradient(rgba(255,255,255,0.9), rgba(200,232,255,0.75)) padding-box,
+        linear-gradient(135deg, #4ab8f0, #1a78c2) border-box;
+    box-shadow: 0 4px 20px rgba(60,150,230,0.28);
+    transform: translateY(-3px);
+}
+[data-theme="sky"] .mat-name   { color: #0a4fa0; }
+[data-theme="sky"] .mat-label  { color: #1a6090; }
+[data-theme="sky"] .mat-value  { color: #1a3a52; }
+[data-theme="sky"] .mat-abbr-circle {
+    background: rgba(180,224,255,0.6);
+    color: #0a4fa0;
+    border: 1px solid rgba(100,180,240,0.4);
+}
+
+/* ── Tips ───────────────────────────────────────────────────── */
+[data-theme="sky"] .tips-heading { color: #1a78c2; text-shadow: none; }
+[data-theme="sky"] .tips-panel {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(100,180,240,0.3);
+    box-shadow: 0 2px 10px rgba(80,160,240,0.1);
+}
+[data-theme="sky"] .tips-col {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #1a3a52;
+}
+[data-theme="sky"] .tips-list-ol { color: #1a3a52; }
+[data-theme="sky"] .tips-list-ol li { color: #1a3a52; }
+
+/* ── Lifehack cards ─────────────────────────────────────────── */
+[data-theme="sky"] .lifehack-header { color: #1a78c2; }
+[data-theme="sky"] .lifehack-card {
+    background:
+        linear-gradient(rgba(210,238,255,0.85), rgba(190,228,252,0.7)) padding-box,
+        linear-gradient(45deg, #89d4f5, #4A7CE0, #b8e6ff) border-box;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 12px rgba(80,160,240,0.15);
+    color: #0a3060;
+}
+[data-theme="sky"] .idea-title  { color: #0a4fa0; }
+[data-theme="sky"] .idea-needs  { color: #1a3a52; }
+
+/* ── Filter tags ────────────────────────────────────────────── */
+[data-theme="sky"] .filter-tag {
+    background: rgba(255,255,255,0.75);
+    color: #1a6090;
+    border-color: rgba(100,180,240,0.45);
+}
+
+/* ── Map ────────────────────────────────────────────────────── */
+[data-theme="sky"] .map-wrapper {
+    box-shadow: -19px 18px 24px rgba(80,160,240,0.22);
+}
+[data-theme="sky"] .map-section::before {
+    background: #4ab8f0;
+    opacity: 0.35;
+    filter: blur(38px);
+}
+[data-theme="sky"] .map-overlay {
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(140,200,245,0.82) 100%);
+    height: 100px;
+}
+[data-theme="sky"] #addressInput {
+    background:
+        linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.55)) padding-box,
+        linear-gradient(135deg, #4ab8f0, #1a78c2) border-box !important;
+    border: 2px solid transparent !important;
+    color: #0a3060 !important;
+}
+[data-theme="sky"] #addressInput::placeholder { color: rgba(30,80,150,0.5) !important; }
+[data-theme="sky"] .map-find-btn {
+    background:
+        linear-gradient(rgba(200,235,255,0.65), rgba(200,235,255,0.65)) padding-box,
+        linear-gradient(135deg, #4ab8f0, #1a78c2) border-box;
+    border: 2px solid transparent;
+    color: #0a3060;
+}
+[data-theme="sky"] .map-heading {
+    color: #0a4fa0;
+    -webkit-text-fill-color: #0a4fa0;
+}
+
+/* ── Calculator blue glow behind ───────────────────────────── */
+[data-theme="sky"] .glass-panel.calculator::before {
+    background: #4ab8f0;
+    opacity: 0.3;
+    filter: blur(32px);
+}
+
+/* ── Primary btn ────────────────────────────────────────────── */
+[data-theme="sky"] .primary-btn {
+    background: linear-gradient(135deg, #4ab8f0, #1a78c2);
+    box-shadow: 0 4px 18px rgba(80,160,240,0.3);
+}
+[data-theme="sky"] .map-btn {
+    background: rgba(180,224,255,0.7);
+    color: #0a3060;
+    border: 1px solid rgba(100,180,240,0.5);
+}
+
+/* ── Clouds (more visible on sky theme) ─────────────────────── */
+[data-theme="sky"] .cloud img { opacity: 60%; }
