@@ -1867,5 +1867,180 @@ nav {
     border: 1px solid rgba(100,180,240,0.5);
 }
 
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE  –  tablet (≤1024px) and mobile (≤768px / ≤480px)
+   Desktop styles are never touched above this point.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet: start collapsing wide fixed widths ─────────────── */
+@media (max-width: 1024px) {
+
+    /* recycle page: image column shrinks */
+    .recycle-img-col,
+    .recycle-img-col img { width: 300px; }
+
+    /* calculator + map tighten */
+    .glass-panel.calculator { width: 320px; height: auto; }
+    .map-section             { width: 360px; }
+    .map-wrapper             { width: 100%; height: 300px; }
+
+    /* lifehack cards: reduce overlap so they don't bleed off */
+    .lifehack-card { width: 280px; }
+    .lifehack-card:nth-child(2),
+    .lifehack-card:nth-child(3) { margin-left: -110px; }
+}
+
+/* ── Mobile: full single-column layout ──────────────────────── */
+@media (max-width: 768px) {
+
+    /* ─ Global ─ */
+    h1  { font-size: 38px; }
+    h2  { font-size: 32px; }
+    h3  { font-size: 36px; white-space: normal; }
+
+    /* ─ Nav ─ */
+    nav {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 12px 16px;
+        gap: 10px;
+    }
+    .nav-link {
+        width: 100px;
+        height: 36px;
+        font-size: 15px;
+        box-shadow: 0 0 30px 6px rgba(0,255,106,0.5);
+    }
+    .nav-ctrl-btn { margin-left: 0; }
+
+    /* ─ Clouds: hide on small screens (they clip badly) ─ */
+    .cloud { display: none; }
+
+    /* ─ Search ─ */
+    .search-container,
+    .search-container.small {
+        width: 90%;
+        height: auto;
+    }
+
+    /* ─ Filter tags ─ */
+    #filterTags {
+        margin-left: 0;
+        transform: none;
+        justify-content: center;
+        padding: 0 16px;
+    }
+
+    /* ─ Home page cards ─ */
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        margin-top: 60px;
+    }
+    .cards-container { padding: 16px 16px 80px; }
+    .info-card       { width: 85vw; max-width: 320px; }
+
+    /* ─ Recycle page master layout: stack vertically ─ */
+    .recycle-layout {
+        flex-direction: column;
+        padding: 16px 16px 40px;
+        gap: 16px;
+    }
+    .recycle-img-col       { width: 100%; }
+    .recycle-img-col img   { width: 100%; border-radius: 16px; }
+    .recycle-content-col   { width: 100%; }
+
+    /* ─ Lifehack cards: horizontal scroll, no overlap ─ */
+    .lifehack-section { padding: 0; }
+    .lifehack-header  { font-size: 42px; }
+    .lifehack-cards {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .lifehack-card { width: 240px; flex-shrink: 0; }
+    .lifehack-card:nth-child(2) {
+        margin-left: 10px;
+        transform: none;
+        opacity: 1;
+    }
+    .lifehack-card:nth-child(3) {
+        margin-left: 10px;
+        transform: none;
+        opacity: 1;
+    }
+
+    /* ─ Calculator + Map: stack vertically ─ */
+    .calc-map-row {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .glass-panel.calculator {
+        width: 100%;
+        height: auto;
+        min-height: unset;
+    }
+    .glass-panel.calculator::before { inset: -12px; }
+    .map-section  { width: 100%; }
+    .map-wrapper  { width: 100%; height: 260px; }
+    .map-section::before {
+        left: -10px; right: -10px; bottom: -10px; top: 46px;
+    }
+
+    /* ─ Item page: stack image + content ─ */
+    .item-layout-wrapper {
+        flex-direction: column;
+        margin: 20px 16px;
+        padding: 0;
+        gap: 20px;
+    }
+    .item-left-side         { flex: unset; width: 100%; }
+    .item-left-side img     { width: 100%; }
+    .item-right-side        { width: 100%; }
+
+    /* ─ Question + tips: stack vertically ─ */
+    .questions-tips-row { flex-direction: column; }
+    .tips-sidebar       { flex: unset; width: 100%; }
+
+    /* ─ Detail spec (Yes/No question) ─ */
+    .detail-spec-section h3 { font-size: 40px; }
+    .detail-spec-section    { width: 100%; }
+
+    /* ─ Materials grid: 1 column ─ */
+    .materials-grid            { grid-template-columns: 1fr; }
+    .possible-materials        { font-size: 42px; }
+
+    /* ─ Bottom row (other pages) ─ */
+    .bottom-row {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 16px 40px;
+        gap: 24px;
+    }
+
+    /* ─ Scanner modal: already has max-width 95vw, just ensure padding ─ */
+    .scanner-box { padding: 18px 16px 16px; }
+
+    /* ─ Glass panel: full width on mobile ─ */
+    .glass-panel { width: 100% !important; box-sizing: border-box; }
+
+    /* ─ h2 fixed footer: smaller on mobile ─ */
+    h2 { font-size: 28px; }
+}
+
+/* ── Small phones (≤480px): extra tweaks ────────────────────── */
+@media (max-width: 480px) {
+    h1  { font-size: 28px; }
+    nav { gap: 8px; padding: 10px 12px; }
+    .nav-link { width: 84px; font-size: 13px; height: 32px; }
+    .lifehack-header { font-size: 34px; }
+    .detail-spec-section h3 { font-size: 32px; }
+    .possible-materials     { font-size: 34px; }
+    .map-wrapper            { height: 220px; }
+    #addressInput           { width: 160px; font-size: 0.78rem; }
+}
+
 /* ── Clouds (more visible on sky theme) ─────────────────────── */
 [data-theme="sky"] .cloud img { opacity: 60%; }
