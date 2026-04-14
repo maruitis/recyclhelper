@@ -1,9 +1,18 @@
 (function () {
     const STORAGE_KEY = "recycle_theme";
-    const THEMES = ["light", "dark", "sky"];
+    const THEMES = ["light", "sky", "dark"];
 
-    const ICONS  = { light: "🌙", dark: "☀", sky: "🌿" };
-    const LABELS = { light: "Switch to dark mode", dark: "Switch to sky mode", sky: "Switch to light mode" };
+    // The circle color that represents each theme
+    const DOT_COLORS = {
+        light: '#2DD4A3',   // turquoise  — default green theme
+        sky:   '#7EC8F0',   // light blue — sky theme
+        dark:  '#0d1a2e',   // near-black — dark theme
+    };
+    const DOT_TITLES = {
+        light: 'Default theme',
+        sky:   'Sky theme',
+        dark:  'Dark theme',
+    };
 
     function getTheme() {
         try {
@@ -17,43 +26,54 @@
         const t = THEMES.includes(theme) ? theme : "light";
         document.documentElement.setAttribute("data-theme", t);
         try { localStorage.setItem(STORAGE_KEY, t); } catch (e) {}
-        // next theme in cycle
-        const next = THEMES[(THEMES.indexOf(t) + 1) % THEMES.length];
-        document.querySelectorAll(".theme-toggle").forEach((btn) => {
-            btn.textContent = ICONS[t];
-            btn.title = LABELS[t];
-            btn.dataset.next = next;
-        });
-    }
 
-    function cycleTheme() {
-        const current = getTheme();
-        const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-        applyTheme(next);
+        // Highlight the active dot
+        document.querySelectorAll(".theme-dot").forEach(btn => {
+            btn.classList.toggle("theme-dot-active", btn.dataset.themeSet === t);
+        });
     }
 
     function injectToggle() {
         const nav = document.querySelector("nav");
-        if (!nav || nav.querySelector(".theme-toggle")) return;
-        const btn = document.createElement("button");
-        btn.type      = "button";
-        btn.className = "theme-toggle nav-ctrl-btn";
-        nav.appendChild(btn);
-        btn.addEventListener("click", cycleTheme);
+        if (!nav || nav.querySelector(".theme-switcher")) return;
+
+        const switcher = document.createElement("div");
+        switcher.className = "theme-switcher";
+
+        THEMES.forEach(t => {
+            const btn = document.createElement("button");
+            btn.type              = "button";
+            btn.className         = "theme-dot";
+            btn.dataset.themeSet  = t;
+            btn.title             = DOT_TITLES[t];
+            btn.style.background  = DOT_COLORS[t];
+            btn.addEventListener("click", () => applyTheme(t));
+            switcher.appendChild(btn);
+        });
+
+        nav.appendChild(switcher);
     }
 
     function init() {
         injectToggle();
         applyTheme(getTheme());
-        document.querySelectorAll(".theme-toggle").forEach((btn) => {
-            btn.removeEventListener("click", cycleTheme);
-            btn.addEventListener("click", cycleTheme);
+        // Allow transitions only after the first paint so the theme is
+        // already correct when elements become visible — no flash possible.
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                document.documentElement.classList.add("theme-ready");
+            });
         });
     }
 
+    // Keep public API intact for anything that calls these
     window.getSiteTheme    = getTheme;
     window.setSiteTheme    = applyTheme;
-    window.toggleSiteTheme = cycleTheme;
+    window.toggleSiteTheme = () => {
+        const current = getTheme();
+        const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+        applyTheme(next);
+    };
 
     document.addEventListener("sitLangChanged", () => applyTheme(getTheme()));
 

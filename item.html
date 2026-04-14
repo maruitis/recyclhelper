@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
     <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
+<script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
     <nav>
@@ -27,11 +28,13 @@
 
     <h4 id="displayItemName">RECYCLEHELPER</h4>
 
-    <form id="searchForm" class="search-container small">
-        <input type="text" id="searchInput" placeholder="Search another item..." required>
-        <button type="submit">🔍</button>
-    </form>
-    <button type="button" class="scan-item-btn scan-item-btn-small" id="scanBtn">📷 Scan</button>
+    <div class="search-row search-row-small">
+        <form id="searchForm" class="search-container small">
+            <input type="text" id="searchInput" placeholder="Search another item..." required>
+            <button type="submit">🔍</button>
+        </form>
+        <button type="button" class="scan-item-btn scan-item-btn-small" id="scanBtn">📷 Scan</button>
+    </div>
     <div class="container">
     <div class="item-layout-wrapper">
         

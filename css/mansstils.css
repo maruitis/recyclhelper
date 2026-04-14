@@ -1,10 +1,18 @@
+/* Suppress all transitions during initial theme load to prevent flash */
+html:not(.theme-ready) *,
+html:not(.theme-ready) *::before,
+html:not(.theme-ready) *::after {
+    transition: none !important;
+    animation-duration: 0.001s !important;
+}
+
 body {
     margin: 0;
-    
+
     background: linear-gradient(
         to top,
         #89F19E 0%,
-        #8AC4C6  50%,   
+        #8AC4C6  50%,
         #8AACDB 100%
     );
 
@@ -290,37 +298,83 @@ button {
     margin-right: 10px;
 }
 
+/* ── Search + Scan same-line row ─────────────────────────── */
+/* ── Search + Scan row ───────────────────────────────────────
+   align-items: stretch makes both children the exact same height
+   automatically — no magic numbers needed.
+────────────────────────────────────────────────────────────── */
+.search-row {
+    display: flex;
+    align-items: stretch;      /* both children grow to same height */
+    justify-content: center;
+    gap: 10px;
+    margin: 46px auto 24px;
+    width: fit-content;
+    max-width: 92vw;
+}
+.search-row.search-row-small {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
 .search-container {
-    text-align: center;
-    margin: 50px auto;
-    width: 60%;
+    margin: 0;
+    width: 560px;
     background: rgba(255, 255, 255, 0.4);
-    padding: 10px;
+    padding: 0 12px;           /* horizontal only — height comes from row stretch */
     border-radius: 50px;
     display: flex;
+    align-items: center;       /* vertically centre the input inside */
+    flex-shrink: 1;
+    box-sizing: border-box;
 }
 
 .search-container.small {
-    width: 600px;
-    height: 35px;
-    padding: 5px;
+    width: 420px;
+    padding: 0 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-     margin-top: 0px;
 }
 
 .search-container input {
     width: 100%;
+    height: 100%;              /* fills the pill height */
     background: transparent;
     border: none;
-    padding: 10px 20px;
-    font-size: 1.2rem;
+    padding: 0 10px;
+    font-size: 1rem;
     outline: none;
-    
+    box-sizing: border-box;
 }
 .search-container.small input {
-    font-size: 0.9rem;
-    padding: 5px 15px;
+    font-size: 0.88rem;
 }
+
+.search-container button[type="submit"] {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+/* Scan button — stretches to same height as the search bar */
+.search-row .scan-item-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0 22px;           /* horizontal padding only */
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+/* Give the row an explicit height so both children have something to stretch to */
+.search-row        { height: 44px; }
+.search-row.search-row-small { height: 36px; }
 
 .glass-panel {
     background: rgba(255, 255, 255, 0.3);
@@ -470,6 +524,13 @@ transform: translateY(-395px) translateX(530px);
     font-size: 16px;
     color: black;
     width: 64px;
+}
+
+.cal-heading{
+ font-family: "Jomhuria", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    color: #384C3F;   
 }
 
 .results-display {
@@ -876,14 +937,27 @@ transform: translateY(-395px) translateX(530px);
     text-align: center;
     width: 100%;
 }
+.recycle-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+}
+
+/* Centres the search+tags block as one unit; tags align to search bar's left */
+.search-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 #filterTags {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-top: 2px;
-    margin-left: 455px;
-    transform: translateY(-40px);
-
+    justify-content: flex-start;
+    margin-top: 6px;
 }
 
 .filter-tag {
@@ -1485,10 +1559,42 @@ nav {
     color: #fff;
     transition: background 0.2s;
     line-height: 1;
-    margin-left: auto;   /* pushes theme button to the right */
 }
 .nav-ctrl-btn:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Theme dot switcher ────────────────────────────────────── */
+.theme-switcher {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin-left: auto;   /* pushes the whole group to the right */
+    flex-shrink: 0;
+}
+.theme-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    flex-shrink: 0;
+    transition: transform 0.18s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.35);
+}
+.theme-dot:hover {
+    transform: scale(1.25);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+.theme-dot-active {
+    border-color: #fff;
+    transform: scale(1.18);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45),
+                0 3px 12px rgba(0, 0, 0, 0.4);
 }
 .lang-selector {
     display: flex;
@@ -1767,7 +1873,7 @@ nav {
     position: relative;
     width: 483px;
     height: 371px;
-    border-radius: 20px;
+    border-radius: 70px;
     overflow: hidden;
     z-index: 1;
     box-shadow: -19px 18px 30px rgba(0, 0, 0, 0.55);
@@ -1777,7 +1883,7 @@ nav {
 #map {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 70px;
 }
 
 /* ── Purple overlay (visible when no address is set) ── */
@@ -1792,7 +1898,7 @@ nav {
     display: flex;
     align-items: flex-end;        /* stick input to the bottom */
     justify-content: flex-start;  /* stick input to the left */
-    padding: 0 14px 14px 14px;
+    padding: 0 14px 14px 26px;
     gap: 8px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -1845,11 +1951,8 @@ nav {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    /* gradient border matching the input */
-    background:
-        linear-gradient(rgba(145, 122, 223, 0.35), rgba(145, 122, 223, 0.35)) padding-box,
-        linear-gradient(135deg, #917ADF, #232DE9) border-box;
-    border: 2px solid transparent;
+    background: transparent;
+    border: none;
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
@@ -1873,7 +1976,7 @@ nav {
     font-size: 28px;
     font-weight: 400;
     text-align: center;
-    color: #ffffff;
+    color: #D0EEDA;
     -webkit-text-fill-color: #ffffff;
     background: none;
     margin: 0 0 10px;
@@ -1916,11 +2019,8 @@ nav {
 }
 
 [data-theme="dark"] .map-find-btn {
-    background:
-        linear-gradient(rgba(80, 40, 160, 0.45), rgba(80, 40, 160, 0.45)) padding-box,
-        linear-gradient(135deg, #917ADF, #232DE9) border-box;
-    border: 2px solid transparent;
-    box-shadow: 0 0 10px rgba(145, 122, 223, 0.35);
+    background: transparent;
+    border: none;
 }
 [data-theme="dark"] .map-find-btn:hover {
     box-shadow: 0 0 22px rgba(145, 122, 223, 0.6);
@@ -1963,6 +2063,11 @@ nav {
     box-shadow: 0 0 40px 10px rgba(80,170,255,0.5);
 }
 [data-theme="sky"] .nav-ctrl-btn { color: #1e6fa8; }
+/* On the light sky background, give the active dot a darker ring so it's visible */
+[data-theme="sky"] .theme-dot-active {
+    border-color: #1e6fa8;
+    box-shadow: 0 0 0 2px rgba(30, 111, 168, 0.35), 0 3px 10px rgba(0,0,0,0.2);
+}
 [data-theme="sky"] .lang-btn {
     color: #1e6fa8;
     background: rgba(255,255,255,0.6);
@@ -2146,10 +2251,8 @@ nav {
 }
 [data-theme="sky"] #addressInput::placeholder { color: rgba(30,80,150,0.5) !important; }
 [data-theme="sky"] .map-find-btn {
-    background:
-        linear-gradient(rgba(200,235,255,0.65), rgba(200,235,255,0.65)) padding-box,
-        linear-gradient(135deg, #4ab8f0, #1a78c2) border-box;
-    border: 2px solid transparent;
+    background: transparent;
+    border: none;
     color: #0a3060;
 }
 [data-theme="sky"] .map-heading {
@@ -2219,23 +2322,40 @@ nav {
         box-shadow: 0 0 30px 6px rgba(0,255,106,0.5);
     }
     .nav-ctrl-btn { margin-left: 0; }
+    .theme-switcher { gap: 5px; }
+    .theme-dot { width: 20px; height: 20px; }
 
     /* ─ Clouds: hide on small screens (they clip badly) ─ */
     .cloud { display: none; }
 
-    /* ─ Search ─ */
+    /* ─ Search row: stack vertically on small screens ─ */
+    .search-row,
+    .search-row.search-row-small {
+        flex-direction: column;
+        align-items: stretch;
+        width: 92vw;
+        height: auto;          /* no fixed height when stacked */
+        margin: 28px auto 16px;
+        gap: 8px;
+    }
+    .search-row.search-row-small {
+        margin-top: 6px;
+        margin-bottom: 12px;
+    }
     .search-container,
     .search-container.small {
-        width: 90%;
-        height: auto;
+        width: 100%;
+        height: 42px;
+    }
+    .search-row .scan-item-btn {
+        width: 100%;
+        height: 40px;
+        justify-content: center;
     }
 
     /* ─ Filter tags ─ */
     #filterTags {
-        margin-left: 0;
-        transform: none;
-        justify-content: center;
-        padding: 0 16px;
+        padding: 0 12px;
     }
 
     /* ─ Home page cards ─ */

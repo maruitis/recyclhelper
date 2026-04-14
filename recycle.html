@@ -19,6 +19,7 @@
 
     <link href="css/mansstils.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 
@@ -32,14 +33,19 @@
     <div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
     <div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
 
-    <header>
+    <header class="recycle-header">
         <h4>RECYCLEHELPER</h4>
-        <form id="searchForm" class="search-container small">
-            <input type="text" id="searchInput" placeholder="Search another item..." required>
-            <button type="submit">🔍</button>
-        </form>
+        <div class="search-stack">
+            <div class="search-row search-row-small">
+                <form id="searchForm" class="search-container small">
+                    <input type="text" id="searchInput" placeholder="Search another item..." required>
+                    <button type="submit">🔍</button>
+                </form>
+                <button type="button" class="scan-item-btn scan-item-btn-small" id="scanBtn">📷 Scan</button>
+            </div>
+            <div id="filterTags"></div>
+        </div>
     </header>
-    <div id="filterTags"></div>
 
     <div class="recycle-layout">
 
@@ -64,7 +70,7 @@
             <!-- Calculator + Map -->
             <div class="calc-map-row">
                 <div class="glass-panel calculator">
-                    <h3>Efficiency Calculator</h3>
+                    <h3 class="calc-heading">Efficiency Calculator</h3>
                     <div class="calc-input-group">
                         <label for="calcQty">Amount of Items:</label>
                         <input type="number" id="calcQty" value="1" min="1">

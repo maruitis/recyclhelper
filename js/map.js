@@ -37,7 +37,7 @@ async function findCenters() {
     }
 
     const btn = document.querySelector('.map-find-btn');
-    if (btn) { btn.textContent = 'Searching…'; btn.disabled = true; }
+    if (btn) { btn.textContent = '…'; btn.disabled = true; }
 
     try {
         // Geocode address
