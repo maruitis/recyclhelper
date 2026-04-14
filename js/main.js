@@ -63,7 +63,7 @@ const itemDatabase = {
         },
         group: "glass",
         savings: { water: 1.5, co2: 0.25, energy: 1.0 },
-        image: "images/glassbottle.png",
+        image: "images/glassjar.png",
         map: "glass recycling",
         diys: [
             { name: "Herb Kitchen Garden", needs: "Glass jars, potting soil, herb seeds, gravel, twine",
