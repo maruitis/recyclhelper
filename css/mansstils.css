@@ -1169,6 +1169,86 @@ transform: translateY(-395px) translateX(530px);
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* ── Mode tabs (AI Vision / Barcode) ────────────────────────── */
+.scanner-mode-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+.scanner-tab {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.scanner-tab:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+.scanner-tab.scanner-tab-active {
+    background: rgba(80, 255, 120, 0.25);
+    border-color: rgba(80, 255, 120, 0.55);
+    color: #fff;
+}
+
+/* ── Barcode result display ─────────────────────────────────── */
+.barcode-result {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    text-align: center;
+}
+.barcode-result strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: #7fff9a;
+}
+.barcode-result .barcode-go-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 18px;
+    background: rgba(80, 255, 120, 0.3);
+    border: 1px solid rgba(80, 255, 120, 0.6);
+    border-radius: 20px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.barcode-result .barcode-go-btn:hover {
+    background: rgba(80, 255, 120, 0.5);
+}
+
+/* dark-theme overrides for tabs */
+[data-theme="dark"] .scanner-tab {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+[data-theme="dark"] .scanner-tab:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+[data-theme="dark"] .scanner-tab.scanner-tab-active {
+    background: rgba(80, 255, 120, 0.2);
+    border-color: rgba(80, 255, 120, 0.45);
+}
+
 /* ═══════════════════════════════════════════════════════════
    NAV CONTROLS  (theme toggle + language selector)
    Injected dynamically by theme.js and language.js

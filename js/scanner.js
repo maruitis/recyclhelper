@@ -1,12 +1,10 @@
-// ─── scanner.js – AI visual recognition (COCO-SSD + MobileNet auto-fallback) ──
+// ─── scanner.js  (AI vision + Barcode scan, two modes) ───────────────────────
 //
-// Strategy:
-//   • COCO-SSD runs every 700 ms  → fast detection of bottles, books, laptops, furniture
-//   • After 2 consecutive COCO misses, MobileNet fires automatically → catches
-//     shoes, shirts, sweaters, batteries, pens, pencils, textiles, boxes, etc.
-//   • Same stability counter (hitCount ≥ 2) prevents flickering results.
+// AI mode   : COCO-SSD + MobileNet auto-fallback  (unchanged)
+// Barcode   : BarcodeDetector API (Chrome/Android) → ZXing fallback (iOS/Safari)
+//             → Open Food Facts API → UPCitemdb API → itemDatabase routing
 
-// ─── COCO-SSD (80 classes) → itemDatabase key ────────────────────────────────
+// ─── COCO-SSD map ─────────────────────────────────────────────────────────────
 const COCO_MAP = {
     'bottle':        'plastic bottle',
     'wine glass':    'glass bottle',
@@ -33,40 +31,54 @@ const COCO_MAP = {
     'frisbee':       'plastic bottle',
 };
 
-// ─── MobileNet (1000 ImageNet classes) → itemDatabase key ────────────────────
-// Keys are substrings of actual ImageNet class labels (case-insensitive match).
+// ─── MobileNet map ────────────────────────────────────────────────────────────
 const MOBILENET_MAP = [
-    // Plastic bottles
     { keys: ['water bottle','pop bottle','pill bottle','medicine bottle','plastic bottle','canteen','carboy','jug'], item: 'plastic bottle' },
-    // Glass bottles / glassware
     { keys: ['wine bottle','beer bottle','whiskey jug','wine glass','beer glass','goblet','cocktail shaker'],       item: 'glass bottle'   },
-    // Books
     { keys: ['book jacket','book','library','comic book','binder','bookshelf','bookcase'],                          item: 'book'           },
-    // Shoes  – ImageNet: "running shoe", "sandal", "loafer", "clog", "moccasin", etc.
     { keys: ['running shoe','sandal','boot','loafer','clog','sneaker','moccasin','shoe','slipper','oxford'],        item: 'shoes'          },
-    // Shirts – ImageNet: "jersey, T-shirt, tee shirt", "polo shirt", etc.
     { keys: ['jersey','t-shirt','tee shirt','polo shirt','suit','shirt','blouse','tank top','lab coat'],            item: 'shirts'         },
-    // Sweaters – ImageNet: "sweatshirt", "cardigan", "wool"
     { keys: ['sweatshirt','cardigan','pullover','wool','sweater','jumper','knitwear'],                              item: 'sweater'        },
-    // Laptops / electronics
     { keys: ['laptop','notebook computer','desktop computer','monitor','computer tablet','personal computer'],       item: 'laptop'         },
-    // Batteries – ImageNet: "electric battery, voltaic battery, galvanic battery, galvanic pile, pile"
     { keys: ['electric battery','voltaic battery','galvanic battery','battery','galvanic pile'],                    item: 'batteries'      },
-    // Pens – ImageNet: "ballpoint, ballpoint pen, ballpen, Biro", "fountain pen"
     { keys: ['ballpoint','ballpen','biro','fountain pen','quill','marker','felt pen'],                              item: 'pens'           },
-    // Pencils – ImageNet: "pencil box, pencil case"
     { keys: ['pencil box','pencil case','pencil','crayon'],                                                         item: 'pencils'        },
-    // Cardboard boxes – ImageNet: "carton, cardboard", "crate, packing box, packing case"
     { keys: ['carton','cardboard','crate','packing box','packing case','corrugated'],                               item: 'cardboard box'  },
-    // Plastic boxes / containers – ImageNet: "plastic bag, polybag", "barrel", etc.
     { keys: ['plastic bag','polybag','shopping bag','barrel','tub','bucket','plastic container'],                   item: 'plastic box'    },
-    // Wooden furniture
     { keys: ['desk','stool','rocking chair','folding chair','cabinet','wardrobe','chest of drawers','park bench','coffee table','cedar'], item: 'wooden furniture' },
-    // House textiles – ImageNet: "bath towel", "beach towel", "shower curtain"
     { keys: ['bath towel','beach towel','shower curtain','curtain','blanket','quilt','pillow','dishcloth','dishrag'], item: 'house textile' },
-    // Paper
     { keys: ['newspaper','envelope','paper bag'],                                                                   item: 'paper'          },
 ];
+
+// ─── Barcode → itemDatabase category map ─────────────────────────────────────
+// Matched against product name + category + description text from APIs
+const BARCODE_ITEM_MAP = [
+    { keys: ['water bottle','plastic bottle','pet bottle','water','soda','cola','lemonade','juice','smoothie','energy drink','sports drink','sparkling','mineral','soft drink','squash','fizzy'], item: 'plastic bottle' },
+    { keys: ['wine','beer','spirits','whiskey','vodka','rum','gin','champagne','prosecco','cider','liqueur','mead','sake','ale','lager','stout'], item: 'glass bottle' },
+    { keys: ['book','novel','textbook','paperback','hardcover','magazine','comic','guide','manual','biography','fiction','nonfiction','encyclopedia'], item: 'book' },
+    { keys: ['pen','marker','highlighter','ballpoint','rollerball','felt tip','fineliner','gel pen','ink pen'], item: 'pens' },
+    { keys: ['pencil','graphite pencil','coloured pencil','crayon','charcoal pencil'], item: 'pencils' },
+    { keys: ['laptop','notebook computer','tablet','smartphone','phone','headphone','earphone','earbuds','speaker','keyboard','charger','cable','electronic','computer','monitor','camera'], item: 'laptop' },
+    { keys: ['battery','batteries','alkaline','rechargeable','lithium cell','aaa battery','aa battery','9v battery','button cell'], item: 'batteries' },
+    { keys: ['t-shirt','tee shirt','shirt','blouse','polo','jersey','top','vest','tank top','apparel','clothing'], item: 'shirts' },
+    { keys: ['sweater','jumper','pullover','cardigan','knitwear','sweatshirt','hoodie','fleece'], item: 'sweater' },
+    { keys: ['shoe','boot','sneaker','trainer','sandal','slipper','heel','loafer','oxford shoe','footwear'], item: 'shoes' },
+    { keys: ['towel','curtain','bedding','duvet','pillow','blanket','sheet','linen','textile','fabric','rug','mat'], item: 'house textile' },
+    { keys: ['storage box','plastic container','plastic tub','plastic storage','food container','lunch box'], item: 'plastic box' },
+    { keys: ['cardboard','carton','corrugated box','kraft','paper box','shipping box'], item: 'cardboard box' },
+    { keys: ['paper','tissue','napkin','kitchen roll','toilet paper','newspaper','notepad','stationery','envelope'], item: 'paper' },
+    { keys: ['chair','table','desk','shelf','wardrobe','cabinet','furniture','wooden','stool','bookcase','drawer'], item: 'wooden furniture' },
+];
+
+function resolveFromBarcodeText(text) {
+    const lower = (text || '').toLowerCase();
+    for (const { keys, item } of BARCODE_ITEM_MAP) {
+        for (const k of keys) {
+            if (lower.includes(k)) return item;
+        }
+    }
+    return null;
+}
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let cocoModel    = null;
@@ -74,14 +86,20 @@ let mobileNet    = null;
 let modelsLoaded = false;
 let activeStream = null;
 let loopTimer    = null;
-let isDetecting  = false;   // guard: only one detection at a time
-let hitCount     = 0;       // stability counter
+let isDetecting  = false;
+let hitCount     = 0;
 let lastHitItem  = null;
-let noCocoCount  = 0;       // how many consecutive COCO-miss cycles
+let noCocoCount  = 0;
 let canvasW      = 0;
 let canvasH      = 0;
 
-// ─── Lazy-load TF.js scripts on first use ────────────────────────────────────
+// Barcode-mode state
+let barcodeMode      = false;
+let zxingReader      = null;
+let lastScannedCode  = null;
+let barcodeSearching = false;
+
+// ─── Script loader ────────────────────────────────────────────────────────────
 function loadScript(src) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
@@ -90,6 +108,8 @@ function loadScript(src) {
         document.head.appendChild(s);
     });
 }
+
+// ─── AI models loader ─────────────────────────────────────────────────────────
 async function ensureModels() {
     if (modelsLoaded) return;
     await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
@@ -101,7 +121,13 @@ async function ensureModels() {
     modelsLoaded = true;
 }
 
-// ─── Label → itemDatabase key ─────────────────────────────────────────────────
+// ─── ZXing loader (barcode fallback for non-Chrome) ─────────────────────────
+async function ensureZXing() {
+    if (window.ZXing) return;
+    await loadScript('https://unpkg.com/@zxing/library@0.20.0/umd/index.min.js');
+}
+
+// ─── AI helpers ───────────────────────────────────────────────────────────────
 function resolveItem(label) {
     const cn = label.toLowerCase();
     if (COCO_MAP[cn]) return COCO_MAP[cn];
@@ -113,41 +139,10 @@ function resolveItem(label) {
     return null;
 }
 
-// ─── Build modal ──────────────────────────────────────────────────────────────
-function buildModal() {
-    if (document.getElementById('scannerModal')) return;
-    const m = document.createElement('div');
-    m.id = 'scannerModal';
-    m.innerHTML = `
-        <div class="scanner-box">
-            <h3>📷 AI Item Scanner</h3>
-            <div class="scanner-viewport">
-                <video id="scannerVideo" autoplay playsinline muted></video>
-                <canvas id="scannerCanvas"></canvas>
-                <div class="scanner-corners">
-                    <span class="s-corner tl"></span><span class="s-corner tr"></span>
-                    <span class="s-corner bl"></span><span class="s-corner br"></span>
-                </div>
-            </div>
-            <p id="scannerStatus">Starting camera…</p>
-            <div class="scanner-result" id="scannerResult">
-                <span id="resultIcon">✅</span>
-                <span id="resultText"></span>
-            </div>
-            <div class="scanner-actions">
-                <button class="scanner-identify-btn" id="identifyBtn" disabled>🔍 Scan Now</button>
-                <button class="scanner-close-btn"    id="closeScannerBtn">✕ Close</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(m);
-}
-
-// ─── Draw COCO bounding boxes (flicker-free) ──────────────────────────────────
 function drawBoxes(canvas, video, preds) {
     const dw = canvas.offsetWidth  || 320;
     const dh = canvas.offsetHeight || 240;
-    if (canvasW !== dw || canvasH !== dh) {     // only reset bitmap when size changes
+    if (canvasW !== dw || canvasH !== dh) {
         canvas.width = dw; canvas.height = dh;
         canvasW = dw; canvasH = dh;
     }
@@ -155,7 +150,6 @@ function drawBoxes(canvas, video, preds) {
     const sy = dh / (video.videoHeight || dh);
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, dw, dh);
-
     for (const p of preds) {
         const item = resolveItem(p.class);
         if (!item && p.score < 0.65) continue;
@@ -163,8 +157,7 @@ function drawBoxes(canvas, video, preds) {
         const col = item ? 'rgba(80,255,120,0.92)' : 'rgba(255,200,70,0.8)';
         ctx.strokeStyle = col; ctx.lineWidth = 2.5;
         ctx.strokeRect(x * sx, y * sy, w * sx, h * sy);
-        const lbl = item ? `${item}  ${Math.round(p.score * 100)}%`
-                         : `${p.class}  ${Math.round(p.score * 100)}%`;
+        const lbl = item ? `${item}  ${Math.round(p.score * 100)}%` : `${p.class}  ${Math.round(p.score * 100)}%`;
         ctx.font = 'bold 12px sans-serif';
         const tw = ctx.measureText(lbl).width + 10;
         ctx.fillStyle = col;
@@ -174,7 +167,227 @@ function drawBoxes(canvas, video, preds) {
     }
 }
 
-// ─── Update result UI (with stability debounce) ───────────────────────────────
+// ─── Build modal ──────────────────────────────────────────────────────────────
+function buildModal() {
+    if (document.getElementById('scannerModal')) return;
+    const m = document.createElement('div');
+    m.id = 'scannerModal';
+    m.innerHTML = `
+        <div class="scanner-box">
+            <h3>📷 Scan Item</h3>
+
+            <div class="scanner-mode-tabs">
+                <button class="scanner-tab scanner-tab-active" id="tabAI"
+                        onclick="switchScanMode('ai')">🤖 AI Vision</button>
+                <button class="scanner-tab" id="tabBarcode"
+                        onclick="switchScanMode('barcode')">📊 Barcode</button>
+            </div>
+
+            <div class="scanner-viewport">
+                <video id="scannerVideo" autoplay playsinline muted></video>
+                <canvas id="scannerCanvas"></canvas>
+                <div class="scanner-corners">
+                    <span class="s-corner tl"></span><span class="s-corner tr"></span>
+                    <span class="s-corner bl"></span><span class="s-corner br"></span>
+                </div>
+            </div>
+
+            <p id="scannerStatus">Starting camera…</p>
+
+            <div class="scanner-result" id="scannerResult">
+                <span id="resultIcon">✅</span>
+                <span id="resultText"></span>
+            </div>
+
+            <div class="scanner-actions">
+                <button class="scanner-identify-btn" id="identifyBtn" disabled>🔍 Scan Now</button>
+                <button class="scanner-close-btn"    id="closeScannerBtn">✕ Close</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(m);
+}
+
+// ─── Mode switching ───────────────────────────────────────────────────────────
+function switchScanMode(mode) {
+    if (mode === barcodeMode ? 'barcode' : 'ai') return; // no change
+
+    // Update tab styles
+    document.getElementById('tabAI')     ?.classList.toggle('scanner-tab-active', mode === 'ai');
+    document.getElementById('tabBarcode')?.classList.toggle('scanner-tab-active', mode === 'barcode');
+
+    // Clear current loop
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
+    isDetecting = false;
+
+    // Reset result UI
+    const canvas = document.getElementById('scannerCanvas');
+    if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    lastScannedCode = null;
+    barcodeSearching = false;
+    hitCount = 0; lastHitItem = null; noCocoCount = 0;
+
+    const statusEl = document.getElementById('scannerStatus');
+    const resultDiv = document.getElementById('scannerResult');
+    const identBtn  = document.getElementById('identifyBtn');
+    if (resultDiv) resultDiv.style.display = 'none';
+    if (identBtn)  { identBtn.disabled = true; identBtn.textContent = '🔍 Scan Now'; delete identBtn.dataset.confirmed; }
+
+    if (mode === 'barcode') {
+        barcodeMode = true;
+        if (statusEl) statusEl.textContent = '📊 Point at a barcode or QR code…';
+        startBarcodeLoop();
+    } else {
+        barcodeMode = false;
+        if (statusEl) statusEl.textContent = 'Point camera at your item…';
+        loopTimer = setTimeout(detectionLoop, 700);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BARCODE MODE
+// ═══════════════════════════════════════════════════════════
+
+async function startBarcodeLoop() {
+    // Ensure ZXing is loaded for non-BarcodeDetector browsers
+    if (!('BarcodeDetector' in window)) {
+        try { await ensureZXing(); } catch (_) {}
+    }
+    barcodeLoop();
+}
+
+async function barcodeLoop() {
+    if (!barcodeMode || !document.getElementById('scannerModal')) return;
+
+    const video = document.getElementById('scannerVideo');
+    if (video && video.videoWidth > 0 && !isDetecting && !barcodeSearching) {
+        isDetecting = true;
+        const code = await readBarcodeFromVideo(video);
+        isDetecting = false;
+
+        if (code && code !== lastScannedCode) {
+            lastScannedCode  = code;
+            barcodeSearching = true;
+            await handleBarcodeResult(code);
+            barcodeSearching = false;
+        }
+    }
+
+    if (barcodeMode && document.getElementById('scannerModal')) {
+        loopTimer = setTimeout(barcodeLoop, 500);
+    }
+}
+
+// Read one barcode frame — tries native BarcodeDetector first, then ZXing
+async function readBarcodeFromVideo(video) {
+    // ── Native BarcodeDetector (Chrome 83+, Edge, Android WebView) ──────────
+    if ('BarcodeDetector' in window) {
+        try {
+            const detector = new BarcodeDetector({
+                formats: ['ean_13','ean_8','upc_a','upc_e','code_128',
+                          'code_39','code_93','qr_code','data_matrix','itf','aztec']
+            });
+            const results = await detector.detect(video);
+            if (results.length > 0) return results[0].rawValue;
+        } catch (_) {}
+        return null;
+    }
+
+    // ── ZXing snapshot fallback (Firefox, Safari, iOS) ──────────────────────
+    if (window.ZXing) {
+        try {
+            if (!zxingReader) zxingReader = new ZXing.BrowserMultiFormatReader();
+            // Snapshot the current video frame into a temp canvas
+            const tmp = document.createElement('canvas');
+            tmp.width  = video.videoWidth;
+            tmp.height = video.videoHeight;
+            tmp.getContext('2d').drawImage(video, 0, 0);
+            const result = zxingReader.decodeFromCanvas(tmp);
+            return result ? result.getText() : null;
+        } catch (_) {
+            return null; // ZXing throws when nothing found — that's normal
+        }
+    }
+
+    return null;
+}
+
+// ─── Fetch with timeout helper ────────────────────────────────────────────────
+function fetchTimeout(url, ms = 5000) {
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
+}
+
+// ─── Barcode → product info via APIs ─────────────────────────────────────────
+async function lookupBarcode(code) {
+    // 1️⃣  Open Food Facts (best for food & beverage barcodes)
+    try {
+        const r = await fetchTimeout(
+            `https://world.openfoodfacts.org/api/v2/product/${code}?fields=product_name,categories,packaging`
+        );
+        const d = await r.json();
+        if (d.status === 1 && d.product) {
+            const p    = d.product;
+            const text = [p.product_name, p.categories, p.packaging].join(' ');
+            const item = resolveFromBarcodeText(text);
+            if (item) return { item, name: p.product_name || code };
+            // Generic beverage fallback
+            const cat = (p.categories || '').toLowerCase();
+            if (cat.includes('beverage') || cat.includes('drink') || cat.includes('water'))
+                return { item: 'plastic bottle', name: p.product_name || code };
+        }
+    } catch (_) {}
+
+    // 2️⃣  UPCitemdb (covers general retail — clothing, electronics, books, etc.)
+    try {
+        const r = await fetchTimeout(
+            `https://api.upcitemdb.com/prod/trial/lookup?upc=${code}`
+        );
+        const d = await r.json();
+        if (d.code === 'OK' && d.items && d.items.length > 0) {
+            const p    = d.items[0];
+            const text = [p.category, p.title, p.description].join(' ');
+            const item = resolveFromBarcodeText(text);
+            if (item) return { item, name: p.title || code };
+        }
+    } catch (_) {}
+
+    return null; // neither API could identify it
+}
+
+// ─── Handle a confirmed barcode scan ─────────────────────────────────────────
+async function handleBarcodeResult(code) {
+    const statusEl  = document.getElementById('scannerStatus');
+    const resultDiv = document.getElementById('scannerResult');
+    const resultTxt = document.getElementById('resultText');
+    const identBtn  = document.getElementById('identifyBtn');
+    if (!statusEl) return;
+
+    statusEl.textContent = `🔎 Barcode: ${code} — looking up…`;
+
+    const found = await lookupBarcode(code);
+
+    if (found) {
+        statusEl.textContent            = `✅ Identified: ${found.item}`;
+        if (found.name && found.name !== code)
+            statusEl.textContent        = `✅ "${found.name}" → ${found.item}`;
+        resultDiv.style.display         = 'flex';
+        resultTxt.textContent           = found.item;
+        identBtn.textContent            = `➜ Go to: ${found.item}`;
+        identBtn.dataset.confirmed      = found.item;
+        identBtn.disabled               = false;
+    } else {
+        statusEl.textContent = `⚠ Barcode ${code} not found — try a different item or use AI mode.`;
+        // Allow re-scan of a different code
+        lastScannedCode = null;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  AI MODE  (unchanged logic)
+// ═══════════════════════════════════════════════════════════
+
 function updateUI(detectedItem) {
     const statusEl   = document.getElementById('scannerStatus');
     const resultDiv  = document.getElementById('scannerResult');
@@ -190,24 +403,21 @@ function updateUI(detectedItem) {
     }
 
     if (detectedItem && hitCount >= 2) {
-        statusEl.textContent          = `✅ Detected: ${detectedItem}`;
-        resultDiv.style.display       = 'flex';
-        resultText.textContent        = detectedItem;
-        identBtn.textContent          = `➜ Go to: ${detectedItem}`;
-        identBtn.dataset.confirmed    = detectedItem;
-        identBtn.disabled             = false;
+        statusEl.textContent       = `✅ Detected: ${detectedItem}`;
+        resultDiv.style.display    = 'flex';
+        resultText.textContent     = detectedItem;
+        identBtn.textContent       = `➜ Go to: ${detectedItem}`;
+        identBtn.dataset.confirmed = detectedItem;
+        identBtn.disabled          = false;
     } else if (!detectedItem && hitCount === 0) {
         statusEl.textContent    = 'Point camera at your item…';
         resultDiv.style.display = 'none';
-        if (!identBtn.dataset.confirmed) {
-            identBtn.textContent = '🔍 Scan Now';
-        }
+        if (!identBtn.dataset.confirmed) identBtn.textContent = '🔍 Scan Now';
     }
 }
 
-// ─── Main detection loop ──────────────────────────────────────────────────────
 async function detectionLoop() {
-    if (!document.getElementById('scannerModal')) return;
+    if (!document.getElementById('scannerModal') || barcodeMode) return;
 
     if (!isDetecting) {
         const video  = document.getElementById('scannerVideo');
@@ -217,38 +427,25 @@ async function detectionLoop() {
             isDetecting = true;
             let detectedItem = null;
 
-            // ── Step 1: COCO-SSD (fast, 80 classes) ────────────────────────
             if (cocoModel) {
                 try {
                     const cocoPreds = await cocoModel.detect(video);
                     if (canvas) drawBoxes(canvas, video, cocoPreds);
-
                     const best = cocoPreds
                         .filter(p => p.score > 0.42 && resolveItem(p.class))
                         .sort((a, b) => b.score - a.score)[0];
-
-                    if (best) {
-                        detectedItem = resolveItem(best.class);
-                        noCocoCount  = 0;
-                    } else {
-                        noCocoCount++;
-                    }
+                    if (best) { detectedItem = resolveItem(best.class); noCocoCount = 0; }
+                    else noCocoCount++;
                 } catch (_) {}
             }
 
-            // ── Step 2: MobileNet auto-fallback after 2 COCO misses ─────────
-            // This catches: shoes, shirts, sweaters, batteries, pens, pencils,
-            // cardboard boxes, plastic boxes, house textiles, glass bottles, etc.
             if (!detectedItem && noCocoCount >= 2 && mobileNet) {
                 noCocoCount = 0;
                 try {
                     const mobilePreds = await mobileNet.classify(video, 10);
                     for (const p of mobilePreds) {
                         const item = resolveItem(p.className);
-                        if (item && p.probability > 0.05) {
-                            detectedItem = item;
-                            break;
-                        }
+                        if (item && p.probability > 0.05) { detectedItem = item; break; }
                     }
                 } catch (_) {}
             }
@@ -258,7 +455,7 @@ async function detectionLoop() {
         }
     }
 
-    if (document.getElementById('scannerModal')) {
+    if (!barcodeMode && document.getElementById('scannerModal')) {
         loopTimer = setTimeout(detectionLoop, 700);
     }
 }
@@ -267,36 +464,31 @@ async function detectionLoop() {
 async function onIdentifyClick() {
     const identBtn = document.getElementById('identifyBtn');
 
-    // Already confirmed by COCO → navigate immediately
     if (identBtn.dataset.confirmed) {
         navigateToItem(identBtn.dataset.confirmed);
         return;
     }
 
-    // No COCO result → force a MobileNet deep scan right now
-    const video    = document.getElementById('scannerVideo');
-    const statusEl = document.getElementById('scannerStatus');
-    if (!video || !mobileNet) return;
-
-    identBtn.disabled    = true;
-    statusEl.textContent = '🤖 Deep scanning…';
-
-    try {
-        const preds = await mobileNet.classify(video, 12);
-        let bestItem = null, bestScore = 0;
-        for (const p of preds) {
-            const item = resolveItem(p.className);
-            if (item && p.probability > bestScore) { bestItem = item; bestScore = p.probability; }
+    // AI mode manual deep scan
+    if (!barcodeMode) {
+        const video    = document.getElementById('scannerVideo');
+        const statusEl = document.getElementById('scannerStatus');
+        if (!video || !mobileNet) return;
+        identBtn.disabled    = true;
+        statusEl.textContent = '🤖 Deep scanning…';
+        try {
+            const preds = await mobileNet.classify(video, 12);
+            let bestItem = null, bestScore = 0;
+            for (const p of preds) {
+                const item = resolveItem(p.className);
+                if (item && p.probability > bestScore) { bestItem = item; bestScore = p.probability; }
+            }
+            if (bestItem) { navigateToItem(bestItem); }
+            else { statusEl.textContent = '⚠ Can\'t identify — move closer or try better lighting.'; identBtn.disabled = false; }
+        } catch (_) {
+            statusEl.textContent = '⚠ Error — please try again.';
+            identBtn.disabled = false;
         }
-        if (bestItem) {
-            navigateToItem(bestItem);
-        } else {
-            statusEl.textContent = '⚠ Can\'t identify — move closer or improve lighting.';
-            identBtn.disabled    = false;
-        }
-    } catch (_) {
-        statusEl.textContent = '⚠ Error — please try again.';
-        identBtn.disabled    = false;
     }
 }
 
@@ -310,8 +502,10 @@ function navigateToItem(name) {
 function stopScanner() {
     if (loopTimer)    { clearTimeout(loopTimer); loopTimer = null; }
     if (activeStream) { activeStream.getTracks().forEach(t => t.stop()); activeStream = null; }
+    if (zxingReader)  { try { zxingReader.reset(); } catch (_) {} zxingReader = null; }
     isDetecting = false; hitCount = 0; lastHitItem = null;
     noCocoCount = 0; canvasW = 0; canvasH = 0;
+    barcodeMode = false; lastScannedCode = null; barcodeSearching = false;
     const modal = document.getElementById('scannerModal');
     if (modal) modal.remove();
 }
@@ -324,7 +518,7 @@ async function startScanner() {
     document.getElementById('closeScannerBtn').addEventListener('click', stopScanner);
     identBtn.addEventListener('click', onIdentifyClick);
 
-    // 1. Camera
+    // Start camera
     try {
         activeStream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
@@ -339,25 +533,17 @@ async function startScanner() {
         return;
     }
 
-    // 2. Load AI models (cached after first download)
-    if (!modelsLoaded) {
-        statusEl.textContent = '⏳ Loading AI models (first time only, ~5 s)…';
-        try {
-            await ensureModels();
-        } catch (_) {
-            statusEl.textContent = '⚠ Failed to load AI — check your internet connection.';
-            return;
-        }
+    // Load AI models in background while camera is already live
+    statusEl.textContent = '⏳ Loading AI models…';
+    try {
+        await ensureModels();
+        statusEl.textContent = 'Point camera at your item…';
+        identBtn.disabled = false;
+    } catch (_) {
+        statusEl.textContent = '⚠ Could not load AI models — check connection.';
     }
 
-    // 3. Go
-    statusEl.textContent = '✅ Point camera at your item.';
-    identBtn.disabled    = false;
-    hitCount = 0; lastHitItem = null; noCocoCount = 0;
-    detectionLoop();
+    // Start AI detection loop (default mode)
+    barcodeMode = false;
+    loopTimer = setTimeout(detectionLoop, 700);
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('scanBtn');
-    if (btn) btn.addEventListener('click', startScanner);
-});
