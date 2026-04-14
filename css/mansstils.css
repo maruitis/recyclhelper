@@ -573,15 +573,16 @@ transform: translateY(-395px) translateX(530px);
 
 .lifehack-cards {
     display: flex;
-    align-items: center;       /* cards overlap at their vertical center */
+    flex-direction: row;
+    align-items: center;
     justify-content: center;
     padding: 0;
     margin-top: 4px;
 }
 
 .lifehack-card {
-    width: 320px;              /* wider */
-    height: 150px;
+    width: 320px;
+    max-height: 158px;
     border-radius: 25px;
     padding: 15px;
     cursor: pointer;
@@ -591,8 +592,21 @@ transform: translateY(-395px) translateX(530px);
     background:
         linear-gradient(#829DD9, #829DD9) padding-box,
         linear-gradient(45deg, #89F19E, #4A7CE0, #00FF7F) border-box;
-    /* only transition height and opacity — no transform jump */
-    transition: height 0.38s ease, opacity 0.3s ease;
+    transition: max-height 0.65s ease,
+                opacity   0.4s ease,
+                transform 0.4s ease;
+}
+
+/* subtle fade hint at the bottom when collapsed */
+.lifehack-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 44px;
+    background: linear-gradient(to bottom, transparent, #829DD9);
+    border-radius: 0 0 22px 22px;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
 }
 
 .lifehack-card:nth-child(1) {
@@ -614,30 +628,63 @@ transform: translateY(-395px) translateX(530px);
     opacity: 0.4;
 }
 
-
+/* Hover: open downward, full opacity, bring to front */
 .lifehack-card:hover {
-    height: 220px;
-    z-index: 10;
+    max-height: 620px;
     opacity: 1;
-}
-.idea-title{
-    
-    font-family:'Jomhuria', cursive;
-    font-size:40px;
-    color:#0E0973;
+    z-index: 10;
 }
 
-.idea-needs{
-    font-family:'Inter', sans-serif;
-    font-size:14px;
-    color:#1f2b45;
-    margin-top:5px;
+/* Cards 2 and 3 scale up to full size on hover */
+.lifehack-card:nth-child(2):hover {
+    transform: scale(1);
+}
+.lifehack-card:nth-child(3):hover {
+    transform: scale(1);
 }
 
-.idea-steps{
-    font-family:'Jomhuria', cursive;
-    font-size:26px;
-    margin-top:10px;
+/* hide the fade hint on hover */
+.lifehack-card:hover::after {
+    opacity: 0;
+}
+
+/* ── Fixed font sizes — identical across all 3 cards ── */
+.idea-title {
+    font-family: 'Jomhuria', cursive;
+    font-size: 36px;
+    line-height: 1;
+    color: whitesmoke;
+}
+
+.idea-needs {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    color: #1f2b45;
+    opacity: 0.85;
+    margin-top: 4px;
+    line-height: 1.35;
+}
+
+/* Steps — Jomhuria, same colour as title, numbered */
+.idea-steps {
+    counter-reset: step-counter;
+    font-family: 'Jomhuria', cursive;
+    font-size: 22px;
+    line-height: 1.25;
+    color: #0E0973;
+    margin-top: 6px;
+}
+
+.idea-steps > div {
+    counter-increment: step-counter;
+    padding: 1px 0;
+}
+
+.idea-steps > div::before {
+    content: counter(step-counter) ". ";
+    font-weight: 400;
+    opacity: 0.55;
 }
 
 .item-image{
@@ -1533,6 +1580,13 @@ nav {
     border: 1px solid rgba(0,150,255,0.4);
     box-shadow: 0 0 20px rgba(0,100,255,0.28), 0 3px 14px rgba(0,0,0,0.5);
 }
+[data-theme="dark"] .lifehack-card::after {
+    background: linear-gradient(to bottom, transparent, rgba(0,12,30,0.95));
+}
+[data-theme="dark"] .idea-title             { color: #a8d8ff; }
+[data-theme="dark"] .idea-needs             { color: #7ab8e8; }
+[data-theme="dark"] .idea-steps             { color: #c8e8ff; }
+[data-theme="dark"] .idea-steps > div::before { opacity: 0.5; }
 [data-theme="dark"] .lifehack-header {
     color: #55ccff;
     text-shadow: none;
@@ -1990,6 +2044,9 @@ nav {
     box-shadow: 0 2px 12px rgba(80,160,240,0.15);
     color: #0a3060;
 }
+[data-theme="sky"] .lifehack-card::after {
+    background: linear-gradient(to bottom, transparent, rgba(190,228,252,0.95));
+}
 [data-theme="sky"] .idea-title  { color: #0a4fa0; }
 [data-theme="sky"] .idea-needs  { color: #1a3a52; }
 
@@ -2070,7 +2127,6 @@ nav {
     .map-section             { width: 360px; }
     .map-wrapper             { width: 100%; height: 300px; }
 
-    /* lifehack cards: reduce overlap so they don't bleed off */
     .lifehack-card { width: 280px; }
     .lifehack-card:nth-child(2),
     .lifehack-card:nth-child(3) { margin-left: -110px; }
@@ -2137,26 +2193,9 @@ nav {
     .recycle-img-col img   { width: 100%; border-radius: 16px; }
     .recycle-content-col   { width: 100%; }
 
-    /* ─ Lifehack cards: horizontal scroll, no overlap ─ */
     .lifehack-section { padding: 0; }
     .lifehack-header  { font-size: 42px; }
-    .lifehack-cards {
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding-bottom: 8px;
-        -webkit-overflow-scrolling: touch;
-    }
-    .lifehack-card { width: 240px; flex-shrink: 0; }
-    .lifehack-card:nth-child(2) {
-        margin-left: 10px;
-        transform: none;
-        opacity: 1;
-    }
-    .lifehack-card:nth-child(3) {
-        margin-left: 10px;
-        transform: none;
-        opacity: 1;
-    }
+    .lifehack-card    { width: 100%; max-width: 320px; }
 
     /* ─ Calculator + Map: stack vertically ─ */
     .calc-map-row {
