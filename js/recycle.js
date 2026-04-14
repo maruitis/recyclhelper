@@ -109,5 +109,5 @@ function closeModal() {
 
 window.onclick = function(event) {
     const modal = document.getElementById('diyModal');
-    if (event.target == modal) { modal.style.display = "none"; }
-}
+    if (event.target === modal) { modal.style.display = "none"; }
+    };

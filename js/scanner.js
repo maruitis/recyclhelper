@@ -50,34 +50,140 @@ const MOBILENET_MAP = [
 
 /* ════════════════ Category scoring (for ANY text input) ════════════════ */
 const CATEGORY_KEYWORDS = {
-    'plastic bottle':   ['plastic bottle','pet bottle','bottle','water','soda','cola','juice','smoothie','drink',
-                         'beverage','squash','energy drink','fizzy','sparkling','mineral','pop','soft drink'],
-    'glass bottle':     ['glass bottle','wine bottle','beer bottle','wine','beer','spirits','whiskey','vodka',
-                         'rum','gin','champagne','prosecco','cider','ale','lager','stout'],
-    'glass jar':        ['glass jar','jar','jam jar','honey jar','mason jar','preserve','pickle','glass pot'],
-    'tin can':          ['tin can','tin','aluminium can','steel can','food tin','baked beans','canned','metal can',
-                         'soup can','sardine','tuna can','paint tin'],
-    'book':             ['book','novel','textbook','paperback','hardcover','magazine','comic','guide','manual',
-                         'biography','encyclopedia','journal','publication','diary'],
-    'newspaper':        ['newspaper','tabloid','broadsheet','daily paper','newsprint','gazette','herald'],
+    'plastic bottle':   ['plastic bottle','pet bottle','water bottle','soda bottle','cola bottle','juice bottle',
+                         'squash bottle','energy drink bottle','sports drink','fizzy drink','sparkling water',
+                         'mineral water','soft drink','smoothie bottle','milk bottle','plastic jug',
+                         'bottle','water','soda','cola','juice','smoothie','beverage','squash','energy drink',
+                         'fizzy','sparkling','mineral','pop','soft drink','drink','coca','pepsi','sprite','fanta'],
+    'glass bottle':     ['glass bottle','wine bottle','beer bottle','spirits bottle','whiskey bottle',
+                         'vodka bottle','rum bottle','gin bottle','champagne bottle','prosecco bottle',
+                         'wine','beer','spirits','whiskey','vodka','rum','gin','champagne','prosecco',
+                         'cider','ale','lager','stout','mead','sake','liquor','alcohol','brew'],
+    'glass jar':        ['glass jar','mason jar','jam jar','honey jar','pickle jar','preserve jar',
+                         'pasta sauce jar','coffee jar','nut butter jar','condiment jar','jam','honey',
+                         'pickle','preserve','marmalade','peanut butter','nutella','sauce jar','compote',
+                         'jar','glass pot','glass container','kilner'],
+    'tin can':          ['tin can','aluminium can','aluminum can','steel can','food tin','soup can',
+                         'baked beans can','sardine can','tuna can','paint tin','metal can','food can',
+                         'beverage can','soda can','beer can','energy can','canned food','canned goods',
+                         'tin','aluminium','aluminum','steel can','food tin','baked beans','canned',
+                         'soup','sardine','tuna','can','metal container','aerosol','spray can'],
+    'book':             ['book','novel','textbook','paperback','hardcover','hardback','magazine','comic',
+                         'comic book','guide','manual','biography','encyclopedia','journal','publication',
+                         'diary','notebook','fiction','non-fiction','children book','recipe book',
+                         'travel guide','atlas','dictionary','thesaurus','anthology'],
+    'newspaper':        ['newspaper','tabloid','broadsheet','daily paper','newsprint','gazette','herald',
+                         'times','guardian','daily mail','news','press','journal','chronicle','tribune'],
     'paper':            ['paper','tissue','napkin','kitchen roll','toilet paper','notepad','envelope',
-                         'stationery','document','receipt','paper bag'],
-    'laptop':           ['laptop','computer','desktop','monitor','keyboard','mouse','hard drive',
-                         'headphone','earphone','speaker','charger','cable','console','camera','printer'],
-    'mobile phone':     ['mobile phone','smartphone','phone','iphone','android','samsung','cell phone','handset'],
-    'light bulb':       ['light bulb','led bulb','cfl','bulb','lamp','fluorescent','incandescent','halogen'],
-    'batteries':        ['battery','batteries','alkaline','rechargeable','lithium','aa','aaa','9v','button cell'],
-    'shirts':           ['shirt','blouse','polo','jersey','top','vest','tank','clothing','tee','fashion','wear'],
-    'jeans':            ['jeans','denim','dungarees','jean jacket','levis','wrangler','bootcut'],
-    'sweater':          ['sweater','jumper','pullover','cardigan','knitwear','sweatshirt','hoodie','fleece','wool'],
-    'shoes':            ['shoe','boot','sneaker','trainer','sandal','slipper','heel','loafer','footwear'],
-    'house textile':    ['towel','curtain','bedding','duvet','pillow','blanket','sheet','linen','rug','quilt'],
-    'plastic box':      ['plastic container','plastic box','plastic tub','food container','lunch box','tupperware'],
-    'cardboard box':    ['cardboard','carton','corrugated','kraft','packaging','shipping','box','parcel'],
-    'wooden furniture': ['chair','table','desk','shelf','wardrobe','cabinet','furniture','wooden','stool',
-                         'bookcase','sofa','couch','dresser','wood','timber'],
-    'pens':             ['pen','marker','highlighter','ballpoint','rollerball','felt tip','gel pen','biro'],
-    'pencils':          ['pencil','graphite','coloured pencil','crayon','charcoal pencil'],
+                         'stationery','document','receipt','paper bag','flyer','leaflet','brochure',
+                         'poster','greeting card','wrapping paper','kraft paper','A4','printer paper'],
+    'laptop':           ['laptop','notebook computer','computer','desktop','pc','monitor','keyboard','mouse',
+                         'hard drive','headphone','earphone','speaker','charger','cable','console',
+                         'camera','printer','scanner','tablet','ipad','macbook','chromebook','gaming pc',
+                         'graphics card','cpu','motherboard','router','modem','usb','hub','dock'],
+    'mobile phone':     ['mobile phone','smartphone','cell phone','handset','iphone','android','samsung',
+                         'google pixel','huawei','xiaomi','nokia','motorola','oneplus','oppo',
+                         'phone','mobile','cellular','flip phone','feature phone'],
+    'light bulb':       ['light bulb','led bulb','cfl bulb','fluorescent bulb','incandescent bulb',
+                         'halogen bulb','smart bulb','energy saving bulb','bulb','lamp','led','cfl',
+                         'fluorescent','incandescent','halogen','tube light','spotlight','downlight'],
+    'batteries':        ['battery','batteries','alkaline battery','rechargeable battery','lithium battery',
+                         'aa battery','aaa battery','9v battery','button cell','coin cell','car battery',
+                         'power bank','alkaline','rechargeable','lithium','aa','aaa','9v'],
+    'shirts':           ['shirt','t-shirt','tee shirt','blouse','polo shirt','polo','jersey','top','vest',
+                         'tank top','sleeveless','button-up','button-down','dress shirt','work shirt',
+                         'casual shirt','flannel shirt','hawaiian shirt','linen shirt','clothing','tee',
+                         'fashion','wear','apparel','garment'],
+    'jeans':            ['jeans','denim','denim jeans','skinny jeans','slim jeans','wide leg jeans',
+                         'bootcut jeans','straight jeans','dungarees','jean jacket','denim jacket',
+                         'levis','wrangler','bootcut','mom jeans','boyfriend jeans','jeggings'],
+    'sweater':          ['sweater','jumper','pullover','cardigan','knitwear','sweatshirt','hoodie',
+                         'fleece','wool sweater','knit sweater','chunky knit','turtleneck','crewneck',
+                         'zip-up hoodie','track top','wool','cashmere','merino'],
+    'shoes':            ['shoe','shoes','boot','boots','sneaker','sneakers','trainer','trainers','sandal',
+                         'slipper','slippers','high heel','loafer','oxford','brogue','moccasin',
+                         'flip flop','espadrille','wedge','platform shoe','running shoe','footwear',
+                         'footware','nike','adidas','puma','reebok','converse','vans'],
+    'house textile':    ['towel','bath towel','curtain','bedding','duvet','pillow','pillowcase','blanket',
+                         'sheet','bedsheet','linen','rug','quilt','throw','cushion cover','table cloth',
+                         'tablecloth','dishcloth','tea towel','bath mat','floor mat','comforter'],
+    'plastic box':      ['plastic container','plastic box','plastic tub','plastic bin','food container',
+                         'lunch box','lunchbox','tupperware','storage container','food tub','yoghurt pot',
+                         'margarine tub','ice cream tub','plastic storage','crate','plastic crate'],
+    'cardboard box':    ['cardboard box','cardboard','carton','corrugated box','kraft box','shipping box',
+                         'delivery box','parcel box','moving box','cereal box','packaging box','box',
+                         'parcel','packing','cardboard tube','toilet roll tube','kitchen roll tube'],
+    'wooden furniture': ['wooden furniture','wood furniture','chair','table','dining table','coffee table',
+                         'side table','desk','shelf','shelving','wardrobe','cabinet','bookcase','sofa',
+                         'couch','dresser','stool','bench','bed frame','headboard','nightstand',
+                         'furniture','wooden','wood','timber','plywood','mdf','chipboard'],
+    'pens':             ['pen','marker','highlighter','ballpoint pen','rollerball pen','felt tip','gel pen',
+                         'biro','fountain pen','ink pen','sharpie','whiteboard marker','permanent marker'],
+    'pencils':          ['pencil','graphite pencil','coloured pencil','colored pencil','color pencil',
+                         'crayon','charcoal pencil','mechanical pencil','lead pencil','drawing pencil'],
+};
+
+/* ════════════════ Material hints (for anything not in DB) ════════════════ */
+const MATERIAL_HINTS = {
+    // Physical materials
+    'glass':        ['glass bottle', 'glass jar', 'glass bottle'],
+    'plastic':      ['plastic bottle', 'plastic box', 'plastic bottle'],
+    'metal':        ['tin can', 'tin can', 'batteries'],
+    'aluminium':    ['tin can', 'batteries'],
+    'aluminum':     ['tin can', 'batteries'],
+    'steel':        ['tin can', 'plastic box'],
+    'iron':         ['tin can', 'wooden furniture'],
+    'paper':        ['paper', 'cardboard box', 'newspaper'],
+    'cardboard':    ['cardboard box', 'paper'],
+    'fabric':       ['shirts', 'sweater', 'house textile'],
+    'textile':      ['house textile', 'shirts', 'sweater'],
+    'cloth':        ['shirts', 'sweater', 'jeans'],
+    'clothing':     ['shirts', 'sweater', 'jeans'],
+    'apparel':      ['shirts', 'sweater', 'jeans'],
+    'leather':      ['shoes', 'jeans', 'shirts'],
+    'denim':        ['jeans', 'shirts', 'sweater'],
+    'wool':         ['sweater', 'house textile', 'shirts'],
+    'wood':         ['wooden furniture'],
+    'wooden':       ['wooden furniture'],
+    'timber':       ['wooden furniture'],
+    // Electronics
+    'electronic':   ['laptop', 'mobile phone', 'batteries'],
+    'electric':     ['batteries', 'light bulb', 'laptop'],
+    'digital':      ['laptop', 'mobile phone', 'batteries'],
+    // Common item words
+    'bottle':       ['plastic bottle', 'glass bottle'],
+    'can':          ['tin can', 'plastic bottle', 'glass bottle'],
+    'tin':          ['tin can'],
+    'jar':          ['glass jar', 'glass bottle'],
+    'box':          ['cardboard box', 'plastic box'],
+    'bag':          ['house textile', 'cardboard box'],
+    'drink':        ['plastic bottle', 'glass bottle', 'tin can'],
+    'beverage':     ['plastic bottle', 'glass bottle', 'tin can'],
+    'food':         ['tin can', 'glass jar', 'plastic box'],
+    'shoe':         ['shoes'],
+    'boot':         ['shoes'],
+    'sneaker':      ['shoes'],
+    'footwear':     ['shoes'],
+    'phone':        ['mobile phone', 'laptop'],
+    'bulb':         ['light bulb'],
+    'lamp':         ['light bulb', 'wooden furniture'],
+    'battery':      ['batteries'],
+    'furniture':    ['wooden furniture'],
+    'book':         ['book', 'newspaper'],
+    'pen':          ['pens', 'pencils'],
+    'pencil':       ['pencils', 'pens'],
+    'hoodie':       ['sweater', 'shirts', 'jeans'],
+    'jacket':       ['sweater', 'shirts', 'jeans'],
+    'coat':         ['sweater', 'house textile'],
+    'dress':        ['shirts', 'house textile'],
+    'skirt':        ['shirts', 'jeans'],
+    'trousers':     ['jeans', 'shirts'],
+    'pants':        ['jeans', 'shirts'],
+    'vase':         ['glass jar', 'glass bottle', 'plastic bottle'],
+    'mug':          ['glass jar', 'glass bottle'],
+    'cup':          ['glass jar', 'plastic box'],
+    'bowl':         ['plastic box', 'glass jar'],
+    'plate':        ['glass jar', 'plastic box'],
 };
 
 const CATEGORY_ICONS = {
@@ -104,16 +210,33 @@ const CATEGORY_ICONS = {
     'pencils':          '✏️',
 };
 
-function getTopCategories(text, count = 2) {
+function getTopCategories(text, count = 3) {
     const lower = (text || '').toLowerCase();
+
+    // Base keyword scoring
     const scores = Object.entries(CATEGORY_KEYWORDS).map(([cat, keys]) => {
         let score = 0;
         for (const k of keys) {
-            if (lower.includes(k)) score += k.trim().split(/\s+/).length;
+            if (lower.includes(k)) {
+                // Longer keyword phrases score higher (more specific match)
+                score += k.trim().split(/\s+/).length * 3;
+            }
         }
         return { cat, score };
     });
+
+    // Boost using material hints — adds relevance for unknown items
+    for (const [hint, cats] of Object.entries(MATERIAL_HINTS)) {
+        if (lower.includes(hint)) {
+            cats.forEach((cat, i) => {
+                const entry = scores.find(s => s.cat === cat);
+                if (entry) entry.score += Math.max(5 - i * 1.5, 1);
+            });
+        }
+    }
+
     scores.sort((a, b) => b.score - a.score);
+    // Always return exactly `count` unique categories
     return scores.slice(0, count);
 }
 
@@ -332,19 +455,11 @@ function showConfirmView(label, subLabel, searchText) {
 
 function onConfirmYes() {
     scanPhase = 'categories';
-    const tops      = getTopCategories(pendingSearchText, 2);
+    const tops      = getTopCategories(pendingSearchText, 3);
     const choicesEl = document.getElementById('categoryChoices');
     choicesEl.innerHTML = '';
 
-    const noMatch = tops.every(t => t.score === 0);
-    if (noMatch) {
-        const note = document.createElement('p');
-        note.className   = 'category-note';
-        note.textContent = 'No exact match found — best guesses:';
-        choicesEl.appendChild(note);
-    }
-
-    (noMatch ? getTopCategories(pendingSearchText, 4) : tops).forEach(({ cat }) => {
+    tops.forEach(({ cat }) => {
         const btn = document.createElement('button');
         btn.className = 'category-choice-btn';
         btn.innerHTML = `
