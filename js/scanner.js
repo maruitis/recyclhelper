@@ -210,7 +210,7 @@ function buildModal() {
 
 // ─── Mode switching ───────────────────────────────────────────────────────────
 function switchScanMode(mode) {
-    if (mode === barcodeMode ? 'barcode' : 'ai') return; // no change
+    if (mode === (barcodeMode ? 'barcode' : 'ai')) return; // no change
 
     // Update tab styles
     document.getElementById('tabAI')     ?.classList.toggle('scanner-tab-active', mode === 'ai');
@@ -364,23 +364,31 @@ async function handleBarcodeResult(code) {
     const identBtn  = document.getElementById('identifyBtn');
     if (!statusEl) return;
 
-    statusEl.textContent = `🔎 Barcode: ${code} — looking up…`;
+    // Stop the loop while we look up
+    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
+
+    statusEl.textContent = `🔎 Reading barcode ${code}…`;
 
     const found = await lookupBarcode(code);
 
     if (found) {
-        statusEl.textContent            = `✅ Identified: ${found.item}`;
-        if (found.name && found.name !== code)
-            statusEl.textContent        = `✅ "${found.name}" → ${found.item}`;
-        resultDiv.style.display         = 'flex';
-        resultTxt.textContent           = found.item;
-        identBtn.textContent            = `➜ Go to: ${found.item}`;
-        identBtn.dataset.confirmed      = found.item;
-        identBtn.disabled               = false;
+        const displayName = (found.name && found.name !== code) ? found.name : code;
+        statusEl.textContent       = `✅ "${displayName}" → ${found.item}`;
+        resultDiv.style.display    = 'flex';
+        resultTxt.textContent      = found.item;
+        identBtn.textContent       = `➜ Go to: ${found.item}`;
+        identBtn.dataset.confirmed = found.item;
+        identBtn.disabled          = false;
+
+        // Auto-navigate after 1.5 s so user can see the result
+        setTimeout(() => navigateToItem(found.item), 1500);
     } else {
-        statusEl.textContent = `⚠ Barcode ${code} not found — try a different item or use AI mode.`;
-        // Allow re-scan of a different code
-        lastScannedCode = null;
+        statusEl.textContent = `⚠ Barcode not recognised — try again or switch to AI mode.`;
+        // Reset so a new scan attempt can happen
+        lastScannedCode  = null;
+        barcodeSearching = false;
+        // Restart loop
+        if (barcodeMode) loopTimer = setTimeout(barcodeLoop, 800);
     }
 }
 
@@ -518,6 +526,11 @@ async function startScanner() {
     document.getElementById('closeScannerBtn').addEventListener('click', stopScanner);
     identBtn.addEventListener('click', onIdentifyClick);
 
+    // Close modal when clicking outside the scanner box
+    document.getElementById('scannerModal').addEventListener('click', function(e) {
+        if (e.target === this) stopScanner();
+    });
+
     // Start camera
     try {
         activeStream = await navigator.mediaDevices.getUserMedia({
@@ -528,22 +541,38 @@ async function startScanner() {
             if (video.readyState >= 2) { r(); return; }
             video.addEventListener('loadeddata', r, { once: true });
         });
-    } catch (_) {
-        statusEl.textContent = '⚠ Camera access denied — please allow permissions and try again.';
+    } catch (err) {
+        statusEl.textContent = '⚠ Camera access denied — please allow camera permissions and try again.';
+        identBtn.disabled = true;
         return;
     }
 
-    // Load AI models in background while camera is already live
-    statusEl.textContent = '⏳ Loading AI models…';
-    try {
-        await ensureModels();
-        statusEl.textContent = 'Point camera at your item…';
-        identBtn.disabled = false;
-    } catch (_) {
-        statusEl.textContent = '⚠ Could not load AI models — check connection.';
+    // Default to BARCODE mode — lightweight, no TF model needed
+    barcodeMode = true;
+    document.getElementById('tabBarcode')?.classList.add('scanner-tab-active');
+    document.getElementById('tabAI')?.classList.remove('scanner-tab-active');
+    identBtn.disabled = true;
+    statusEl.textContent = '📊 Point camera at a barcode…';
+
+    // Pre-load ZXing for non-Chrome browsers in background
+    if (!('BarcodeDetector' in window)) {
+        ensureZXing().catch(() => {});
     }
 
-    // Start AI detection loop (default mode)
-    barcodeMode = false;
-    loopTimer = setTimeout(detectionLoop, 700);
+    startBarcodeLoop();
 }
+
+// ─── Wire up scan button(s) on page load ──────────────────────────────────────
+(function () {
+    function attachScanBtn() {
+        const btn = document.getElementById('scanBtn');
+        if (btn) {
+            btn.addEventListener('click', startScanner);
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachScanBtn);
+    } else {
+        attachScanBtn();
+    }
+})();
