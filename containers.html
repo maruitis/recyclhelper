@@ -1,34 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> About us </title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/mansstils.css" type="text/css"/>
-<script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
-    </head>
-    <body>
-        <nav>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Containers — RecycleHelper</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/mansstils.css" type="text/css"/>
+
+    <!-- Apply saved theme before first paint to avoid flash -->
+    <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+
+<nav>
     <a href="index.html" class="nav-link">Home</a>
     <a href="aboutus.html" class="nav-link">About us</a>
     <a href="ourmission.html" class="nav-link">Our mission</a>
     <a href="donate.html" class="nav-link">Donate</a>
 </nav>
-        <div class="cloud cloud-left">
-    <img src="images/cloud.png" alt="cloud">
+
+<!-- Decorative animated clouds (same as all other pages) -->
+<div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
+<div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
+
+<h1><strong>Learn about containers</strong></h1>
+
+<p class="containers-intro">
+    Select your country to discover the top 4 recycling bins used there -
+    what goes inside each one, and amazing facts you didn't know!
+</p>
+
+<!-- Country selector + quiz button row -->
+<div class="country-select-wrap">
+    <select class="country-select" id="countrySelect" aria-label="Choose your country">
+        <option value="">🌍 Choose your country…</option>
+        <option value="latvia">🇱🇻 Latvia</option>
+        <option value="germany">🇩🇪 Germany</option>
+        <option value="uk">🇬🇧 United Kingdom</option>
+        <option value="usa">🇺🇸 United States</option>
+        <option value="france">🇫🇷 France</option>
+        <option value="sweden">🇸🇪 Sweden</option>
+        <option value="netherlands">🇳🇱 Netherlands</option>
+        <option value="japan">🇯🇵 Japan</option>
+        <option value="australia">🇦🇺 Australia</option>
+        <option value="canada">🇨🇦 Canada</option>
+        <option value="spain">🇪🇸 Spain</option>
+        <option value="poland">🇵🇱 Poland</option>
+    </select>
 </div>
-<div class="cloud cloud-right">
-    <img src="images/cloud.png" alt="cloud">
+
+<!--
+    #containersMain is where containers.js writes:
+      - a two-column layout (left: 4 container cards / right: sticky info panel)
+      OR
+      - a placeholder message if no country is selected yet
+-->
+<div id="containersMain">
+    <div class="containers-placeholder">Pick a country above to get started ♻️</div>
 </div>
-        <h1><strong>Learn about containers</strong></h1>
-        <h2> EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
-    <script src="js/theme.js"></script>
-    <script src="js/language.js"></script>
-    </body>
+
+<!-- Fixed tagline at the bottom (same as all other pages) -->
+<h2>EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
+
+<!-- containers.js: database + render + interaction logic -->
+<script src="js/containers.js"></script>
+<!-- theme.js: injects theme switcher dots into nav -->
+<script src="js/theme.js"></script>
+<!-- language.js: injects EN/LV language toggle into nav -->
+<script src="js/language.js"></script>
+
+</body>
+</html>
