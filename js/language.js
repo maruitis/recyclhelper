@@ -35,6 +35,33 @@
             "Learn about containers": "Par atkritumu konteineriem",
             "Learn about benefits": "Par pārstrādes ieguvumiem",
             "Learn about itmes": "Par pārstrādājamiem priekšmetiem",
+            // benefits game — static UI
+            "Save the City": "Glāb pilsētu",
+            "Recycling Impact": "Pārstrādes ietekme",
+            "♻️ Play Now": "♻️ Spēlēt",
+            "INCOMING WASTE ↓": "IENĀKOŠIE ATKRITUMI ↓",
+            "Pollution": "Piesārņojums",
+            "Nature": "Daba",
+            "Happiness": "Laime",
+            "Toxicity": "Toksicitāte",
+            "❌ Ignore": "❌ Ignorēt",
+            "♻️ Recycle": "♻️ Pārstrādāt",
+            "Score": "Punkti",
+            "Recycled": "Pārstrādāts",
+            "Did You Know?": "Vai zināji?",
+            "↩ Play Again": "↩ Spēlēt vēlreiz",
+            "🌍 Save the City: Recycling Impact": "🌍 Glāb pilsētu: Pārstrādes ietekme",
+            "Eco Hero!": "Eko varonis!",
+            "Balanced City": "Līdzsvarota pilsēta",
+            "Environmental Crisis": "Vides krīze",
+            "Card": "Karte",
+            "of": "no",
+            "Outstanding! Your smart recycling decisions kept the city clean, healthy, and thriving.":
+                "Lieliski! Tavas gudrās pārstrādes izvēles saglabāja pilsētu tīru un zaļu.",
+            "Not bad! The city is holding on, but more recycling would make it truly sustainable.":
+                "Neslikti! Pilsēta turas, bet vairāk pārstrādes to padarītu ilgtspējīgāku.",
+            "The city is struggling with pollution and toxic waste. Every recycling choice matters!":
+                "Pilsēta cīnās ar piesārņojumu. Katra pārstrādes izvēle ir svarīga!",
             // placeholders
             "Search (e.g. plastic bottle, book etc.)": "Meklēt (piem. pudele, grāmata...)",
             "Search another item...": "Meklēt citu priekšmetu...",
@@ -67,6 +94,13 @@
                 if (["SCRIPT","STYLE","NOSCRIPT"].includes(tag)) return NodeFilter.FILTER_REJECT;
                 if (p.closest("#scannerModal"))  return NodeFilter.FILTER_REJECT;
                 if (p.closest(".lang-selector")) return NodeFilter.FILTER_REJECT;
+                // Don't translate dynamic game content (card name/tip/num — JS owns these)
+                if (["g-card-name","g-card-num","g-card-tip","g-icon",
+                     "g-score-val","g-timer-val","g-num-pol","g-num-nat",
+                     "g-num-hap","g-num-tox","g-end-score","g-end-recycled",
+                     "g-end-nat","g-end-hap","g-facts-list",
+                     "g-end-badge","g-end-title","g-end-sub"].includes(p.id)) return NodeFilter.FILTER_REJECT;
+                if (p.closest("#g-facts-list")) return NodeFilter.FILTER_REJECT;
                 return NodeFilter.FILTER_ACCEPT;
             }
         });

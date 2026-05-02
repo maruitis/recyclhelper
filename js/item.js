@@ -102,12 +102,12 @@ if (tipsPanel && data.prepTips) {
     const materials = materialGroups[data.group];
 
     if (grid && materials) {
-        grid.innerHTML = ""; 
-       
+        grid.innerHTML = "";
+
 materials.forEach(m => {
     const card = document.createElement('div');
     card.className = 'material-card';
-    
+
     card.innerHTML = `
         <div class="mat-abbr-circle">${m.abbr}</div>
         <div class="mat-name">${m.name}</div>
@@ -120,7 +120,7 @@ materials.forEach(m => {
             <span class="mat-value">${m.feel}</span>
         </div>
     `;
-    
+
     card.onclick = () => {
         document.querySelectorAll('.material-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
@@ -128,7 +128,9 @@ materials.forEach(m => {
         checkIfReady();
     };
     grid.appendChild(card);
-}); 
+});
+        // Notify bin selector of this item's material group
+        if (typeof updateBinForGroup === 'function') updateBinForGroup(data.group);
     }
 
     //dlja knopki

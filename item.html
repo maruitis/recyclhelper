@@ -53,9 +53,30 @@
 
             <button id="nextBtn" class="primary-btn" style="display:none;">Calculate Recycling Impact ➜</button>
 
-            <div class="materials-section">
-                <div class="possible-materials">POSSIBLE MATERIALS</div>
-                <div class="materials-grid" id="materialGrid"></div>
+            <div class="materials-bin-row">
+                <div class="materials-section">
+                    <div class="possible-materials">POSSIBLE MATERIALS</div>
+                    <div class="materials-grid" id="materialGrid"></div>
+                </div>
+                <div class="bin-selector-section">
+                    <div class="bin-selector-title">WHERE DOES IT GO?</div>
+                    <select id="binCountrySelect" class="bin-country-select">
+                        <option value="">🌍 Choose country…</option>
+                        <option value="latvia">🇱🇻 Latvia</option>
+                        <option value="germany">🇩🇪 Germany</option>
+                        <option value="uk">🇬🇧 United Kingdom</option>
+                        <option value="usa">🇺🇸 United States</option>
+                        <option value="france">🇫🇷 France</option>
+                        <option value="sweden">🇸🇪 Sweden</option>
+                        <option value="netherlands">🇳🇱 Netherlands</option>
+                        <option value="japan">🇯🇵 Japan</option>
+                        <option value="australia">🇦🇺 Australia</option>
+                        <option value="canada">🇨🇦 Canada</option>
+                        <option value="spain">🇪🇸 Spain</option>
+                        <option value="poland">🇵🇱 Poland</option>
+                    </select>
+                    <div id="binResult" class="bin-result"></div>
+                </div>
             </div>
         </div>
 
@@ -66,6 +87,7 @@
 
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>
+    <script src="js/itembin.js"></script>
     <script src="js/item.js"></script>
     <script src="js/scanner.js"></script>
     <script src="js/theme.js"></script>

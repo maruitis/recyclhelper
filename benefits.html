@@ -11,25 +11,236 @@
     <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 
     <style>
-    /* ── Page layout ── */
+    /* ═══════════════════════════════════════
+       BENEFITS PAGE LAYOUT
+    ═══════════════════════════════════════ */
     .benefits-page {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 0 16px 120px;
-        gap: 0;
+        gap: 24px;
     }
 
-    /* ── Game shell — fully transparent ── */
+    /* Desktop: game + results panel side by side */
+    #game-layout-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        width: 100%;
+        max-width: 1060px;
+    }
+    @media (min-width: 900px) {
+        #game-layout-row {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 32px;
+        }
+    }
+
+    /* ── Game shell — gradient border + neon shadow ── */
     #game-shell {
         width: 100%;
-        max-width: 480px;
-        border-radius: 24px;
+        max-width: 500px;
+        flex-shrink: 0;
+        border-radius: 26px;
         overflow: hidden;
         background: transparent;
-        box-shadow: none;
         position: relative;
         z-index: 1;
+        /* Gradient stroke — 1px */
+        padding: 1px;
+        background: linear-gradient(135deg, #A4FFB8, #24E474, #154A73, #0C365F);
+        box-shadow:
+            0 0 0 1px rgba(0,255,106,0.22),
+            0 8px 40px rgba(36,228,116,0.22),
+            0 2px 12px rgba(80,58,203,0.18),
+            0 0 55px rgba(0,255,106,0.32),
+            0 0 90px rgba(0,255,106,0.14),
+            0 0 130px rgba(0,255,106,0.07);
+    }
+    /* Inner wrapper clips content inside the gradient border */
+    #game-shell-inner {
+        border-radius: 25px;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background: #88F0D9;
+    }
+
+    /* ── Desktop side panel: results shown alongside game ── */
+    #game-side-panel {
+        display: none; /* hidden on mobile, shown on desktop */
+        flex-direction: column;
+        gap: 16px;
+        width: 300px;
+        flex-shrink: 0;
+        align-self: flex-start;
+        position: sticky;
+        top: 120px;
+    }
+    @media (min-width: 900px) {
+        #game-side-panel { display: flex; }
+        /* On desktop, hide the inline end screen and show only side panel */
+        #g-end-inline { display: none !important; }
+    }
+    @media (max-width: 899px) {
+        /* On mobile, hide side panel result, show inline end screen normally */
+        #game-side-panel { display: none !important; }
+        #g-end-inline { display: flex; }
+    }
+
+    /* Side panel card */
+    .side-panel-card {
+        background: rgba(164,255,184,0.10);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 20px;
+        padding: 20px 18px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+            0 8px 32px rgba(36,228,116,0.14),
+            0 2px 10px rgba(80,58,203,0.10);
+    }
+    .side-panel-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        padding: 1px;
+        background: linear-gradient(135deg, #A4FFB8, #24E474 40%, #503ACB 70%, #0C365F);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    .side-panel-title {
+        font-family: "Oswald", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #154A73;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Live stat bars in side panel */
+    .side-stat-row {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 8px;
+    }
+    .side-stat-icon { font-size: 0.9rem; width: 16px; text-align: center; }
+    .side-stat-lbl {
+        font-family: "Oswald", sans-serif;
+        font-size: 0.68rem; color: #4F6B58;
+        width: 62px; flex-shrink: 0;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .side-stat-track {
+        flex: 1; height: 7px;
+        background: rgba(79,107,88,0.12);
+        border-radius: 4px; overflow: hidden;
+    }
+    .side-stat-fill {
+        height: 100%; border-radius: 4px;
+        transition: width 0.7s ease;
+    }
+    .side-stat-fill.pol { background: linear-gradient(90deg,#ff7043,#e53935); }
+    .side-stat-fill.nat { background: linear-gradient(90deg,#24E474,#154A73); }
+    .side-stat-fill.hap { background: linear-gradient(90deg,#ffd54f,#ff8f00); }
+    .side-stat-fill.tox { background: linear-gradient(90deg,#69f0ae,#00c853); }
+    .side-stat-num {
+        font-family: "Inter", sans-serif;
+        font-size: 0.68rem; color: #4F6B58;
+        width: 24px; text-align: right; flex-shrink: 0;
+    }
+
+    /* Score + recycled badges */
+    .side-badges {
+        display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .side-badge {
+        flex: 1; min-width: 80px;
+        background: linear-gradient(135deg, rgba(36,228,116,0.12), rgba(21,74,115,0.10));
+        border-radius: 12px;
+        padding: 10px 8px;
+        text-align: center;
+        border: 1px solid rgba(36,228,116,0.22);
+        box-shadow: 0 0 10px rgba(0,255,106,0.08);
+    }
+    .side-badge-val {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.4rem; font-weight: 700;
+        color: #154A73;
+        display: block;
+        text-shadow: 0 0 12px rgba(0,255,106,0.25);
+    }
+    .side-badge-lbl {
+        font-family: "Inter", sans-serif;
+        font-size: 0.65rem; color: #4F6B58;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* Side panel result (desktop) */
+    #side-result {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    #side-result.visible { display: flex; }
+    .side-result-badge {
+        font-size: 2.8rem; margin-bottom: 6px;
+        animation: gBadgeBounce 0.6s cubic-bezier(.34,1.56,.64,1);
+        filter: drop-shadow(0 0 12px rgba(0,255,106,0.4));
+    }
+    .side-result-title {
+        font-family: "Oswald", sans-serif;
+        font-size: 1.2rem; font-weight: 700;
+        background: linear-gradient(135deg, #24E474, #154A73);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    .side-result-sub {
+        font-family: "Inter", sans-serif;
+        font-size: 0.78rem; color: #4F6B58;
+        line-height: 1.45; margin-bottom: 14px;
+    }
+
+    /* Facts in side panel */
+    .side-facts-title {
+        font-family: "Oswald", sans-serif;
+        font-size: 0.7rem; color: #24E474;
+        letter-spacing: 1px; text-transform: uppercase;
+        margin-bottom: 8px; font-weight: 600;
+    }
+    .side-fact {
+        display: flex; gap: 6px; margin-bottom: 7px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.72rem; color: #4F6B58; line-height: 1.4;
+    }
+    .side-fact span:first-child { flex-shrink: 0; }
+
+    .side-play-again {
+        background: linear-gradient(135deg, #24E474, #154A73);
+        color: #fff; border: none; padding: 11px 28px; border-radius: 50px;
+        font-family: "Oswald", sans-serif;
+        font-size: 0.92rem; font-weight: 600; letter-spacing: 0.8px;
+        cursor: pointer;
+        box-shadow: 0 0 16px rgba(0,255,106,0.35), 0 4px 12px rgba(21,74,115,0.2);
+        transition: all 0.2s; margin-top: 10px;
+    }
+    .side-play-again:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 28px rgba(0,255,106,0.5), 0 6px 18px rgba(21,74,115,0.3);
     }
 
     .cloud { z-index: 0; }
@@ -50,89 +261,106 @@
     #g-start {
         position: relative;
         overflow: hidden;
-        border-radius: 24px;
+        border-radius: 23px;
     }
     #g-start.active { display: block; }
 
-    /* city scene IS the start screen background */
     #g-start-scene {
         position: relative;
         width: 100%;
         height: 260px;
         overflow: hidden;
-        border-radius: 24px 24px 0 0;
-    }
-    #g-start-scene-bottom {
-        position: relative;
-        width: 100%;
-        height: 60px;
-        background: linear-gradient(180deg,#5cb85c 0%,#4a8c3f 100%);
-        border-radius: 0 0 24px 24px;
+        border-radius: 23px 23px 0 0;
     }
 
     /* glass play card overlay on start */
     #g-play-card {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        width: calc(100% - 48px);
+        width: calc(100% - 40px);
         max-width: 320px;
-        background: rgba(255,255,255,0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        /* glassmorphism with gradient border */
+        background: rgba(136,240,217,0.18);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border-radius: 20px;
-        border: 1.5px solid rgba(255,255,255,0.7);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-        padding: 28px 24px 24px;
+        padding: 26px 22px 22px;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 10px;
         text-align: center;
         z-index: 10;
+        box-shadow:
+            0 8px 32px rgba(21,74,115,0.25),
+            0 0 40px rgba(0,255,106,0.12),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    /* gradient stroke on play card */
+    #g-play-card::before {
+        content: '';
+        position: absolute; inset: 0;
+        border-radius: 20px;
+        padding: 1px;
+        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
     }
 
-    .g-logo { font-size: 3rem; animation: gFloat 3s ease-in-out infinite; }
+    .g-logo {
+        font-size: 3rem;
+        animation: gFloat 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 14px rgba(0,255,106,0.5));
+    }
     @keyframes gFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
     .g-title {
         font-family: "Oswald", sans-serif;
         font-size: clamp(1.4rem, 5vw, 2rem);
         font-weight: 700;
-        color: #1a3a1a;
+        color: #154A73;
         letter-spacing: 0.5px;
         line-height: 1.15;
+        text-shadow: 0 0 18px rgba(0,255,106,0.18);
     }
     .g-subtitle {
         font-family: "Oswald", sans-serif;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 400;
-        color: #2e7d32;
-        letter-spacing: 1px;
+        color: #4F6B58;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
     }
 
     .g-btn-start {
-        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        background: linear-gradient(135deg, #24E474, #154A73);
         color: #fff;
         border: none;
         padding: 13px 38px;
         border-radius: 50px;
         font-family: "Oswald", sans-serif;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 600;
         letter-spacing: 1px;
         cursor: pointer;
-        box-shadow: 0 5px 18px rgba(46,204,113,0.38);
-        transition: all 0.2s;
+        box-shadow:
+            0 0 20px rgba(0,255,106,0.45),
+            0 4px 16px rgba(21,74,115,0.3);
+        transition: all 0.22s;
         margin-top: 4px;
+        position: relative;
     }
-    .g-btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,204,113,0.5); }
+    .g-btn-start:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 32px rgba(0,255,106,0.65), 0 6px 22px rgba(21,74,115,0.4);
+    }
     .g-btn-start:active { transform: translateY(0); }
 
     /* ── Game screen ── */
-    #g-game { background: transparent; border-radius: 24px; overflow: hidden; }
+    #g-game { background: transparent; border-radius: 0; overflow: hidden; }
     #g-game.active { display: block; }
 
     /* ── City scene ── */
@@ -478,12 +706,13 @@
 
     /* ── HUD ── */
     #g-hud {
-        background: rgba(255,255,255,0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.6);
+        background: rgba(136,240,217,0.13);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         border-top: none;
+        border-bottom: 1px solid rgba(36,228,116,0.18);
         padding: 10px 14px 8px;
+        box-shadow: 0 4px 18px rgba(21,74,115,0.08);
     }
     #g-hud-top {
         display: flex;
@@ -495,87 +724,104 @@
         font-family: "Oswald", sans-serif;
         font-size: 0.88rem;
         font-weight: 600;
-        color: #1a3a1a;
-        letter-spacing: 0.2px;
+        color: #154A73;
+        letter-spacing: 0.5px;
         display: flex;
         align-items: center;
         gap: 6px;
     }
     .g-hud-title .g-score-inline {
         font-family: "Inter", sans-serif;
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: #27ae60;
-        background: rgba(46,204,113,0.12);
-        padding: 2px 7px;
-        border-radius: 8px;
+        font-size: 0.82rem; font-weight: 700;
+        color: #24E474;
+        background: rgba(36,228,116,0.15);
+        padding: 2px 8px; border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0,255,106,0.2);
     }
     .g-timer-box {
         display: flex; align-items: center; gap: 5px;
         font-family: "Oswald", sans-serif;
-        font-size: 0.85rem; color: #37474f; font-weight: 500;
+        font-size: 0.85rem; color: #4F6B58; font-weight: 500;
     }
     #g-timer-val {
         font-family: "Oswald", sans-serif;
-        font-size: 1.15rem; font-weight: 700; color: #2c7be5;
+        font-size: 1.15rem; font-weight: 700; color: #154A73;
+        text-shadow: 0 0 10px rgba(21,74,115,0.25);
     }
-    #g-timer-val.urgent { color: #e53935; animation: gTimerPulse 0.5s ease-in-out infinite; }
+    #g-timer-val.urgent {
+        color: #e53935;
+        text-shadow: 0 0 12px rgba(229,57,53,0.5);
+        animation: gTimerPulse 0.5s ease-in-out infinite;
+    }
     @keyframes gTimerPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
 
-    /* Stats 2x2 grid */
+    /* Stats 2×2 grid */
     #g-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; }
     .g-stat-row { display: flex; align-items: center; gap: 5px; }
     .g-stat-icon { font-size: 0.8rem; width: 15px; text-align: center; }
     .g-stat-lbl {
         font-family: "Oswald", sans-serif;
         font-size: 0.63rem; font-weight: 500;
-        color: #546e7a; width: 52px; flex-shrink: 0;
+        color: #4F6B58; width: 52px; flex-shrink: 0;
         text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .g-stat-track { flex: 1; height: 6px; background: rgba(0,0,0,0.08); border-radius: 4px; overflow: hidden; }
-    .g-stat-fill { height: 100%; border-radius: 4px; transition: width 0.7s ease, background 0.7s ease; }
+    .g-stat-track {
+        flex: 1; height: 6px;
+        background: rgba(79,107,88,0.12);
+        border-radius: 4px; overflow: hidden;
+    }
+    .g-stat-fill { height: 100%; border-radius: 4px; transition: width 0.7s ease; }
     .g-stat-fill.pol { background: linear-gradient(90deg,#ff7043,#e53935); }
-    .g-stat-fill.nat { background: linear-gradient(90deg,#66bb6a,#2e7d32); }
+    .g-stat-fill.nat { background: linear-gradient(90deg,#24E474,#154A73); }
     .g-stat-fill.hap { background: linear-gradient(90deg,#ffd54f,#ff8f00); }
     .g-stat-fill.tox { background: linear-gradient(90deg,#69f0ae,#00c853); }
     .g-stat-num {
         font-family: "Inter", sans-serif;
-        font-size: 0.66rem; color: #546e7a;
+        font-size: 0.66rem; color: #4F6B58;
         width: 22px; text-align: right; flex-shrink: 0;
     }
 
     /* ── Card area ── */
     #g-card-area {
-        background: rgba(255,255,255,0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.55);
+        background: rgba(136,240,217,0.10);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         border-top: none;
         padding: 14px 14px 18px;
         display: flex; flex-direction: column; align-items: center; gap: 12px;
         min-height: 210px;
+        border-radius: 0 0 23px 23px;
     }
     .g-card-label {
         font-family: "Oswald", sans-serif;
-        font-size: 0.7rem; color: #78909c;
-        letter-spacing: 1.2px; text-transform: uppercase; font-weight: 500;
+        font-size: 0.68rem; color: #8AACDB;
+        letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500;
         align-self: flex-start; width: 100%;
     }
 
     #g-waste-card {
         width: 100%;
-        background: #fff;
-        border: 2px solid #a5d6a7;
+        background: rgba(255,255,255,0.92);
         border-radius: 16px;
         padding: 16px 18px 14px;
-        box-shadow: 0 4px 18px rgba(46,139,87,0.13), 0 1px 4px rgba(0,0,0,0.07);
         transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
         position: relative; overflow: hidden;
+        box-shadow:
+            0 6px 24px rgba(21,74,115,0.12),
+            0 0 30px rgba(0,255,106,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.8);
     }
+    /* gradient stroke on card */
     #g-waste-card::before {
         content: ''; position: absolute; inset: 0;
-        background: var(--cg,transparent);
-        border-radius: inherit; pointer-events: none; transition: background 0.5s;
+        border-radius: 16px;
+        padding: 1px;
+        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        opacity: 0.85;
     }
     #g-waste-card.entering { animation: gCardIn 0.45s cubic-bezier(.34,1.56,.64,1) forwards; }
     @keyframes gCardIn { from{transform:translateY(28px) scale(0.92);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
@@ -586,165 +832,245 @@
 
     .g-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
     .g-card-icon-bg {
-        width: 52px; height: 52px; border-radius: 13px;
+        width: 54px; height: 54px; border-radius: 14px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.85rem; flex-shrink: 0;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-        transition: background 0.5s;
+        font-size: 1.9rem; flex-shrink: 0;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+        transition: background 0.5s, box-shadow 0.5s;
     }
     .g-card-name {
         font-family: "Oswald", sans-serif;
-        font-size: 1.05rem; font-weight: 600;
-        color: #1a2e1a; margin-bottom: 3px;
-        letter-spacing: 0.3px;
+        font-size: 1.08rem; font-weight: 600;
+        color: #154A73; margin-bottom: 3px;
+        letter-spacing: 0.5px;
     }
     .g-card-num {
         font-family: "Inter", sans-serif;
-        font-size: 0.68rem; color: #90a4ae;
+        font-size: 0.68rem; color: #8AACDB;
     }
     .g-card-tip {
         font-family: "Inter", sans-serif;
-        font-size: 0.76rem; color: #2e7d32; line-height: 1.45;
-        padding: 9px 11px;
-        background: rgba(46,204,113,0.07);
-        border-left: 3px solid rgba(46,204,113,0.35);
-        border-radius: 0 7px 7px 0;
+        font-size: 0.76rem; color: #4F6B58; line-height: 1.5;
+        padding: 9px 12px;
+        background: rgba(36,228,116,0.07);
+        border-left: 3px solid #24E474;
+        border-radius: 0 8px 8px 0;
+        box-shadow: inset 0 0 12px rgba(0,255,106,0.05);
     }
 
     /* Action buttons */
     #g-actions { display: flex; gap: 11px; width: 100%; }
     .g-btn {
-        flex: 1; padding: 12px 8px; border: none; border-radius: 13px;
+        flex: 1; padding: 13px 8px; border: none; border-radius: 14px;
         font-family: "Oswald", sans-serif;
         font-size: 0.95rem; font-weight: 600;
-        letter-spacing: 0.5px;
-        cursor: pointer; transition: all 0.18s;
-        display: flex; align-items: center; justify-content: center; gap: 5px;
+        letter-spacing: 0.8px;
+        cursor: pointer; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        position: relative;
     }
     #g-btn-recycle {
-        background: linear-gradient(135deg,#2ecc71,#1a9e52);
-        color: #fff; box-shadow: 0 4px 14px rgba(46,204,113,0.3);
+        background: linear-gradient(135deg, #24E474, #154A73);
+        color: #fff;
+        box-shadow:
+            0 0 18px rgba(0,255,106,0.4),
+            0 4px 14px rgba(21,74,115,0.25);
     }
-    #g-btn-recycle:hover  { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,204,113,0.45); }
+    #g-btn-recycle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(0,255,106,0.6), 0 6px 20px rgba(21,74,115,0.35);
+    }
     #g-btn-recycle:active { transform: translateY(0); }
     #g-btn-ignore {
-        background: linear-gradient(135deg,#cfd8dc,#b0bec5);
-        color: #37474f; box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        background: rgba(138,172,219,0.18);
+        color: #4F6B58;
+        border: 1.5px solid rgba(138,172,219,0.35);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.07);
     }
-    #g-btn-ignore:hover  { transform: translateY(-2px); background: linear-gradient(135deg,#ef9a9a,#e53935); color: #fff; }
+    #g-btn-ignore:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg,#ef5350,#b71c1c);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 0 20px rgba(229,57,53,0.45), 0 4px 14px rgba(0,0,0,0.15);
+    }
     #g-btn-ignore:active { transform: translateY(0); }
 
     /* Floating text */
     #g-floats { position: absolute; inset: 0; pointer-events: none; z-index: 99; }
     .g-float {
         position: absolute;
-        font-family: "Inter", sans-serif; font-size: 0.82rem;
-        font-weight: 700; padding: 5px 10px; border-radius: 20px;
-        white-space: nowrap;
+        font-family: "Oswald", sans-serif; font-size: 0.82rem;
+        font-weight: 600; padding: 5px 11px; border-radius: 20px;
+        white-space: nowrap; letter-spacing: 0.5px;
         animation: gFloatUp 1.6s ease-out forwards;
         pointer-events: none;
     }
-    @keyframes gFloatUp { 0%{transform:translateY(0) scale(0.8);opacity:0} 15%{transform:translateY(-8px) scale(1.05);opacity:1} 85%{transform:translateY(-40px) scale(1);opacity:1} 100%{transform:translateY(-52px) scale(0.9);opacity:0} }
-    .g-float.good    { background: rgba(46,204,113,0.88); color: #fff; }
-    .g-float.bad     { background: rgba(229,57,53,0.88); color: #fff; }
-    .g-float.warning { background: rgba(255,152,0,0.9); color: #fff; }
-    .g-float.toxic   { background: rgba(76,175,80,0.92); color: #0d1f0d; }
+    @keyframes gFloatUp {
+        0%   { transform:translateY(0) scale(0.8); opacity:0; }
+        15%  { transform:translateY(-8px) scale(1.05); opacity:1; }
+        85%  { transform:translateY(-40px) scale(1); opacity:1; }
+        100% { transform:translateY(-52px) scale(0.9); opacity:0; }
+    }
+    .g-float.good    { background: linear-gradient(135deg,#24E474,#00FF6A); color: #0C365F; box-shadow: 0 0 12px rgba(0,255,106,0.5); }
+    .g-float.bad     { background: rgba(229,57,53,0.92); color: #fff; box-shadow: 0 0 10px rgba(229,57,53,0.4); }
+    .g-float.warning { background: rgba(255,152,0,0.92); color: #fff; }
+    .g-float.toxic   { background: linear-gradient(135deg,#69f0ae,#00c853); color: #0d2010; box-shadow: 0 0 12px rgba(0,200,80,0.4); }
 
     /* Event banner */
     #g-event {
         position: absolute; top: 88px; left: 8px; right: 8px;
-        background: rgba(183,28,28,0.92); color: #fff;
-        padding: 11px 14px; border-radius: 11px;
+        background: linear-gradient(135deg,rgba(183,28,28,0.95),rgba(120,0,60,0.92));
+        color: #fff;
+        padding: 11px 14px; border-radius: 12px;
         font-family: "Oswald", sans-serif; font-size: 0.88rem; font-weight: 600;
         text-align: center; z-index: 50; display: none;
-        border: 1px solid rgba(255,100,100,0.35);
-        box-shadow: 0 4px 18px rgba(183,28,28,0.45);
+        border: 1px solid rgba(255,80,80,0.4);
+        box-shadow: 0 4px 20px rgba(183,28,28,0.5), 0 0 30px rgba(229,57,53,0.2);
         animation: gBannerPop 0.3s ease-out;
         letter-spacing: 0.5px;
     }
     @keyframes gBannerPop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-    /* ── End screen ── */
-    #g-end {
-        background: rgba(255,255,255,0.82);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1.5px solid rgba(165,214,167,0.5);
-        border-radius: 24px;
+    /* ── End screen (inline / mobile) ── */
+    #g-end-inline {
+        background: rgba(136,240,217,0.12);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 22px;
         padding: 28px 20px 30px;
-        display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0;
-        max-height: 80vh; overflow-y: auto;
+        display: flex; flex-direction: column; align-items: center;
+        text-align: center; gap: 0;
+        max-height: 82vh; overflow-y: auto;
+        position: relative;
+        box-shadow:
+            0 12px 48px rgba(21,74,115,0.18),
+            0 0 60px rgba(0,255,106,0.1);
     }
-    #g-end.active { display: flex; }
+    #g-end-inline::before {
+        content: ''; position: absolute; inset: 0;
+        border-radius: 22px; padding: 1px;
+        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude;
+        pointer-events: none;
+    }
+    #g-end-inline.active { display: flex; }
 
     .g-end-badge {
-        font-size: 3.4rem; margin-bottom: 6px;
+        font-size: 3.6rem; margin-bottom: 6px;
         animation: gBadgeBounce 0.6s cubic-bezier(.34,1.56,.64,1);
+        filter: drop-shadow(0 0 16px rgba(0,255,106,0.45));
     }
     @keyframes gBadgeBounce { from{transform:scale(0) rotate(-18deg)} to{transform:scale(1) rotate(0deg)} }
     .g-end-title {
         font-family: "Oswald", sans-serif;
         font-size: clamp(1.3rem,4.5vw,1.8rem);
-        font-weight: 700; color: #1a3a1a; margin-bottom: 5px; letter-spacing: 0.5px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #24E474, #154A73);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 5px; letter-spacing: 0.5px;
     }
     .g-end-sub {
         font-family: "Inter", sans-serif; font-size: 0.85rem;
-        color: #37474f; margin-bottom: 20px; line-height: 1.5; max-width: 300px;
+        color: #4F6B58; margin-bottom: 20px; line-height: 1.5; max-width: 300px;
     }
-
     .g-end-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 9px; width: 100%; margin-bottom: 18px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+        width: 100%; margin-bottom: 18px;
     }
     .g-end-card {
-        background: rgba(255,255,255,0.75);
-        border: 1px solid rgba(165,214,167,0.5);
+        background: rgba(164,255,184,0.12);
         border-radius: 13px; padding: 13px 8px;
         display: flex; flex-direction: column; align-items: center; gap: 3px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid rgba(36,228,116,0.22);
+        box-shadow: 0 0 12px rgba(0,255,106,0.08), 0 2px 8px rgba(21,74,115,0.08);
     }
     .g-end-card span:nth-child(1) { font-size: 1.4rem; }
     .g-end-card span:nth-child(2) {
         font-family: "Inter", sans-serif;
-        font-size: 1.25rem; font-weight: 800; color: #27ae60;
+        font-size: 1.25rem; font-weight: 800; color: #154A73;
+        text-shadow: 0 0 10px rgba(0,255,106,0.2);
     }
     .g-end-card span:nth-child(3) {
         font-family: "Oswald", sans-serif;
-        font-size: 0.68rem; color: #78909c;
+        font-size: 0.66rem; color: #8AACDB;
         text-transform: uppercase; letter-spacing: 0.5px;
     }
-
     .g-end-facts {
-        width: 100%; background: rgba(232,245,233,0.6);
-        border: 1px solid rgba(165,214,167,0.4);
+        width: 100%;
+        background: rgba(36,228,116,0.06);
+        border: 1px solid rgba(36,228,116,0.18);
         border-radius: 13px; padding: 14px; margin-bottom: 18px; text-align: left;
     }
     .g-end-facts h3 {
         font-family: "Oswald", sans-serif;
-        font-size: 0.78rem; color: #2e7d32;
-        letter-spacing: 1px; text-transform: uppercase; margin-bottom: 9px; font-weight: 600;
+        font-size: 0.75rem; color: #24E474;
+        letter-spacing: 1px; text-transform: uppercase;
+        margin-bottom: 9px; font-weight: 600;
+        text-shadow: 0 0 8px rgba(0,255,106,0.3);
     }
     .g-fact {
         display: flex; gap: 7px; margin-bottom: 7px;
-        font-family: "Inter", sans-serif; font-size: 0.77rem; color: #37474f; line-height: 1.4;
+        font-family: "Inter", sans-serif; font-size: 0.77rem;
+        color: #4F6B58; line-height: 1.4;
     }
     .g-fact span:first-child { flex-shrink: 0; }
-
     .g-btn-again {
-        background: linear-gradient(135deg,#2ecc71,#27ae60);
+        background: linear-gradient(135deg, #24E474, #154A73);
         color: #fff; border: none; padding: 13px 38px; border-radius: 50px;
         font-family: "Oswald", sans-serif;
         font-size: 1rem; font-weight: 600; letter-spacing: 0.8px;
-        cursor: pointer; box-shadow: 0 5px 16px rgba(46,204,113,0.35);
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(0,255,106,0.4), 0 5px 16px rgba(21,74,115,0.3);
         transition: all 0.2s;
     }
-    .g-btn-again:hover { transform: translateY(-2px); }
+    .g-btn-again:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 32px rgba(0,255,106,0.6), 0 8px 22px rgba(21,74,115,0.4);
+    }
 
-    /* Mobile tweaks */
+    /* ── Star twinkle animation ── */
+    @keyframes gTwinkle {
+        0%,100% { opacity:0.2; transform:scale(0.7); }
+        50%      { opacity:1;   transform:scale(1.3); }
+    }
+    /* ── Night city: yellow-lit building windows ── */
+    [data-theme="dark"] .g-building::after {
+        background:
+            repeating-linear-gradient(180deg, transparent, transparent 8px, rgba(255,210,60,0.38) 8px, rgba(255,210,60,0.38) 10px),
+            repeating-linear-gradient(90deg,  transparent, transparent 6px, rgba(255,190,40,0.28) 6px, rgba(255,190,40,0.28) 8px);
+    }
+    /* ── Night hills: dark silhouette ── */
+    [data-theme="dark"] .g-hill { background: #0c1a09 !important; }
+    /* ── Sunrise clouds: warm pastel tint ── */
+    [data-theme="sky"] .g-cloud-scene {
+        background: rgba(255,205,170,0.75) !important;
+    }
+    [data-theme="sky"] .g-cloud-scene::before,
+    [data-theme="sky"] .g-cloud-scene::after {
+        background: rgba(255,205,170,0.75) !important;
+    }
+    /* ── Sunrise hills: soft warm green ── */
+    [data-theme="sky"] .g-hill { background: #a8d5a2 !important; }
+    /* ── Night road: darker ── */
+    [data-theme="dark"] #g-road { background: #1a1a1a; }
+    /* ── Night river: dark blue ── */
+    [data-theme="dark"] #g-river { background: rgba(20,40,90,0.65); }
+
+    /* Mobile tweaks — extended in mansstils.css */
     @media (max-width:400px) {
         #g-scene { height: 190px; }
         .g-card-icon-bg { width: 44px; height: 44px; font-size: 1.6rem; }
         .g-btn { padding: 11px 6px; font-size: 0.85rem; }
     }
+    /* Fix: game screen needs position:relative for absolute children (floats, event) */
+    #g-game { position: relative !important; }
+    /* Fix: card area rounded bottom corners */
+    #g-card-area { border-radius: 0 0 22px 22px; }
+    /* Smooth HUD/card area separation */
+    #g-hud { border-bottom: 1px solid rgba(165,214,167,0.25); }
     </style>
 </head>
 <body>
@@ -767,131 +1093,177 @@
 
 <div class="benefits-page">
 
-    <!-- ══════════════════════════════════════════════
-         GAME SHELL
-    ══════════════════════════════════════════════ -->
-    <div id="game-shell">
+    <div id="game-layout-row">
 
-        <!-- START SCREEN -->
-        <div id="g-start" class="g-screen active">
-            <div id="g-start-scene">
-                <!-- city scene drawn by JS -->
-                <div id="g-start-sky" style="position:absolute;inset:0;background:linear-gradient(180deg,#87CEEB 0%,#b0e2ff 100%);"></div>
-                <div id="g-start-sun" style="position:absolute;width:40px;height:40px;background:radial-gradient(circle,#ffe066,#ffb700);border-radius:50%;top:14px;right:28px;box-shadow:0 0 20px 6px rgba(255,200,0,0.32);z-index:1;"></div>
-                <div id="g-start-buildings" style="position:absolute;bottom:36px;left:0;right:0;height:130px;display:flex;align-items:flex-end;gap:3px;padding:0 4px;z-index:3;"></div>
-                <div id="g-start-trees" style="position:absolute;bottom:36px;left:0;right:0;z-index:4;pointer-events:none;"></div>
-                <div id="g-start-ground" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:linear-gradient(180deg,#5cb85c 0%,#4a8c3f 100%);z-index:2;"></div>
+        <!-- ══════════════════ GAME SHELL ══════════════════ -->
+        <div id="game-shell">
+          <div id="game-shell-inner">
 
-                <!-- glass play card -->
-                <div id="g-play-card">
-                    <div class="g-logo">🌍</div>
-                    <div class="g-title">Save the City</div>
-                    <div class="g-subtitle">Recycling Impact</div>
-                    <button class="g-btn-start" onclick="gStart()">♻️ Play Now</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- GAME SCREEN -->
-        <div id="g-game" class="g-screen">
-            <!-- City scene -->
-            <div id="g-scene">
-                <div id="g-sky"></div>
-                <div id="g-smog"></div>
-                <div id="g-sun"></div>
-                <div id="g-hills"></div>
-                <div id="g-buildings"></div>
-                <div id="g-trees"></div>
-                <div id="g-flowers"></div>
-                <div id="g-river"></div>
-                <div id="g-ground"><div id="g-road"></div></div>
-                <div id="g-fx-layer"></div>
-            </div>
-
-            <!-- HUD -->
-            <div id="g-hud">
-                <div id="g-hud-top">
-                    <div class="g-hud-title">
-                        🌍 Save the City: Recycling Impact
-                        <span class="g-score-inline" id="g-score-val">0</span>
-                    </div>
-                    <div class="g-timer-box">
-                        ⏱ <span id="g-timer-val">45</span>s
-                    </div>
-                </div>
-                <div id="g-stats">
-                    <div class="g-stat-row">
-                        <span class="g-stat-icon">💨</span>
-                        <span class="g-stat-lbl">Pollution</span>
-                        <div class="g-stat-track"><div class="g-stat-fill pol" id="g-bar-pol" style="width:10%"></div></div>
-                        <span class="g-stat-num" id="g-num-pol">10</span>
-                    </div>
-                    <div class="g-stat-row">
-                        <span class="g-stat-icon">🌿</span>
-                        <span class="g-stat-lbl">Nature</span>
-                        <div class="g-stat-track"><div class="g-stat-fill nat" id="g-bar-nat" style="width:80%"></div></div>
-                        <span class="g-stat-num" id="g-num-nat">80</span>
-                    </div>
-                    <div class="g-stat-row">
-                        <span class="g-stat-icon">😊</span>
-                        <span class="g-stat-lbl">Happiness</span>
-                        <div class="g-stat-track"><div class="g-stat-fill hap" id="g-bar-hap" style="width:75%"></div></div>
-                        <span class="g-stat-num" id="g-num-hap">75</span>
-                    </div>
-                    <div class="g-stat-row">
-                        <span class="g-stat-icon">☣️</span>
-                        <span class="g-stat-lbl">Toxicity</span>
-                        <div class="g-stat-track"><div class="g-stat-fill tox" id="g-bar-tox" style="width:5%"></div></div>
-                        <span class="g-stat-num" id="g-num-tox">5</span>
+            <!-- START SCREEN -->
+            <div id="g-start" class="g-screen active">
+                <div id="g-start-scene">
+                    <div id="g-start-sky" style="position:absolute;inset:0;background:linear-gradient(180deg,#87CEEB 0%,#b0e2ff 100%);"></div>
+                    <div id="g-start-sun" style="position:absolute;width:40px;height:40px;background:radial-gradient(circle,#ffe066,#ffb700);border-radius:50%;top:14px;right:28px;box-shadow:0 0 20px 6px rgba(255,200,0,0.32);z-index:1;"></div>
+                    <div id="g-start-buildings" style="position:absolute;bottom:36px;left:0;right:0;height:130px;display:flex;align-items:flex-end;gap:3px;padding:0 4px;z-index:3;"></div>
+                    <div id="g-start-trees" style="position:absolute;bottom:36px;left:0;right:0;z-index:4;pointer-events:none;"></div>
+                    <div id="g-start-ground" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:linear-gradient(180deg,#5cb85c 0%,#4a8c3f 100%);z-index:2;"></div>
+                    <div id="g-play-card">
+                        <div class="g-logo">🌍</div>
+                        <div class="g-title">Save the City</div>
+                        <div class="g-subtitle">Recycling Impact</div>
+                        <button class="g-btn-start" onclick="gStart()">♻️ Play Now</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Card area -->
-            <div id="g-card-area">
-                <div class="g-card-label">INCOMING WASTE ↓</div>
-                <div id="g-waste-card">
-                    <div class="g-card-top">
-                        <div class="g-card-icon-bg" id="g-icon-bg">
-                            <span id="g-icon">♻️</span>
+            <!-- GAME SCREEN -->
+            <div id="g-game" class="g-screen">
+                <div id="g-scene">
+                    <div id="g-sky"></div>
+                    <div id="g-smog"></div>
+                    <div id="g-sun"></div>
+                    <div id="g-hills"></div>
+                    <div id="g-buildings"></div>
+                    <div id="g-trees"></div>
+                    <div id="g-flowers"></div>
+                    <div id="g-river"></div>
+                    <div id="g-ground"><div id="g-road"></div></div>
+                    <div id="g-fx-layer"></div>
+                </div>
+                <div id="g-hud">
+                    <div id="g-hud-top">
+                        <div class="g-hud-title">
+                            🌍 Save the City: Recycling Impact
+                            <span class="g-score-inline" id="g-score-val">0</span>
                         </div>
-                        <div>
-                            <div class="g-card-name" id="g-card-name">Loading…</div>
-                            <div class="g-card-num"  id="g-card-num">Card 1 of 12</div>
+                        <div class="g-timer-box">⏱ <span id="g-timer-val">45</span>s</div>
+                    </div>
+                    <div id="g-stats">
+                        <div class="g-stat-row">
+                            <span class="g-stat-icon">💨</span>
+                            <span class="g-stat-lbl">Pollution</span>
+                            <div class="g-stat-track"><div class="g-stat-fill pol" id="g-bar-pol" style="width:10%"></div></div>
+                            <span class="g-stat-num" id="g-num-pol">10</span>
+                        </div>
+                        <div class="g-stat-row">
+                            <span class="g-stat-icon">🌿</span>
+                            <span class="g-stat-lbl">Nature</span>
+                            <div class="g-stat-track"><div class="g-stat-fill nat" id="g-bar-nat" style="width:80%"></div></div>
+                            <span class="g-stat-num" id="g-num-nat">80</span>
+                        </div>
+                        <div class="g-stat-row">
+                            <span class="g-stat-icon">😊</span>
+                            <span class="g-stat-lbl">Happiness</span>
+                            <div class="g-stat-track"><div class="g-stat-fill hap" id="g-bar-hap" style="width:75%"></div></div>
+                            <span class="g-stat-num" id="g-num-hap">75</span>
+                        </div>
+                        <div class="g-stat-row">
+                            <span class="g-stat-icon">☣️</span>
+                            <span class="g-stat-lbl">Toxicity</span>
+                            <div class="g-stat-track"><div class="g-stat-fill tox" id="g-bar-tox" style="width:5%"></div></div>
+                            <span class="g-stat-num" id="g-num-tox">5</span>
                         </div>
                     </div>
-                    <div class="g-card-tip" id="g-card-tip">Loading…</div>
                 </div>
-                <div id="g-actions">
-                    <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')">❌ Ignore</button>
-                    <button class="g-btn" id="g-btn-recycle" onclick="gDecide('recycle')">♻️ Recycle</button>
+                <div id="g-card-area">
+                    <div class="g-card-label">INCOMING WASTE ↓</div>
+                    <div id="g-waste-card">
+                        <div class="g-card-top">
+                            <div class="g-card-icon-bg" id="g-icon-bg"><span id="g-icon">♻️</span></div>
+                            <div>
+                                <div class="g-card-name" id="g-card-name">Loading…</div>
+                                <div class="g-card-num"  id="g-card-num">Card 1 of 12</div>
+                            </div>
+                        </div>
+                        <div class="g-card-tip" id="g-card-tip">Loading…</div>
+                    </div>
+                    <div id="g-actions">
+                        <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')">❌ Ignore</button>
+                        <button class="g-btn" id="g-btn-recycle" onclick="gDecide('recycle')">♻️ Recycle</button>
+                    </div>
+                </div>
+                <div id="g-floats"></div>
+                <div id="g-event"></div>
+            </div>
+
+            <!-- END SCREEN (mobile / inline) -->
+            <div id="g-end-inline" class="g-screen">
+                <div class="g-end-badge" id="g-end-badge">🌍</div>
+                <div class="g-end-title" id="g-end-title">Eco Hero!</div>
+                <div class="g-end-sub"   id="g-end-sub">Great job!</div>
+                <div class="g-end-grid">
+                    <div class="g-end-card"><span>🏆</span><span id="g-end-score">0</span><span>Score</span></div>
+                    <div class="g-end-card"><span>♻️</span><span id="g-end-recycled">0</span><span>Recycled</span></div>
+                    <div class="g-end-card"><span>🌿</span><span id="g-end-nat">0</span><span>Nature</span></div>
+                    <div class="g-end-card"><span>😊</span><span id="g-end-hap">0</span><span>Happiness</span></div>
+                </div>
+                <div class="g-end-facts">
+                    <h3>Did You Know?</h3>
+                    <div id="g-facts-list"></div>
+                </div>
+                <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
+            </div>
+
+          </div><!-- /game-shell-inner -->
+        </div><!-- /game-shell -->
+
+        <!-- ══════════════════ SIDE PANEL (desktop only) ══════════════════ -->
+        <div id="game-side-panel">
+
+            <!-- Live stats card -->
+            <div class="side-panel-card" id="side-stats-card">
+                <div class="side-panel-title">📊 City Stats</div>
+                <div class="side-stat-row">
+                    <span class="side-stat-icon">💨</span>
+                    <span class="side-stat-lbl">Pollution</span>
+                    <div class="side-stat-track"><div class="side-stat-fill pol" id="sp-bar-pol" style="width:10%"></div></div>
+                    <span class="side-stat-num" id="sp-num-pol">10</span>
+                </div>
+                <div class="side-stat-row">
+                    <span class="side-stat-icon">🌿</span>
+                    <span class="side-stat-lbl">Nature</span>
+                    <div class="side-stat-track"><div class="side-stat-fill nat" id="sp-bar-nat" style="width:80%"></div></div>
+                    <span class="side-stat-num" id="sp-num-nat">80</span>
+                </div>
+                <div class="side-stat-row">
+                    <span class="side-stat-icon">😊</span>
+                    <span class="side-stat-lbl">Happiness</span>
+                    <div class="side-stat-track"><div class="side-stat-fill hap" id="sp-bar-hap" style="width:75%"></div></div>
+                    <span class="side-stat-num" id="sp-num-hap">75</span>
+                </div>
+                <div class="side-stat-row">
+                    <span class="side-stat-icon">☣️</span>
+                    <span class="side-stat-lbl">Toxicity</span>
+                    <div class="side-stat-track"><div class="side-stat-fill tox" id="sp-bar-tox" style="width:5%"></div></div>
+                    <span class="side-stat-num" id="sp-num-tox">5</span>
+                </div>
+                <div class="side-badges">
+                    <div class="side-badge">
+                        <span class="side-badge-val" id="sp-score">0</span>
+                        <span class="side-badge-lbl">Score</span>
+                    </div>
+                    <div class="side-badge">
+                        <span class="side-badge-val" id="sp-recycled">0</span>
+                        <span class="side-badge-lbl">Recycled</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Overlays -->
-            <div id="g-floats"></div>
-            <div id="g-event"></div>
-        </div>
-
-        <!-- END SCREEN -->
-        <div id="g-end" class="g-screen">
-            <div class="g-end-badge" id="g-end-badge">🌍</div>
-            <div class="g-end-title"  id="g-end-title">Eco Hero!</div>
-            <div class="g-end-sub"    id="g-end-sub">Great job!</div>
-            <div class="g-end-grid">
-                <div class="g-end-card"><span>🏆</span><span id="g-end-score">0</span><span>Score</span></div>
-                <div class="g-end-card"><span>♻️</span><span id="g-end-recycled">0</span><span>Recycled</span></div>
-                <div class="g-end-card"><span>🌿</span><span id="g-end-nat">0</span><span>Nature</span></div>
-                <div class="g-end-card"><span>😊</span><span id="g-end-hap">0</span><span>Happiness</span></div>
+            <!-- Result card (appears after game ends) -->
+            <div class="side-panel-card" id="side-result-card" style="display:none;">
+                <div id="side-result">
+                    <div class="side-result-badge" id="sp-end-badge">🌍</div>
+                    <div class="side-result-title" id="sp-end-title">Eco Hero!</div>
+                    <div class="side-result-sub"   id="sp-end-sub">Great recycling!</div>
+                    <div class="side-facts-title">Did You Know?</div>
+                    <div id="sp-facts-list"></div>
+                    <button class="side-play-again" onclick="gStart()">↩ Play Again</button>
+                </div>
             </div>
-            <div class="g-end-facts">
-                <h3>Did You Know?</h3>
-                <div id="g-facts-list"></div>
-            </div>
-            <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
-        </div>
 
-    </div><!-- /game-shell -->
+        </div><!-- /game-side-panel -->
+
+    </div><!-- /game-layout-row -->
 </div><!-- /benefits-page -->
 
 <h2>EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
@@ -1006,6 +1378,104 @@ function gScreen(id) {
     document.querySelectorAll('.g-screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
+function spSet(id,val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+function spBar(id,val){ const el=document.getElementById(id); if(el) el.style.width=val+'%'; }
+
+// ════════════════════════════════════════════════════════
+//  THEME HELPERS
+// ════════════════════════════════════════════════════════
+function gGetTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'light';
+}
+
+function gSpawnStarsInEl(container, count) {
+    container.querySelectorAll('.g-star-el').forEach(e => e.remove());
+    for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        const x = 4 + Math.random() * 88;
+        const y = 3 + Math.random() * 65;
+        const size = 1 + Math.random() * 2;
+        const delay = Math.random() * 3.5;
+        const dur = 1.4 + Math.random() * 2;
+        star.className = 'g-star-el';
+        star.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:${size}px;height:${size}px;background:#fff;border-radius:50%;z-index:2;pointer-events:none;animation:gTwinkle ${dur}s ease-in-out ${delay}s infinite;`;
+        container.appendChild(star);
+    }
+}
+
+function gApplyThemeToStartScene() {
+    const theme = gGetTheme();
+    const sky  = document.getElementById('g-start-sky');
+    const sun  = document.getElementById('g-start-sun');
+    const gnd  = document.getElementById('g-start-ground');
+    const bldgs = document.getElementById('g-start-buildings');
+    if (!sky) return;
+    sky.querySelectorAll('.g-star-el').forEach(e => e.remove());
+
+    if (theme === 'dark') {
+        sky.style.background = 'linear-gradient(180deg,#04040f 0%,#07091c 50%,#0c1130 100%)';
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle at 38% 38%,#fffde7,#d4edbc)';
+            sun.style.boxShadow  = '0 0 18px 7px rgba(230,245,200,0.18),inset -4px -2px 0 0 rgba(170,185,140,0.38)';
+            sun.style.width = '28px'; sun.style.height = '28px';
+            sun.style.top = '14px'; sun.style.right = '28px'; sun.style.bottom = '';
+        }
+        gSpawnStarsInEl(sky, 24);
+        if (gnd) gnd.style.background = 'linear-gradient(180deg,#182a14 0%,#0f1c0b 100%)';
+        if (bldgs) bldgs.querySelectorAll('.g-building').forEach(b => { b.style.filter = 'brightness(0.36) saturate(0.35)'; });
+    } else if (theme === 'sky') {
+        sky.style.background = 'linear-gradient(180deg,#5B21B6 0%,#BE185D 22%,#EA580C 50%,#FED7AA 74%,#FFF7ED 100%)';
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle,#FEF08A,#F97316)';
+            sun.style.boxShadow  = '0 0 28px 10px rgba(251,146,60,0.42)';
+            sun.style.width = '36px'; sun.style.height = '36px';
+            sun.style.bottom = '42px'; sun.style.right = '14%'; sun.style.top = 'auto';
+        }
+        if (gnd) gnd.style.background = 'linear-gradient(180deg,#86EFAC 0%,#4ADE80 100%)';
+        if (bldgs) bldgs.querySelectorAll('.g-building').forEach(b => { b.style.filter = 'brightness(0.88) saturate(0.8)'; });
+    } else {
+        sky.style.background = 'linear-gradient(180deg,#87CEEB 0%,#b0e2ff 100%)';
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle,#ffe066,#ffb700)';
+            sun.style.boxShadow  = '0 0 20px 6px rgba(255,200,0,0.32)';
+            sun.style.width = '40px'; sun.style.height = '40px';
+            sun.style.top = '14px'; sun.style.right = '28px'; sun.style.bottom = '';
+        }
+        if (gnd) gnd.style.background = 'linear-gradient(180deg,#5cb85c 0%,#4a8c3f 100%)';
+        if (bldgs) bldgs.querySelectorAll('.g-building').forEach(b => { b.style.filter = ''; });
+    }
+}
+
+function gApplyThemeToGameScene() {
+    const theme = gGetTheme();
+    const sun = document.getElementById('g-sun');
+    const sky = document.getElementById('g-sky');
+    if (sky) sky.querySelectorAll('.g-star-el').forEach(e => e.remove());
+
+    if (theme === 'dark') {
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle at 38% 38%,#fffde7,#d4edbc)';
+            sun.style.boxShadow  = '0 0 20px 8px rgba(230,245,200,0.18),inset -4px -2px 0 0 rgba(170,185,140,0.38)';
+            sun.style.width = '30px'; sun.style.height = '30px';
+            sun.style.top = '16px'; sun.style.right = '28px'; sun.style.bottom = '';
+        }
+        if (sky) gSpawnStarsInEl(sky, 26);
+    } else if (theme === 'sky') {
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle,#FEF08A,#F97316,#EA580C)';
+            sun.style.boxShadow  = '0 0 32px 14px rgba(251,146,60,0.38),0 0 60px 24px rgba(234,88,12,0.15)';
+            sun.style.width = '38px'; sun.style.height = '38px';
+            sun.style.top = 'auto'; sun.style.bottom = '50px'; sun.style.right = '18%';
+        }
+    } else {
+        if (sun) {
+            sun.style.background = 'radial-gradient(circle,#ffe066,#ffb700)';
+            sun.style.boxShadow  = '0 0 22px 7px rgba(255,200,0,0.35)';
+            sun.style.width = '44px'; sun.style.height = '44px';
+            sun.style.top = '14px'; sun.style.right = '30px'; sun.style.bottom = '';
+        }
+    }
+}
 
 // ════════════════════════════════════════════════════════
 //  SCENE BUILD
@@ -1083,6 +1553,7 @@ function gBuildStartScene() {
     bl.innerHTML='';
     BLDG_DATA.forEach(d=>{
         const el=document.createElement('div');
+        el.className='g-building';
         el.style.cssText=`width:${d.w}px;height:${d.h*0.85}px;background:${d.c};border-radius:4px 4px 0 0;flex-shrink:0;`;
         bl.appendChild(el);
     });
@@ -1095,6 +1566,7 @@ function gBuildStartScene() {
         t.innerHTML='<div style="width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:28px solid #4ed45e;margin-bottom:-6px;"></div><div style="width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:22px solid #3cb84c;"></div><div style="width:5px;height:12px;background:#795548;"></div>';
         tl.appendChild(t);
     });
+    gApplyThemeToStartScene();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1104,8 +1576,16 @@ function gStart() {
     Object.assign(GS,{pol:10,nat:80,hap:75,tox:5,score:0,recycled:0,ignored:0,timeLeft:45,running:false});
     GS.deck = [...G_CATS].sort(()=>Math.random()-0.5);
     GS.cardIdx = 0;
+    // reset side panel
+    const src=document.getElementById('side-result-card');
+    const ssc=document.getElementById('side-stats-card');
+    const sr=document.getElementById('side-result');
+    if(src){ src.style.display='none'; }
+    if(ssc){ ssc.style.display='block'; }
+    if(sr){ sr.classList.remove('visible'); }
     gScreen('g-game');
     gBuildScene();
+    gApplyThemeToGameScene();
     gUpdateHUD();
     gUpdateScene();
     gShowCard();
@@ -1138,7 +1618,9 @@ function gShowCard() {
     const card=document.getElementById('g-waste-card');
     document.getElementById('g-icon').textContent=cat.icon;
     document.getElementById('g-card-name').textContent=cat.name;
-    document.getElementById('g-card-num').textContent=`Card ${GS.cardIdx+1} of ${GS.deck.length}`;
+    const cardOf = (typeof translateKey==='function') ? (translateKey('Card')||'Card') : 'Card';
+    const ofWord = (typeof translateKey==='function') ? (translateKey('of')||'of') : 'of';
+    document.getElementById('g-card-num').textContent=`${cardOf} ${GS.cardIdx+1} ${ofWord} ${GS.deck.length}`;
     document.getElementById('g-card-tip').textContent=cat.tip;
     const ib=document.getElementById('g-icon-bg');
     ib.style.background=cat.color+'22';
@@ -1584,6 +2066,13 @@ function gCatFX_Recycle(id) {
 function gUpdateHUD() {
     gSetBar('pol',GS.pol); gSetBar('nat',GS.nat); gSetBar('hap',GS.hap); gSetBar('tox',GS.tox);
     document.getElementById('g-score-val').textContent=GS.score;
+    // sync side panel
+    spBar('sp-bar-pol',GS.pol); spSet('sp-num-pol',Math.round(GS.pol));
+    spBar('sp-bar-nat',GS.nat); spSet('sp-num-nat',Math.round(GS.nat));
+    spBar('sp-bar-hap',GS.hap); spSet('sp-num-hap',Math.round(GS.hap));
+    spBar('sp-bar-tox',GS.tox); spSet('sp-num-tox',Math.round(GS.tox));
+    spSet('sp-score',GS.score);
+    spSet('sp-recycled',GS.recycled);
     if(GS.pol>=80) gFloat('⚠️ Severe Pollution!','warning');
     if(GS.tox>=80) gFloat('☣️ Toxic Warning!','toxic');
     if(GS.nat<=15) gFloat('🌳 Nature Critical!','warning');
@@ -1598,37 +2087,77 @@ function gSetBar(n,v) {
 // ════════════════════════════════════════════════════════
 function gUpdateScene() {
     const p=GS.pol/100;
-    // Sky color changes with pollution
-    const sr=Math.round(135+p*70), sg=Math.round(206-p*130), sb=Math.round(235-p*150);
-    document.getElementById('g-sky').style.background=`linear-gradient(180deg,rgb(${sr},${sg},${sb}) 0%,rgb(${sr+15},${sg+15},${sb+5}) 100%)`;
-    // Sun fades with pollution
-    document.getElementById('g-sun').style.opacity=Math.max(0.1, 1-p*0.75);
+    const theme=gGetTheme();
+
+    // Sky — theme-aware base + pollution
+    let sr,sg,sb,sr2,sg2,sb2;
+    if(theme==='dark'){
+        sr=Math.round(4+p*52); sg=Math.round(4+p*18); sb=Math.round(15+p*38);
+        sr2=Math.round(12+p*42); sg2=Math.round(12+p*18); sb2=Math.round(32+p*28);
+    } else if(theme==='sky'){
+        // Sunrise pastel base dims toward murky mauve with pollution
+        sr=Math.round(195-p*90); sg=Math.round(78-p*45); sb=Math.round(148-p*70);
+        sr2=Math.round(235-p*80); sg2=Math.round(138-p*85); sb2=Math.round(118-p*65);
+    } else {
+        sr=Math.round(135+p*70); sg=Math.round(206-p*130); sb=Math.round(235-p*150);
+        sr2=sr+15; sg2=sg+15; sb2=sb+5;
+    }
+    document.getElementById('g-sky').style.background=`linear-gradient(180deg,rgb(${sr},${sg},${sb}) 0%,rgb(${sr2},${sg2},${sb2}) 100%)`;
+
+    // Sun / moon opacity
+    const sunEl=document.getElementById('g-sun');
+    if(sunEl) sunEl.style.opacity=String(theme==='dark' ? Math.max(0.6,1-p*0.25) : Math.max(0.1,1-p*0.75));
+
     // Smog overlay
     const sa=p*0.45;
     document.getElementById('g-smog').style.background=`radial-gradient(ellipse at 50% 80%,rgba(120,100,60,${sa}) 0%,rgba(90,70,30,${sa*0.5}) 60%,transparent 100%)`;
-    // Ground color changes with nature stat
+
+    // Ground — theme-aware
     const np=1-(GS.nat/100);
-    const gr=Math.round(92+np*55), gg=Math.round(184-np*90), gb=Math.round(92-np*50);
-    document.getElementById('g-ground').style.background=`linear-gradient(180deg,rgb(${gr},${gg},${gb}) 0%,rgb(${gr-6},${gg-8},${gb-5}) 100%)`;
-    // Buildings desaturate with pollution
-    document.querySelectorAll('.g-building').forEach(b=>{ b.style.filter=`saturate(${1-p*0.6}) brightness(${1-p*0.2})`; });
-    // Trees respond to nature stat
+    if(theme==='dark'){
+        const gr=Math.round(20+np*10),gg=Math.round(34-np*14),gb=Math.round(14+np*4);
+        document.getElementById('g-ground').style.background=`linear-gradient(180deg,rgb(${gr},${gg},${gb}) 0%,rgb(${gr-3},${gg-5},${gb-2}) 100%)`;
+    } else if(theme==='sky'){
+        const gr=Math.round(118+np*34),gg=Math.round(186-np*64),gb=Math.round(105-np*36);
+        document.getElementById('g-ground').style.background=`linear-gradient(180deg,rgb(${gr},${gg},${gb}) 0%,rgb(${gr-5},${gg-8},${gb-3}) 100%)`;
+    } else {
+        const gr=Math.round(92+np*55),gg=Math.round(184-np*90),gb=Math.round(92-np*50);
+        document.getElementById('g-ground').style.background=`linear-gradient(180deg,rgb(${gr},${gg},${gb}) 0%,rgb(${gr-6},${gg-8},${gb-5}) 100%)`;
+    }
+
+    // Buildings — dark: keep dim so CSS yellow windows show; others desaturate
+    document.querySelectorAll('#g-buildings .g-building').forEach(b=>{
+        if(theme==='dark'){
+            b.style.filter=`brightness(${Math.max(0.18,0.38-p*0.12)}) saturate(${Math.max(0.08,0.4-p*0.2)})`;
+        } else {
+            b.style.filter=`saturate(${1-p*0.6}) brightness(${1-p*0.2})`;
+        }
+    });
+
+    // Trees
     const targetT=Math.round((GS.nat/100)*GS.treeRefs.length);
     GS.treeRefs.forEach((t,i)=>{
-        if(i<targetT && parseFloat(t.style.opacity||1)<0.3){
-            t.style.opacity='1'; t.style.transform='';
-        }
+        if(i<targetT && parseFloat(t.style.opacity||1)<0.3){ t.style.opacity='1'; t.style.transform=''; }
         const topEl=t.querySelector('.g-treetop');
         const topBig=t.querySelector('.g-treetop-big');
-        const green=`rgb(20,${180-Math.round((1-GS.nat/100)*80)},40)`;
-        if(topEl) topEl.style.borderBottomColor=green;
-        if(topBig) topBig.style.borderBottomColor=`rgb(15,${155-Math.round((1-GS.nat/100)*70)},30)`;
+        if(theme==='dark'){
+            const gv=Math.max(12,28-Math.round(np*16));
+            if(topEl) topEl.style.borderBottomColor=`rgb(6,${gv+4},6)`;
+            if(topBig) topBig.style.borderBottomColor=`rgb(4,${gv},4)`;
+        } else {
+            const green=`rgb(20,${180-Math.round(np*80)},40)`;
+            if(topEl) topEl.style.borderBottomColor=green;
+            if(topBig) topBig.style.borderBottomColor=`rgb(15,${155-Math.round(np*70)},30)`;
+        }
     });
+
     // Flowers fade with nature
-    const fopacity=Math.max(0, GS.nat/100 - 0.2);
-    document.getElementById('g-flowers').style.opacity=fopacity;
-    // Hills fade with nature
-    document.querySelectorAll('.g-hill').forEach(h=>{ h.style.opacity=String(Math.max(0.15, 0.55-p*0.3)); });
+    document.getElementById('g-flowers').style.opacity=String(Math.max(0,GS.nat/100-0.2));
+
+    // Hills
+    document.querySelectorAll('.g-hill').forEach(h=>{
+        h.style.opacity=String(theme==='dark' ? Math.max(0.05,0.18-p*0.10) : Math.max(0.15,0.55-p*0.3));
+    });
 }
 
 // ════════════════════════════════════════════════════════
@@ -1775,20 +2304,24 @@ function gSoundRecycle() {
 // ════════════════════════════════════════════════════════
 //  END SCREEN
 // ════════════════════════════════════════════════════════
+function tk(k){ return (typeof translateKey==='function') ? (translateKey(k)||k) : k; }
+
 function gShowEnd() {
-    gScreen('g-end');
+    gScreen('g-end-inline');
     const eco=GS.recycled-GS.ignored*0.5;
     let badge,title,sub;
     if(eco>=GS.recycled*0.65 && GS.pol<45 && GS.tox<45){
-        badge='🌍'; title='Eco Hero!';
-        sub='Outstanding! Your smart recycling decisions kept the city clean, healthy, and thriving.';
+        badge='🌍'; title=tk('Eco Hero!');
+        sub=tk('Outstanding! Your smart recycling decisions kept the city clean, healthy, and thriving.');
     } else if(eco>=0||GS.pol<65){
-        badge='⚖️'; title='Balanced City';
-        sub='Not bad! The city is holding on, but more recycling would make it truly sustainable.';
+        badge='⚖️'; title=tk('Balanced City');
+        sub=tk('Not bad! The city is holding on, but more recycling would make it truly sustainable.');
     } else {
-        badge='🌫️'; title='Environmental Crisis';
-        sub='The city is struggling with pollution and toxic waste. Every recycling choice matters!';
+        badge='🌫️'; title=tk('Environmental Crisis');
+        sub=tk('The city is struggling with pollution and toxic waste. Every recycling choice matters!');
     }
+
+    // populate inline (mobile) end screen
     document.getElementById('g-end-badge').textContent=badge;
     document.getElementById('g-end-title').textContent=title;
     document.getElementById('g-end-sub').textContent=sub;
@@ -1797,20 +2330,57 @@ function gShowEnd() {
     document.getElementById('g-end-nat').textContent=Math.round(GS.nat);
     document.getElementById('g-end-hap').textContent=Math.round(GS.hap);
 
+    const facts=[...G_CATS].sort(()=>Math.random()-0.5).slice(0,4);
+
     const fl=document.getElementById('g-facts-list');
     fl.innerHTML='';
-    [...G_CATS].sort(()=>Math.random()-0.5).slice(0,4).forEach(f=>{
+    facts.forEach(f=>{
         const d=document.createElement('div');
         d.className='g-fact';
         d.innerHTML=`<span>${f.icon}</span><span>${f.fact}</span>`;
         fl.appendChild(d);
     });
+
+    // populate desktop side panel result
+    spSet('sp-end-badge',badge);
+    spSet('sp-end-title',title);
+    spSet('sp-end-sub',sub);
+    const spfl=document.getElementById('sp-facts-list');
+    if(spfl){
+        spfl.innerHTML='';
+        facts.forEach(f=>{
+            const d=document.createElement('div');
+            d.className='side-fact';
+            d.innerHTML=`<span>${f.icon}</span><span>${f.fact}</span>`;
+            spfl.appendChild(d);
+        });
+    }
+    // show side result card, hide stats card on desktop
+    const src=document.getElementById('side-result-card');
+    const ssc=document.getElementById('side-stats-card');
+    const sr=document.getElementById('side-result');
+    if(src){ src.style.display='block'; }
+    if(ssc){ ssc.style.display='none'; }
+    if(sr){ sr.classList.add('visible'); }
 }
 
 // ════════════════════════════════════════════════════════
 //  INIT — build start scene on load
 // ════════════════════════════════════════════════════════
 gBuildStartScene();
+
+// ════════════════════════════════════════════════════════
+//  LIVE THEME WATCHER — react to theme dot clicks
+// ════════════════════════════════════════════════════════
+(function(){
+    const obs = new MutationObserver(function(){
+        const startActive = document.getElementById('g-start') && document.getElementById('g-start').classList.contains('active');
+        const gameActive  = document.getElementById('g-game')  && document.getElementById('g-game').classList.contains('active');
+        if(startActive){ gApplyThemeToStartScene(); }
+        if(gameActive) { gApplyThemeToGameScene(); gUpdateScene(); }
+    });
+    obs.observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+})();
 </script>
 
 </body>

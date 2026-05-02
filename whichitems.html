@@ -8,86 +8,166 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/mansstils.css">
     <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 
     <style>
-        .wi-intro {
-            text-align: center;
-            font-family: "Inter", sans-serif;
-            font-size: 1.1rem;
-            color: #2a4a35;
-            max-width: 720px;
-            margin: 0 auto 2rem;
-            padding: 0 16px;
-        }
-
-        .wi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        /* ── Page layout ─────────────────────────────────────── */
+        .wi-page {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
             gap: 28px;
-            max-width: 1200px;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 0 24px 6rem;
+            padding: 0 24px 80px;
             box-sizing: border-box;
         }
 
-        .wi-card {
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1.5px solid rgba(255,255,255,0.6);
-            box-shadow: 0 4px 22px rgba(30,100,60,0.13);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* ── LEFT PANEL ──────────────────────────────────────── */
+        .wi-left {
+            flex: 0 0 300px;
+            position: sticky;
+            top: 88px;
             display: flex;
             flex-direction: column;
+            gap: 14px;
         }
 
-        .wi-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 36px rgba(30,100,60,0.2);
+        .wi-left-heading {
+            font-family: "Jomhuria", sans-serif;
+            font-size: 38px;
+            font-weight: 400;
+            color: #0C365F;
+            text-align: center;
+            margin: 0;
+            text-shadow: 1px 3px 8px rgba(12,54,95,0.25);
         }
 
-        .wi-card-header {
+        /* 3-column grid of 12 tiles */
+        .wi-tile-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .wi-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 4px 6px;
+            background: none;
+            border: none;
+            box-shadow: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        .wi-tile:hover { transform: translateY(-4px); }
+
+        .wi-tile.active { transform: translateY(-3px); }
+
+        .wi-tile-img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            filter:
+                drop-shadow(0 4px 10px rgba(0,0,0,0.22))
+                drop-shadow(0 1px 3px rgba(0,0,0,0.14));
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .wi-tile:hover .wi-tile-img {
+            transform: scale(1.1);
+            filter:
+                drop-shadow(0 6px 16px rgba(0,0,0,0.28))
+                drop-shadow(0 2px 5px rgba(0,0,0,0.16));
+        }
+
+        .wi-tile.active .wi-tile-img {
+            transform: scale(1.1);
+            filter:
+                drop-shadow(0 0 10px rgba(74,124,224,0.6))
+                drop-shadow(0 4px 12px rgba(0,0,0,0.22));
+        }
+
+        .wi-tile-emoji {
+            font-size: 2.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.18));
+        }
+
+        .wi-tile-label {
+            font-family: "Jaldi", sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #1a3a52;
+            line-height: 1.2;
+            word-break: break-word;
+            text-shadow: 0 1px 4px rgba(255,255,255,0.7);
+        }
+
+        .wi-tile.active .wi-tile-label {
+            color: #0C365F;
+            text-shadow: 0 1px 6px rgba(74,124,224,0.35);
+        }
+
+        /* ── RIGHT PANEL ─────────────────────────────────────── */
+        .wi-right {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wi-detail-card {
+            background: rgba(255,255,255,0.48);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1.5px solid rgba(255,255,255,0.6);
+            box-shadow: 0 6px 30px rgba(30,100,60,0.13);
+            padding: 28px 30px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @keyframes wiDetailFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .wi-detail-fade { animation: wiDetailFade 0.32s ease; }
+
+        .wi-detail-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 18px 20px 12px;
-            border-bottom: 1.5px solid rgba(255,255,255,0.5);
         }
 
-        .wi-category-icon {
-            font-size: 2rem;
+        .wi-detail-icon {
+            font-size: 2.8rem;
             line-height: 1;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
         }
 
-        .wi-category-title {
+        .wi-detail-title {
             font-family: "Gasoek One", sans-serif;
-            font-size: 1.35rem;
+            font-size: 2rem;
             font-weight: 400;
+            margin: 0;
             background-image: linear-gradient(90deg, #1C9073, #0E0973);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0;
-        }
-
-        .wi-card-body {
-            padding: 16px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            flex: 1;
+            background-clip: text;
         }
 
         /* Items strip */
-        .wi-items {
+        .wi-items-strip {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 14px;
             align-items: flex-end;
         }
 
@@ -95,86 +175,136 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
-        .wi-item img {
-            width: 54px;
-            height: 54px;
+        .wi-item-img {
+            width: 62px;
+            height: 62px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+        }
+
+        .wi-item-emoji-lg {
+            font-size: 2.8rem;
+            line-height: 1;
         }
 
         .wi-item-label {
-            font-family: "Inter", sans-serif;
-            font-size: 0.65rem;
+            font-family: "Jaldi", sans-serif;
+            font-size: 12px;
+            font-weight: 700;
             color: #2a4a35;
             text-align: center;
-            max-width: 60px;
+            max-width: 70px;
         }
 
         /* Container row */
         .wi-container-row {
             display: flex;
             align-items: center;
-            gap: 14px;
-            background: rgba(255,255,255,0.35);
-            border-radius: 14px;
-            padding: 10px 14px;
+            gap: 16px;
+            background: rgba(255,255,255,0.38);
+            border-radius: 16px;
+            padding: 12px 18px;
         }
 
-        .wi-container-row img {
-            width: 56px;
-            height: 56px;
+        .wi-container-img {
+            width: 64px;
+            height: 64px;
             object-fit: contain;
             flex-shrink: 0;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.18));
         }
 
         .wi-container-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
         }
 
         .wi-container-name {
             font-family: "Gasoek One", sans-serif;
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: #0C365F;
         }
 
         .wi-container-desc {
-            font-family: "Inter", sans-serif;
-            font-size: 0.78rem;
+            font-family: "Jaldi", sans-serif;
+            font-size: 0.85rem;
             color: #2a4a35;
             line-height: 1.4;
         }
 
-        /* How-to and Why sections */
+        /* How-to / Why sections */
         .wi-section-title {
             font-family: "Jomhuria", sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.55rem;
             color: #154A73;
-            margin: 0 0 4px;
+            margin: 0 0 6px;
             line-height: 1.1;
         }
 
         .wi-section-text {
-            font-family: "Inter", sans-serif;
-            font-size: 0.82rem;
+            font-family: "Jaldi", sans-serif;
+            font-size: 0.9rem;
             color: #2a4a35;
-            line-height: 1.55;
+            line-height: 1.6;
             margin: 0;
+            padding-left: 18px;
         }
 
-        .wi-section-text li {
-            margin-bottom: 2px;
-        }
+        .wi-section-text li { margin-bottom: 3px; }
 
         .wi-divider {
             border: none;
-            border-top: 1px solid rgba(100,180,120,0.3);
+            border-top: 1px solid rgba(100,180,120,0.28);
             margin: 0;
+        }
+
+        /* ── DARK THEME ──────────────────────────────────────── */
+        [data-theme="dark"] .wi-left-heading   { color: #c080ff; text-shadow: 0 0 18px rgba(180,80,255,0.4); }
+        [data-theme="dark"] .wi-tile-label     { color: #d0b8f8; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+        [data-theme="dark"] .wi-tile.active .wi-tile-label { color: #f0e0ff; text-shadow: 0 1px 6px rgba(160,100,255,0.5); }
+        [data-theme="dark"] .wi-tile.active .wi-tile-img   { filter: drop-shadow(0 0 12px rgba(160,80,255,0.65)) drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+        [data-theme="dark"] .wi-detail-card    { background: rgba(14,0,32,0.82); border-color: rgba(130,65,240,0.45); box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
+        [data-theme="dark"] .wi-detail-title   { background-image: linear-gradient(90deg,#a060ff,#5040d0); }
+        [data-theme="dark"] .wi-container-row  { background: rgba(30,0,60,0.5); }
+        [data-theme="dark"] .wi-container-name { color: #d8b8ff; }
+        [data-theme="dark"] .wi-container-desc { color: #a8c090; }
+        [data-theme="dark"] .wi-section-title  { color: #c080ff; }
+        [data-theme="dark"] .wi-section-text   { color: #c8d8e8; }
+        [data-theme="dark"] .wi-item-label     { color: #b8d0a0; }
+        [data-theme="dark"] .wi-divider        { border-color: rgba(130,65,240,0.25); }
+
+        /* ── SKY THEME ───────────────────────────────────────── */
+        [data-theme="sky"] .wi-left-heading   { color: #1a78c2; }
+        [data-theme="sky"] .wi-tile-label     { color: #1a4a70; text-shadow: 0 1px 4px rgba(255,255,255,0.8); }
+        [data-theme="sky"] .wi-tile.active .wi-tile-img   { filter: drop-shadow(0 0 10px rgba(58,154,224,0.6)) drop-shadow(0 4px 12px rgba(0,0,0,0.18)); }
+        [data-theme="sky"] .wi-detail-card    { background: rgba(230,245,255,0.7); border-color: rgba(100,180,240,0.4); }
+        [data-theme="sky"] .wi-detail-title   { background-image: linear-gradient(90deg,#1a78c2,#0050a0); }
+        [data-theme="sky"] .wi-container-row  { background: rgba(200,230,255,0.5); }
+        [data-theme="sky"] .wi-container-name { color: #0a4fa0; }
+        [data-theme="sky"] .wi-container-desc { color: #1a5070; }
+        [data-theme="sky"] .wi-section-title  { color: #1a78c2; }
+        [data-theme="sky"] .wi-section-text   { color: #1a3a52; }
+        [data-theme="sky"] .wi-item-label     { color: #1a5070; }
+        [data-theme="sky"] .wi-divider        { border-color: rgba(60,150,230,0.25); }
+
+        /* ── MOBILE ──────────────────────────────────────────── */
+        @media (max-width: 860px) {
+            .wi-page      { flex-direction: column; padding: 0 16px 60px; gap: 20px; }
+            .wi-left      { position: static; flex: unset; width: 100%; }
+            .wi-tile-grid { grid-template-columns: repeat(4, 1fr); }
+            .wi-tile-img  { width: 42px; height: 42px; }
+            .wi-tile-emoji{ font-size: 2rem; }
+            .wi-tile-label{ font-size: 10px; }
+            .wi-detail-card { padding: 20px 18px 24px; }
+            .wi-detail-title{ font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .wi-tile-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
@@ -192,547 +322,28 @@
 
 <h1>Learn about items</h1>
 
-<p class="wi-intro">
-    Not sure which bin your item belongs in? Browse the 10 categories below to learn
-    <strong>how to recycle</strong>, <strong>which container to use</strong>, and
-    <strong>why it matters</strong>.
-</p>
+<div class="wi-page">
 
-<div class="wi-grid">
-
-    <!-- ── 1. PLASTIC ──────────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🧴</span>
-            <h3 class="wi-category-title">Plastic</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/plasticbottle.png" alt="Plastic bottle">
-                    <span class="wi-item-label">Plastic bottle</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/plasticbox.png" alt="Plastic box">
-                    <span class="wi-item-label">Plastic box</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/yellowcontainer.png" alt="Yellow container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Yellow Container</span>
-                    <span class="wi-container-desc">For plastic packaging, bottles, trays, and films.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Empty and rinse containers — no food residue.</li>
-                    <li>Remove caps and lids (recycle separately or keep on bottle).</li>
-                    <li>Flatten bottles to save space in the bin.</li>
-                    <li>Check the recycling symbol (♳–♷) on the bottom.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Recycling one plastic bottle saves enough energy to power a 60 W light bulb for 3 hours. Plastic takes up to 500 years to decompose in a landfill, releasing toxic chemicals into soil and water.</p>
-            </div>
+    <!-- ── LEFT: 12 category tiles ───────────────────────── -->
+    <div class="wi-left">
+        <p class="wi-left-heading">BROWSE ITEMS</p>
+        <div class="wi-tile-grid" id="wiTileGrid">
+            <!-- tiles injected by whichitems.js -->
         </div>
     </div>
 
-    <!-- ── 2. GLASS ───────────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🍾</span>
-            <h3 class="wi-category-title">Glass</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/glassbottle.png" alt="Glass bottle">
-                    <span class="wi-item-label">Glass bottle</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/glassjar.png" alt="Glass jar">
-                    <span class="wi-item-label">Glass jar</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/greencontainer.png" alt="Green container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Green Container</span>
-                    <span class="wi-container-desc">For glass bottles, jars, and food-grade glassware.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Rinse the bottle or jar — remove all food residue.</li>
-                    <li>Remove metal lids and caps (put them in the metal bin).</li>
-                    <li>Do NOT include broken glass, mirrors, or ceramics.</li>
-                    <li>Separate by colour if your area requires it (clear / green / brown).</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Glass is 100% recyclable and can be recycled endlessly without any loss of quality. Recycling one glass bottle saves enough energy to power a laptop for 25 minutes and reduces CO₂ emissions by 315 g.</p>
-            </div>
+    <!-- ── RIGHT: detail panel ───────────────────────────── -->
+    <div class="wi-right">
+        <div id="wiDetailPanel">
+            <!-- detail injected by whichitems.js -->
         </div>
     </div>
 
-    <!-- ── 3. PAPER ──────────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">📰</span>
-            <h3 class="wi-category-title">Paper</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/paper.png" alt="Paper">
-                    <span class="wi-item-label">Paper sheets</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/newspaper.png" alt="Newspaper">
-                    <span class="wi-item-label">Newspaper</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/bluecontainer.png" alt="Blue container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Blue Container</span>
-                    <span class="wi-container-desc">For newspapers, office paper, magazines, and envelopes.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Keep paper dry — wet or greasy paper cannot be recycled.</li>
-                    <li>Remove staples, plastic windows from envelopes, and tape.</li>
-                    <li>Do NOT include tissues, paper towels, or waxed paper.</li>
-                    <li>Stack or bundle loosely — no need to shred.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Recycling 1 tonne of paper saves 17 trees, 26,500 litres of water, and 4,100 kWh of energy. Every tonne of recycled paper also keeps 3 m³ of landfill space free.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 4. CARDBOARD & BOOKS ──────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">📦</span>
-            <h3 class="wi-category-title">Cardboard &amp; Books</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/crdboardbox.png" alt="Cardboard box">
-                    <span class="wi-item-label">Cardboard box</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/book.png" alt="Book">
-                    <span class="wi-item-label">Book</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/bluecontainer.png" alt="Blue container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Blue Container</span>
-                    <span class="wi-container-desc">For cardboard boxes, cartons, and paper-based books.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Flatten all cardboard boxes to maximise bin space.</li>
-                    <li>Remove any plastic tape, foam padding, or polystyrene inserts.</li>
-                    <li>For books: hardcovers may need the cover removed (glue &amp; board).</li>
-                    <li>Pizza boxes are OK only if the bottom is not soaked in grease.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Cardboard is one of the most widely recycled materials — up to 80% of corrugated cardboard is recovered globally. Recycling it cuts the energy needed to produce new cardboard by 75% and drastically reduces deforestation.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 5. METAL / CANS ───────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🥫</span>
-            <h3 class="wi-category-title">Metal &amp; Cans</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/tincan.png" alt="Tin can">
-                    <span class="wi-item-label">Tin can</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/orangecontainer.png" alt="Orange container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Orange Container</span>
-                    <span class="wi-container-desc">For steel and aluminium cans, foil trays, and tins.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Rinse cans to remove food — no need to scrub perfectly.</li>
-                    <li>Crush cans to save space (where allowed).</li>
-                    <li>Aluminium foil: scrunch into a ball before placing in the bin.</li>
-                    <li>Do NOT include paint tins, aerosols, or pressurised canisters.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Aluminium can be recycled forever. Recycling one aluminium can saves enough energy to run a TV for 3 hours and produces 95% less CO₂ than making new aluminium from raw ore.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 6. ELECTRONICS ────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">💻</span>
-            <h3 class="wi-category-title">Electronics</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/laptop.png" alt="Laptop">
-                    <span class="wi-item-label">Laptop</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/mobilephone.png" alt="Mobile phone">
-                    <span class="wi-item-label">Mobile phone</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/lightbulb.png" alt="Light bulb">
-                    <span class="wi-item-label">Light bulb</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/redcontainer.png" alt="Red container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Red Container / E-Waste Drop-off</span>
-                    <span class="wi-container-desc">For electronics — take to certified e-waste collection points.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Delete personal data and perform a factory reset before dropping off.</li>
-                    <li>Take to a certified e-waste collection point or electronics retailer.</li>
-                    <li>Do NOT place in regular household bins — toxic materials inside.</li>
-                    <li>Keep all components together (charger, cables, accessories).</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">E-waste is the fastest-growing waste stream globally. A single smartphone contains gold, silver, copper, and rare earth metals. Recycling 1 million phones recovers ~35 kg of gold, 350 kg of silver, and 15,000 kg of copper.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 7. BATTERIES ──────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🔋</span>
-            <h3 class="wi-category-title">Batteries</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/batteries.png" alt="Batteries">
-                    <span class="wi-item-label">Batteries</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/redcontainer.png" alt="Red container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Red Container / Hazardous</span>
-                    <span class="wi-container-desc">For all battery types — dedicated battery collection boxes.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Tape the terminals of lithium batteries with clear tape to prevent sparks.</li>
-                    <li>Collect in a small container until you have enough to drop off.</li>
-                    <li>Most supermarkets and electronics stores have free collection boxes.</li>
-                    <li>Never puncture, crush, or throw batteries into fire.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Batteries contain lead, mercury, cadmium, and lithium — all harmful to soil and groundwater. Properly recycling batteries recovers valuable materials and prevents toxic leachate from contaminating ecosystems for decades.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 8. CLOTHING & TEXTILES ────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">👕</span>
-            <h3 class="wi-category-title">Clothing &amp; Textiles</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/shirt.png" alt="Shirt">
-                    <span class="wi-item-label">Shirt</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/sweater.png" alt="Sweater">
-                    <span class="wi-item-label">Sweater</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/jeans.png" alt="Jeans">
-                    <span class="wi-item-label">Jeans</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/shoes.png" alt="Shoes">
-                    <span class="wi-item-label">Shoes</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/textile.png" alt="Textile">
-                    <span class="wi-item-label">Textile</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/browncontainer.png" alt="Brown container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Brown Container / Textile Bank</span>
-                    <span class="wi-container-desc">Textile donation banks or charity collection points.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Wash and dry clothes before donating — clean items only.</li>
-                    <li>Wearable clothes → charity shops or clothing banks.</li>
-                    <li>Worn-out items → textile recycling banks (they get shredded into rags or insulation).</li>
-                    <li>Tie shoes together so they are not separated.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">The fashion industry is the world's 2nd largest polluter. Recycling 1 kg of cotton saves 10,000 litres of water. Keeping clothes out of landfill reduces methane emissions and prevents synthetic fibres from entering waterways.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 9. ORGANIC / FOOD WASTE ───────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🍂</span>
-            <h3 class="wi-category-title">Organic &amp; Food Waste</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>🥦</span>
-                    <span class="wi-item-label">Vegetable scraps</span>
-                </div>
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>☕</span>
-                    <span class="wi-item-label">Coffee grounds</span>
-                </div>
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>🍌</span>
-                    <span class="wi-item-label">Fruit peels</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/browncontainer.png" alt="Brown container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Brown Container</span>
-                    <span class="wi-container-desc">For food scraps, fruit &amp; vegetable peels, and garden waste.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Use a small kitchen caddy lined with a compostable bag.</li>
-                    <li>Include: fruit &amp; vegetable peelings, tea bags, eggshells, cooked food.</li>
-                    <li>Do NOT include: liquids, oils, packaging, or pet waste.</li>
-                    <li>Empty the caddy regularly to prevent odours and pests.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Organic waste in landfills produces methane — a greenhouse gas 25× more potent than CO₂. Composting instead turns waste into nutrient-rich soil improver, reducing the need for chemical fertilisers.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 10. WOOD ──────────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🪵</span>
-            <h3 class="wi-category-title">Wood &amp; Furniture</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/woodenstool.png" alt="Wooden stool">
-                    <span class="wi-item-label">Wooden stool</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/blackcontainer.png" alt="Black container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Black Container / Waste Centre</span>
-                    <span class="wi-container-desc">Take large wooden items to a local recycling / civic amenity centre.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Small untreated wood scraps can go to a garden composter.</li>
-                    <li>Large items: take to a civic amenity / waste centre wood skip.</li>
-                    <li>Treated or painted wood must go to specialist collection — not garden compost.</li>
-                    <li>Good-condition furniture? Donate to charity or a furniture reuse scheme first.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Wood makes up a significant portion of bulky waste. Recycled wood is chipped into biomass fuel, animal bedding, or particleboard. This diverts material from landfill and reduces the carbon locked in the wood from being released as methane.</p>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ── 11. STATIONERY ─────────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">✏️</span>
-            <h3 class="wi-category-title">Stationery</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item">
-                    <img src="images/pen.png" alt="Pen">
-                    <span class="wi-item-label">Pen</span>
-                </div>
-                <div class="wi-item">
-                    <img src="images/pencil.png" alt="Pencil">
-                    <span class="wi-item-label">Pencil</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/bluecontainer.png" alt="Blue container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Blue Container / Special Scheme</span>
-                    <span class="wi-container-desc">Wooden pencils → blue bin. Plastic pens → TerraCycle drop-off point.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Wooden pencils (no metal ferrule): can go in the blue paper/cardboard bin.</li>
-                    <li>Ballpoint &amp; felt-tip pens: collect and drop off at a TerraCycle Writing Instruments scheme (available at many office-supply shops).</li>
-                    <li>Refillable pens: buy refill cartridges instead — no recycling needed.</li>
-                    <li>Rubber erasers: currently not recyclable — go in general waste.</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Billions of pens are thrown away every year worldwide, contributing to plastic pollution. Recycling through dedicated schemes recovers the plastic barrel, metal clip, and ink cartridge separately, keeping all three out of landfill.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── 12. GARDEN WASTE ───────────────────────────────── -->
-    <div class="wi-card">
-        <div class="wi-card-header">
-            <span class="wi-category-icon">🌿</span>
-            <h3 class="wi-category-title">Garden Waste</h3>
-        </div>
-        <div class="wi-card-body">
-            <div class="wi-items">
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>🍃</span>
-                    <span class="wi-item-label">Leaves</span>
-                </div>
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>🌱</span>
-                    <span class="wi-item-label">Plant trimmings</span>
-                </div>
-                <div class="wi-item" style="font-size:2.8rem; line-height:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
-                    <span>🌾</span>
-                    <span class="wi-item-label">Grass clippings</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div class="wi-container-row">
-                <img src="images/greencontainer.png" alt="Green container">
-                <div class="wi-container-info">
-                    <span class="wi-container-name">Green Container / Garden Bin</span>
-                    <span class="wi-container-desc">For leaves, grass clippings, hedge trimmings, and plant cuttings.</span>
-                </div>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">How to recycle</p>
-                <ul class="wi-section-text">
-                    <li>Place in the green garden waste bin or home compost heap.</li>
-                    <li>Do NOT include soil, stones, treated wood, or plastic pots.</li>
-                    <li>Larger branches: chop into pieces under 30 cm or take to a civic amenity site.</li>
-                    <li>Grass clippings: leave them on the lawn as a natural fertiliser (grasscycling).</li>
-                </ul>
-            </div>
-            <hr class="wi-divider">
-            <div>
-                <p class="wi-section-title">Why recycle</p>
-                <p class="wi-section-text">Garden waste makes up around 20% of household waste. When composted, it becomes a valuable soil conditioner that improves soil structure, retains moisture, and reduces the need for synthetic fertilisers — closing the nutrient loop naturally.</p>
-            </div>
-        </div>
-    </div>
-
-</div><!-- /.wi-grid -->
+</div>
 
 <h2>EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
 
+<script src="js/whichitems.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/language.js"></script>
 </body>
