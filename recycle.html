@@ -70,38 +70,40 @@
             <!-- Calculator + Map -->
             <div class="calc-map-row">
                 <div class="glass-panel calculator">
-                    <h3 class="calc-heading">Efficiency Calculator</h3>
-                    <div class="calc-input-group">
-                        <label for="calcQty">Amount of Items:</label>
-                        <input type="number" id="calcQty" value="1" min="1">
+                    <div class="calc-top-row">
+                        <h3 class="calc-heading">Efficiency<br>calculator</h3>
+                        <div class="calc-qty-pill">
+                            <span class="calc-qty-label">Amount:</span>
+                            <button class="calc-qty-btn" id="calcQtyMinus">−</button>
+                            <span class="calc-qty-num" id="calcQtyDisplay">1</span>
+                            <button class="calc-qty-btn" id="calcQtyPlus">+</button>
+                        </div>
                     </div>
+                    <p class="calc-saved-word">Saved</p>
                     <div class="results-display">
                         <div class="stat-item">
                             <div class="stat-text">
-                                <span class="stat-label">Saved <span class="label-water">Water</span></span>
-                                <span class="stat-value"><span id="saveWater">0</span> L</span>
+                                <span class="stat-label">water</span>
+                                <span class="stat-colon"> :</span>
+                                <span class="stat-value"><span id="saveWater">0</span> l</span>
                             </div>
-                            <div class="img-wrappers">
-                                <img src="images/water 3d.png" alt="water" class="calc-img">
-                            </div>
+                            <img src="images/water 3d.png" alt="water" class="calc-img">
                         </div>
                         <div class="stat-item">
                             <div class="stat-text">
-                                <span class="stat-label">Saved <span class="label-energy">Energy</span></span>
+                                <span class="stat-label">energy</span>
+                                <span class="stat-colon"> :</span>
                                 <span class="stat-value"><span id="saveEnergy">0</span> kWh</span>
                             </div>
-                            <div class="img-wrappers">
-                                <img src="images/energy.png" alt="energy" class="calc-img">
-                            </div>
+                            <img src="images/energy.png" alt="energy" class="calc-img">
                         </div>
                         <div class="stat-item">
                             <div class="stat-text">
-                                <span class="stat-label">Saved <span class="label-co2">CO2</span></span>
-                                <span class="stat-value"><span id="saveCO2">0</span> kg</span>
+                                <span class="stat-label">CO2</span>
+                                <span class="stat-colon"> :</span>
+                                <span class="stat-value"><span id="saveCO2">0</span> g</span>
                             </div>
-                            <div class="img-wrappers">
-                                <img src="images/co2.png" alt="co2" class="calc-img">
-                            </div>
+                            <img src="images/co2.png" alt="co2" class="calc-img">
                         </div>
                     </div>
                 </div>

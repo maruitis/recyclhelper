@@ -3,90 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us – Recyclehelper</title>
+    <title>About Us — RecycleHelper</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jaldi:wght@400;700&family=Jomhuria&family=Oswald:wght@200..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/mansstils.css">
-    <!-- Apply saved theme instantly before first paint — prevents flash -->
     <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 
     <style>
-    /* ── About page layout ── */
+
+    /* ── Title ──────────────────────────────────────────────── */
+    .about-title {
+        font-family: 'Jomhuria', sans-serif;
+        font-size: 76px;
+        font-weight: 400;
+        color: #0E0973;
+        text-align: center;
+        margin: 10px 0 28px;
+        line-height: 1;
+        opacity: 0;
+        transform: translateY(-24px);
+        animation: abFade 0.7s ease 0.1s forwards;
+    }
+
+    /* ── Page container ─────────────────────────────────────── */
     .about-page {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 0 20px 120px;
-        gap: 36px;
+        gap: 32px;
         max-width: 900px;
         margin: 0 auto;
     }
 
-    /* ── Hero intro card ── */
+    /* ── Hero ───────────────────────────────────────────────── */
     .about-hero {
         width: 100%;
-        background: rgba(164, 255, 184, 0.15);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-radius: 28px;
-        padding: 38px 40px 34px;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-            0 8px 40px rgba(21,74,115,0.14),
-            0 0 50px rgba(0,255,106,0.10);
         text-align: center;
+        padding: 4px 0 8px;
+        opacity: 0;
+        animation: abFade 0.65s ease 0.2s forwards;
     }
-    .about-hero::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 28px; padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
-    }
-    .about-hero-emoji {
-        font-size: 3.5rem;
-        display: block;
+    .about-hero-img {
+        width: 110px;
+        height: 110px;
+        object-fit: contain;
+        filter: drop-shadow(0 6px 18px rgba(0,160,100,0.42));
+        animation: abFloat 4s ease-in-out infinite;
         margin-bottom: 14px;
-        filter: drop-shadow(0 0 16px rgba(0,255,106,0.45));
-        animation: aboutFloat 4s ease-in-out infinite;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
-    @keyframes aboutFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes abFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
     .about-hero-title {
-        font-family: "Oswald", sans-serif;
-        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        font-family: 'Oswald', sans-serif;
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
         font-weight: 700;
         background: linear-gradient(135deg, #24E474, #154A73);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin-bottom: 14px;
-        letter-spacing: 0.5px;
+        margin-bottom: 12px;
     }
     .about-hero-text {
-        font-family: "Inter", sans-serif;
+        font-family: 'Jaldi', sans-serif;
         font-size: 1.05rem;
         color: #4F6B58;
-        line-height: 1.7;
-        max-width: 640px;
+        line-height: 1.65;
+        max-width: 580px;
         margin: 0 auto;
     }
 
-    /* ── Section heading ── */
+    /* ── Section heading ────────────────────────────────────── */
     .about-section-title {
-        font-family: "Oswald", sans-serif;
-        font-size: 1.1rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.05rem;
         font-weight: 700;
         color: #154A73;
         letter-spacing: 2px;
         text-transform: uppercase;
         text-align: center;
-        margin-bottom: 4px;
+        opacity: 0;
+        animation: abFade 0.5s ease forwards;
+        margin-bottom: -8px;
     }
 
-    /* ── Three feature cards ── */
+    /* ── Feature cards ──────────────────────────────────────── */
     .about-cards {
         display: flex;
         gap: 18px;
@@ -95,54 +100,49 @@
     }
     .about-card {
         flex: 1;
-        min-width: 220px;
-        background: rgba(164, 255, 184, 0.12);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border-radius: 22px;
-        padding: 26px 22px;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-            0 6px 28px rgba(21,74,115,0.10),
-            0 0 30px rgba(0,255,106,0.07);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        min-width: 200px;
+        padding: 20px 16px;
+        opacity: 0;
+        transform: translateY(22px);
+        animation: abFadeUp 0.55s ease forwards;
+        transition: transform 0.28s ease;
+        cursor: default;
     }
-    .about-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(21,74,115,0.16), 0 0 45px rgba(0,255,106,0.14);
-    }
-    .about-card::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 22px; padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
-    }
+    .about-card:nth-child(1) { animation-delay: 0.48s; }
+    .about-card:nth-child(2) { animation-delay: 0.62s; }
+    .about-card:nth-child(3) { animation-delay: 0.76s; }
+    .about-card:hover { transform: translateY(-6px); }
+
     .about-card-icon {
-        font-size: 2.4rem;
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
         display: block;
         margin-bottom: 12px;
-        filter: drop-shadow(0 0 10px rgba(0,255,106,0.35));
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.17));
+        transition: transform 0.3s ease, filter 0.3s ease;
+    }
+    .about-card:hover .about-card-icon {
+        transform: scale(1.15) rotate(-5deg);
+        filter: drop-shadow(0 6px 16px rgba(0,0,0,0.26));
     }
     .about-card-title {
-        font-family: "Oswald", sans-serif;
+        font-family: 'Oswald', sans-serif;
         font-size: 1.05rem;
         font-weight: 700;
         color: #154A73;
-        margin-bottom: 8px;
-        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        letter-spacing: 0.4px;
     }
     .about-card-text {
-        font-family: "Inter", sans-serif;
-        font-size: 0.88rem;
+        font-family: 'Jaldi', sans-serif;
+        font-size: 0.93rem;
         color: #4F6B58;
-        line-height: 1.6;
+        line-height: 1.55;
+        margin: 0;
     }
 
-    /* ── Impact stats row ── */
+    /* ── Impact stats ───────────────────────────────────────── */
     .about-stats {
         display: flex;
         gap: 14px;
@@ -151,39 +151,32 @@
     }
     .about-stat {
         flex: 1;
-        min-width: 130px;
-        background: rgba(36, 228, 116, 0.10);
-        border-radius: 18px;
-        padding: 22px 16px;
+        min-width: 120px;
+        padding: 18px 12px;
         text-align: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 0 18px rgba(0,255,106,0.10), 0 4px 16px rgba(21,74,115,0.08);
-        transition: transform 0.25s;
+        opacity: 0;
+        animation: abFade 0.5s ease forwards;
+        transition: transform 0.25s ease;
+        cursor: default;
     }
+    .about-stat:nth-child(1) { animation-delay: 0.68s; }
+    .about-stat:nth-child(2) { animation-delay: 0.80s; }
+    .about-stat:nth-child(3) { animation-delay: 0.92s; }
+    .about-stat:nth-child(4) { animation-delay: 1.04s; }
     .about-stat:hover { transform: translateY(-4px); }
-    .about-stat::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 18px; padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 50%, #503ACB);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
-    }
     .about-stat-num {
-        font-family: "Oswald", sans-serif;
-        font-size: 2rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 2.1rem;
         font-weight: 700;
         background: linear-gradient(135deg, #24E474, #154A73);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         background-clip: text;
         display: block;
-        text-shadow: none;
     }
     .about-stat-label {
-        font-family: "Inter", sans-serif;
-        font-size: 0.75rem;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.72rem;
         color: #4F6B58;
         text-transform: uppercase;
         letter-spacing: 0.8px;
@@ -191,177 +184,169 @@
         display: block;
     }
 
-    /* ── Values list ── */
+    /* ── Values list ────────────────────────────────────────── */
     .about-values {
         width: 100%;
-        background: rgba(164, 255, 184, 0.10);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border-radius: 24px;
-        padding: 30px 32px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 6px 28px rgba(21,74,115,0.10);
-    }
-    .about-values::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 24px; padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
+        padding: 4px 0;
+        opacity: 0;
+        animation: abFade 0.6s ease 0.85s forwards;
     }
     .about-values-title {
-        font-family: "Oswald", sans-serif;
-        font-size: 1.1rem;
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.05rem;
         font-weight: 700;
         color: #154A73;
         letter-spacing: 2px;
         text-transform: uppercase;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         display: flex;
         align-items: center;
         gap: 10px;
+    }
+    .about-values-title img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
     }
     .about-value-row {
         display: flex;
         align-items: flex-start;
         gap: 14px;
-        margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid rgba(36,228,116,0.15);
+        margin-bottom: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(36,228,116,0.2);
+        opacity: 0;
+        animation: abFadeRight 0.5s ease forwards;
+        transition: transform 0.25s ease;
+        cursor: default;
     }
-    .about-value-row:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
-    }
+    .about-value-row:nth-child(2) { animation-delay: 1.0s; }
+    .about-value-row:nth-child(3) { animation-delay: 1.12s; }
+    .about-value-row:nth-child(4) { animation-delay: 1.24s; }
+    .about-value-row:nth-child(5) { animation-delay: 1.36s; }
+    .about-value-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .about-value-row:hover { transform: translateX(5px); }
+
     .about-value-icon {
-        font-size: 1.5rem;
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
         flex-shrink: 0;
         margin-top: 2px;
-        filter: drop-shadow(0 0 8px rgba(0,255,106,0.3));
+        filter: drop-shadow(0 3px 8px rgba(0,0,0,0.15));
+        transition: transform 0.3s ease;
     }
+    .about-value-row:hover .about-value-icon { transform: scale(1.15) rotate(-5deg); }
+
     .about-value-title {
-        font-family: "Oswald", sans-serif;
+        font-family: 'Oswald', sans-serif;
         font-size: 0.95rem;
         font-weight: 700;
         color: #154A73;
-        margin-bottom: 4px;
-        letter-spacing: 0.3px;
+        margin-bottom: 3px;
     }
     .about-value-text {
-        font-family: "Inter", sans-serif;
-        font-size: 0.85rem;
+        font-family: 'Jaldi', sans-serif;
+        font-size: 0.88rem;
         color: #4F6B58;
-        line-height: 1.55;
+        line-height: 1.5;
+        margin: 0;
     }
 
-    /* ── CTA banner ── */
+    /* ── CTA ────────────────────────────────────────────────── */
     .about-cta {
         width: 100%;
-        background: linear-gradient(135deg, rgba(36,228,116,0.18), rgba(21,74,115,0.14));
-        border-radius: 22px;
-        padding: 28px 32px;
+        padding: 16px 0;
         text-align: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-            0 0 40px rgba(0,255,106,0.12),
-            0 8px 28px rgba(21,74,115,0.12);
-    }
-    .about-cta::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 22px; padding: 1px;
-        background: linear-gradient(135deg, #00FF6A, #24E474 40%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
+        opacity: 0;
+        animation: abFade 0.6s ease 1.3s forwards;
     }
     .about-cta-text {
-        font-family: "Oswald", sans-serif;
+        font-family: 'Oswald', sans-serif;
         font-size: clamp(1.1rem, 3vw, 1.5rem);
         font-weight: 700;
         color: #154A73;
-        margin-bottom: 16px;
-        letter-spacing: 0.5px;
+        margin-bottom: 8px;
     }
     .about-cta-sub {
-        font-family: "Inter", sans-serif;
-        font-size: 0.9rem;
+        font-family: 'Jaldi', sans-serif;
+        font-size: 0.95rem;
         color: #4F6B58;
-        line-height: 1.5;
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
     .about-cta-btn {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
         background: linear-gradient(135deg, #24E474, #154A73);
         color: #fff;
         text-decoration: none;
         padding: 13px 36px;
         border-radius: 50px;
-        font-family: "Oswald", sans-serif;
+        font-family: 'Oswald', sans-serif;
         font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.8px;
-        box-shadow: 0 0 22px rgba(0,255,106,0.4), 0 4px 14px rgba(21,74,115,0.3);
-        transition: all 0.22s;
+        box-shadow: 0 0 22px rgba(0,255,106,0.35), 0 4px 14px rgba(21,74,115,0.25);
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
     }
     .about-cta-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 36px rgba(0,255,106,0.6), 0 6px 20px rgba(21,74,115,0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 0 36px rgba(0,255,106,0.55), 0 6px 20px rgba(21,74,115,0.35);
+    }
+    .about-cta-btn img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
     }
 
-    /* ── Dark theme overrides ── */
-    [data-theme="dark"] .about-hero,
-    [data-theme="dark"] .about-card,
-    [data-theme="dark"] .about-values,
-    [data-theme="dark"] .about-cta {
-        background: rgba(8, 4, 22, 0.88) !important;
+    /* ── Keyframes ──────────────────────────────────────────── */
+    @keyframes abFade {
+        to { opacity: 1; transform: translate(0, 0); }
     }
-    [data-theme="dark"] .about-stat {
-        background: rgba(8, 4, 22, 0.78) !important;
+    @keyframes abFadeUp {
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
+    @keyframes abFadeRight {
+        from { opacity: 0; transform: translateX(-18px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── Dark theme ─────────────────────────────────────────── */
+    [data-theme="dark"] .about-title         { color: #90c8ff; }
+    [data-theme="dark"] .about-hero-title    { background: linear-gradient(135deg,#00FF6A,#7b2fff); -webkit-background-clip:text; background-clip:text; }
     [data-theme="dark"] .about-hero-text,
     [data-theme="dark"] .about-card-text,
     [data-theme="dark"] .about-value-text,
     [data-theme="dark"] .about-cta-sub,
-    [data-theme="dark"] .about-stat-label { color: #a78bfa !important; }
+    [data-theme="dark"] .about-stat-label    { color: #a78bfa; }
     [data-theme="dark"] .about-card-title,
     [data-theme="dark"] .about-value-title,
     [data-theme="dark"] .about-values-title,
     [data-theme="dark"] .about-cta-text,
-    [data-theme="dark"] .about-section-title { color: #00FF6A !important; }
-    [data-theme="dark"] .about-hero-title { background: linear-gradient(135deg,#00FF6A,#7b2fff) !important; }
-    [data-theme="dark"] .about-value-row  { border-bottom-color: rgba(123,47,255,0.18) !important; }
-    [data-theme="dark"] .about-cta-btn    { background: linear-gradient(135deg,#00FF6A,#7b2fff) !important; }
+    [data-theme="dark"] .about-section-title { color: #00FF6A; }
+    [data-theme="dark"] .about-stat-num      { background: linear-gradient(135deg,#00FF6A,#7b2fff); -webkit-background-clip:text; background-clip:text; }
+    [data-theme="dark"] .about-value-row     { border-bottom-color: rgba(123,47,255,0.2); }
+    [data-theme="dark"] .about-cta-btn       { background: linear-gradient(135deg,#00FF6A,#7b2fff); }
 
-    /* ── Sky theme overrides ── */
-    [data-theme="sky"] .about-hero,
-    [data-theme="sky"] .about-card,
-    [data-theme="sky"] .about-values,
-    [data-theme="sky"] .about-cta {
-        background: rgba(215, 238, 255, 0.82) !important;
-    }
-    [data-theme="sky"] .about-stat { background: rgba(215,238,255,0.72) !important; }
-    [data-theme="sky"] .about-hero::before,
-    [data-theme="sky"] .about-card::before,
-    [data-theme="sky"] .about-stat::before,
-    [data-theme="sky"] .about-values::before,
-    [data-theme="sky"] .about-cta::before {
-        background: linear-gradient(135deg, #8AACDB, #503ACB 55%, #0C365F) !important;
-    }
-    [data-theme="sky"] .about-hero-title { background: linear-gradient(135deg,#8AACDB,#503ACB) !important; }
-    [data-theme="sky"] .about-cta-btn    { background: linear-gradient(135deg,#8AACDB,#503ACB) !important; }
+    /* ── Sky theme ──────────────────────────────────────────── */
+    [data-theme="sky"] .about-title          { color: #0a4f8a; }
+    [data-theme="sky"] .about-hero-title     { background: linear-gradient(135deg,#8AACDB,#503ACB); -webkit-background-clip:text; background-clip:text; }
+    [data-theme="sky"] .about-card-title,
+    [data-theme="sky"] .about-value-title,
+    [data-theme="sky"] .about-values-title,
+    [data-theme="sky"] .about-cta-text,
+    [data-theme="sky"] .about-section-title  { color: #0a4f8a; }
+    [data-theme="sky"] .about-stat-num       { background: linear-gradient(135deg,#8AACDB,#503ACB); -webkit-background-clip:text; background-clip:text; }
+    [data-theme="sky"] .about-cta-btn        { background: linear-gradient(135deg,#8AACDB,#503ACB); }
 
-    /* ── Mobile ── */
+    /* ── Mobile ─────────────────────────────────────────────── */
     @media (max-width: 600px) {
-        .about-hero { padding: 28px 20px 24px; }
-        .about-values { padding: 22px 18px; }
-        .about-cta { padding: 22px 20px; }
-        .about-hero-emoji { font-size: 2.8rem; }
+        .about-title  { font-size: 54px; }
+        .about-cards  { flex-direction: column; }
+        .about-stats  { flex-wrap: wrap; }
     }
     </style>
 </head>
@@ -374,120 +359,117 @@
     <a href="donate.html" class="nav-link">Donate</a>
 </nav>
 
-<div class="cloud cloud-left">
-    <img src="images/cloud.png" alt="cloud">
-</div>
-<div class="cloud cloud-right">
-    <img src="images/cloud.png" alt="cloud">
-</div>
+<div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
+<div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
 
-<h1>About Us and You</h1>
+<h1 class="about-title">About Us</h1>
 
 <div class="about-page">
 
-    <!-- Hero intro -->
+    <!-- ── Hero ──────────────────────────────────────── -->
     <div class="about-hero">
-        <span class="about-hero-emoji">🌍</span>
-        <div class="about-hero-title">We believe recycling can save the world — one item at a time.</div>
+        <img class="about-hero-img" src="images/donate-globe.png" alt="Globe">
+        <div class="about-hero-title">Recycling made simple for everyone.</div>
         <p class="about-hero-text">
-            RecycleHelper was created by people who care deeply about the environment.
-            Our goal is simple: make recycling easy, accessible, and even fun for everyone.
-            Whether you're a first-time recycler or a seasoned eco-warrior, we're here to guide you
-            every step of the way.
+            RecycleHelper was built by people who care about the planet.
+            We make sorting, learning, and recycling smarter - one item at a time.
         </p>
     </div>
 
-    <!-- What we do -->
-    <div class="about-section-title">What We Do</div>
+    <!-- ── What We Do ────────────────────────────────── -->
+    <div class="about-section-title" style="animation-delay:0.35s">What We Do</div>
     <div class="about-cards">
+
         <div class="about-card">
-            <span class="about-card-icon">📚</span>
+            <img class="about-card-icon" src="images/education.png" alt="Educate">
             <div class="about-card-title">Educate</div>
-            <p class="about-card-text">
-                We break down complex recycling rules into clear, easy-to-understand guides.
-                Learn exactly which bin to use, what gets recycled, and why it matters.
-            </p>
+            <p class="about-card-text">Clear, simple guides on what goes where and why it matters.</p>
         </div>
+
         <div class="about-card">
-            <span class="about-card-icon">🎮</span>
+            <img class="about-card-icon" src="images/interact.png" alt="Engage">
             <div class="about-card-title">Engage</div>
-            <p class="about-card-text">
-                Our interactive game "Save the City" lets you experience the real impact of
-                recycling decisions — in a fun, hands-on way that sticks with you.
-            </p>
+            <p class="about-card-text">Interactive tools and games that make recycling learning fun.</p>
         </div>
+
         <div class="about-card">
-            <span class="about-card-icon">🤝</span>
+            <img class="about-card-icon" src="images/donate-recycle.png" alt="Empower">
             <div class="about-card-title">Empower</div>
-            <p class="about-card-text">
-                We give you the tools and knowledge to make a real difference in your community.
-                Every informed choice you make ripples outward to inspire others.
-            </p>
+            <p class="about-card-text">Tools and knowledge to help you take real action in your community.</p>
         </div>
+
     </div>
 
-    <!-- Stats -->
-    <div class="about-section-title">Our Impact So Far</div>
+    <!-- ── Stats ─────────────────────────────────────── -->
+    <div class="about-section-title" style="animation-delay:0.6s">Our Impact So Far</div>
     <div class="about-stats">
         <div class="about-stat">
             <span class="about-stat-num">12+</span>
-            <span class="about-stat-label">Waste Categories Covered</span>
+            <span class="about-stat-label">Waste Categories</span>
         </div>
         <div class="about-stat">
             <span class="about-stat-num">400+</span>
-            <span class="about-stat-label">Recycling Facts & Tips</span>
+            <span class="about-stat-label">Facts & Tips</span>
         </div>
         <div class="about-stat">
             <span class="about-stat-num">3</span>
-            <span class="about-stat-label">Interactive Learning Modes</span>
+            <span class="about-stat-label">Learning Modes</span>
         </div>
         <div class="about-stat">
             <span class="about-stat-num">100%</span>
-            <span class="about-stat-label">Free & Open to All</span>
+            <span class="about-stat-label">Free for All</span>
         </div>
     </div>
 
-    <!-- Values -->
+    <!-- ── Values ────────────────────────────────────── -->
     <div class="about-values">
-        <div class="about-values-title">🌱 Our Values</div>
+        <div class="about-values-title">
+            <img src="images/values.png" alt="">
+            Our Values
+        </div>
+
         <div class="about-value-row">
-            <span class="about-value-icon">♻️</span>
+            <img class="about-value-icon" src="images/donate-recycle.png" alt="">
             <div>
                 <div class="about-value-title">Sustainability First</div>
-                <p class="about-value-text">Every decision we make — from how we build this site to the content we create — is guided by a commitment to environmental sustainability.</p>
+                <p class="about-value-text">Every decision we make is guided by a commitment to environmental sustainability.</p>
             </div>
         </div>
+
         <div class="about-value-row">
-            <span class="about-value-icon">💡</span>
+            <img class="about-value-icon" src="images/clarity.png" alt="">
             <div>
                 <div class="about-value-title">Clarity Over Confusion</div>
-                <p class="about-value-text">Recycling rules can be confusing. We cut through the noise and deliver accurate, up-to-date information that anyone can act on immediately.</p>
+                <p class="about-value-text">We cut through complex recycling rules and deliver clear, actionable information.</p>
             </div>
         </div>
+
         <div class="about-value-row">
-            <span class="about-value-icon">🤗</span>
+            <img class="about-value-icon" src="images/education.png" alt="">
             <div>
                 <div class="about-value-title">Inclusive & Welcoming</div>
-                <p class="about-value-text">Sustainability is for everyone. We design RecycleHelper so that people of all ages, backgrounds, and experience levels feel welcome and capable.</p>
+                <p class="about-value-text">Sustainability is for everyone, regardless of age or background.</p>
             </div>
         </div>
+
         <div class="about-value-row">
-            <span class="about-value-icon">🔬</span>
+            <img class="about-value-icon" src="images/science.png" alt="">
             <div>
                 <div class="about-value-title">Facts & Science</div>
-                <p class="about-value-text">All our content is backed by real environmental data and science. We believe informed people make the best decisions for the planet.</p>
+                <p class="about-value-text">All content is backed by real environmental data  because informed people act better.</p>
             </div>
         </div>
+
     </div>
 
-    <!-- CTA -->
+    <!-- ── CTA ───────────────────────────────────────── -->
     <div class="about-cta">
         <div class="about-cta-text">Ready to make a difference?</div>
-        <p class="about-cta-sub">
-            Join thousands of people learning to recycle better every day.<br>
-            Start with our guides, play the game, and see what one person can do.
-        </p>
-        <a href="index.html" class="about-cta-btn">♻️ Start Recycling</a>
+        <p class="about-cta-sub">Start with our guides, explore the tools, and see what one person can do.</p>
+        <a href="index.html" class="about-cta-btn">
+            <img src="images/donate-recycle.png" alt="">
+            Start Recycling
+        </a>
     </div>
 
 </div><!-- /about-page -->

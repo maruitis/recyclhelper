@@ -34,52 +34,52 @@ const CONTAINERS_DB = {
         color: "blue",
         name: "Blue Container",
         subtitle: "Paper & Cardboard",
-        whatToThrow: ["Newspapers","Magazines","Cardboard boxes","Office paper","Paper bags","Books (soft cover)","Cardboard packaging"],
-        doNotThrow: ["Wet or dirty paper","Waxed cardboard","Tissues","Lined paper cups","Carbon paper"],
+        whatToThrow: ["Newspapers & magazines","Office paper","Cardboard boxes (flattened)","Cardboard packaging","Paper bags","Books (without hard covers)"],
+        doNotThrow: ["Wet or dirty paper","Paper towels & napkins","Waxed or plastic-coated cardboard","Milk & juice cartons","Coated paper cups"],
         funFacts: [
-          "Latvia recycles over 70 % of its paper waste annually.",
-          "One tonne of recycled paper saves 17 trees from being cut down.",
-          "Recycling paper uses 40 % less energy than making new paper from scratch.",
-          "Latvia's paper recycling rate is among the highest in the European Union."
+          "Paper can be recycled multiple times without losing quality.",
+          "Recycling paper helps reduce tree cutting and deforestation.",
+          "Recycling paper uses significantly less energy than producing new paper from raw materials.",
+          "Flattening cardboard boxes saves space and improves sorting efficiency."
         ]
       },
       {
         color: "yellow",
         name: "Yellow Container",
         subtitle: "Plastic & Metal",
-        whatToThrow: ["Plastic bottles","Plastic packaging","Tin cans","Aluminium cans","Metal lids","Plastic bags","Foam packaging"],
-        doNotThrow: ["Dirty containers","Motor-oil bottles","PVC materials","Solid Styrofoam","Hazardous material containers"],
+        whatToThrow: ["Plastic bottles (PET)","Plastic packaging","Plastic bags & film","Metal cans","Aluminium cans","Metal lids & caps"],
+        doNotThrow: ["Dirty packaging with food residue","Hazardous waste containers","Motor oil containers","PVC materials","Electronics"],
         funFacts: [
-          "Recycling one aluminium can saves enough energy to run a TV for 3 hours.",
-          "Latvia has one of Europe's most efficient deposit-return bottle systems.",
-          "Plastic bottles can be recycled into clothing fibres and furniture.",
-          "Latvia's yellow-container system was standardised across the country in 2014."
+          "Aluminium is 100 % recyclable and can be reused indefinitely.",
+          "Recycling metals saves significant energy compared to producing new materials.",
+          "Plastic can be recycled into new packaging, products, or fibres.",
+          "Rinsing containers before recycling prevents contamination of the whole batch."
         ]
       },
       {
         color: "green",
         name: "Green Container",
         subtitle: "Glass",
-        whatToThrow: ["Glass bottles","Glass jars","Glass containers","Broken glass (wrapped safely)"],
-        doNotThrow: ["Ceramic dishes","Mirrors","Light bulbs","Crystal glass","Heat-resistant glass (Pyrex)"],
+        whatToThrow: ["Glass bottles","Glass jars","Glass packaging"],
+        doNotThrow: ["Mirrors","Ceramic dishes","Light bulbs","Crystal glass","Heat-resistant glass (Pyrex)"],
         funFacts: [
           "Glass can be recycled endlessly without losing quality or purity.",
-          "Latvia recycles over 80 % of its glass packaging each year.",
-          "Recycled glass melts at lower temperatures, cutting energy use significantly.",
-          "One recycled glass bottle saves enough energy to power a computer for 25 minutes."
+          "Recycled glass melts at lower temperatures, reducing energy use.",
+          "Glass recycling helps reduce landfill waste significantly.",
+          "One recycled glass bottle saves enough energy to power a light bulb for several hours."
         ]
       },
       {
-        color: "orange",
-        name: "Orange Container",
-        subtitle: "Organic Waste",
-        whatToThrow: ["Food scraps","Fruit & vegetable peels","Coffee grounds","Tea bags","Bread","Egg shells"],
-        doNotThrow: ["Meat & fish","Dairy products","Cooking oil","Cooked meals","Diseased plants"],
+        color: "brown",
+        name: "Brown Container",
+        subtitle: "Biowaste",
+        whatToThrow: ["Fruit & vegetable peels","Food scraps","Coffee grounds","Tea bags (without plastic)","Eggshells","Garden green waste"],
+        doNotThrow: ["Plastic","Glass","Metal","Diapers","Cooking oil","Other non-organic materials"],
         funFacts: [
-          "Organic waste makes up about 40 % of household garbage in Latvia.",
-          "Composted organic waste becomes nutrient-rich soil for agriculture.",
-          "Latvia has been expanding its bio-waste collection network since 2020.",
-          "1 kg of composted food waste can fertilise 1 m² of garden."
+          "Biowaste makes up a large part of household waste in Latvia.",
+          "Composting turns organic waste into valuable fertilizer for soil.",
+          "Separating biowaste helps reduce greenhouse gas emissions.",
+          "Organic matter in landfills produces methane — a potent greenhouse gas."
         ]
       }
     ]
@@ -928,12 +928,12 @@ document.addEventListener("DOMContentLoaded", () => {
 const QUIZ_DB = {
   latvia: [
     { q: "What colour is the container for paper and cardboard in Latvia?", opts: ["Green","Blue","Yellow","Orange"], a: 1 },
-    { q: "Which container collects plastic bottles and tin cans in Latvia?", opts: ["Blue","Green","Orange","Yellow"], a: 3 },
-    { q: "What percentage of paper waste does Latvia recycle annually?", opts: ["Over 50 %","Over 70 %","Over 90 %","Over 40 %"], a: 1 },
-    { q: "Which of these should NOT go in Latvia's green glass container?", opts: ["Glass bottles","Glass jars","Ceramic dishes","Broken glass"], a: 2 },
-    { q: "What does Latvia's orange container collect?", opts: ["Plastic waste","Glass","Organic food waste","Paper"], a: 2 },
-    { q: "Recycling one aluminium can saves enough energy to run a TV for how long?", opts: ["1 hour","3 hours","5 hours","30 minutes"], a: 1 },
-    { q: "How many trees does recycling one tonne of paper save?", opts: ["5 trees","10 trees","17 trees","25 trees"], a: 2 }
+    { q: "Which item should NOT go in Latvia's blue container?", opts: ["Office paper","Cardboard boxes","Milk and juice cartons","Newspapers"], a: 2 },
+    { q: "What does Latvia's yellow container collect?", opts: ["Glass","Biowaste","Paper & cardboard","Plastic & metal"], a: 3 },
+    { q: "Which of these should NOT go in Latvia's yellow container?", opts: ["Metal cans","Plastic bottles","Electronics","Aluminium cans"], a: 2 },
+    { q: "What does Latvia's green container collect?", opts: ["Plastic","Paper","Glass","Organic waste"], a: 2 },
+    { q: "What does Latvia's brown container collect?", opts: ["Plastic waste","Glass","Paper","Biowaste / Organic waste"], a: 3 },
+    { q: "Which of these should NOT go in Latvia's brown biowaste container?", opts: ["Coffee grounds","Eggshells","Diapers","Fruit & vegetable peels"], a: 2 }
   ],
   germany: [
     { q: "What is the German name for the organic waste bin?", opts: ["Restmüll","Altpapier","Biotonne","Gelbe Tonne"], a: 2 },
@@ -1048,7 +1048,7 @@ function showQuizButton() {
   const wrap = document.createElement("div");
   wrap.id = "quizBtnWrap";
   wrap.className = "quiz-btn-wrap";
-  wrap.innerHTML = `<button class="quiz-col-btn" id="startQuizBtn">🧠 Take the Quiz!</button>`;
+  wrap.innerHTML = `<button class="quiz-col-btn" id="startQuizBtn"><img src="images/donate-book.png" alt="" style="width:26px;height:26px;object-fit:contain;vertical-align:middle;margin-right:8px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));"> Take the Quiz!</button>`;
   left.appendChild(wrap);
   document.getElementById("startQuizBtn").addEventListener("click", startQuiz);
 }

@@ -11,6 +11,27 @@
     <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 
     <style>
+    /* ── Page title ───────────────────────────────────────── */
+    .page-title {
+        font-family: 'Jomhuria', sans-serif;
+        font-size: 76px;
+        font-weight: 400;
+        background: linear-gradient(135deg, #1C9073, #0E0973);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin: 10px 0 28px;
+        line-height: 1;
+        opacity: 0;
+        transform: translateY(-24px);
+        animation: pageTitleFade 0.7s ease 0.1s forwards;
+        filter: drop-shadow(0 4px 14px rgba(14,9,115,0.14));
+    }
+    @keyframes pageTitleFade { to { opacity: 1; transform: translateY(0); } }
+    [data-theme="dark"] .page-title { background: linear-gradient(135deg,#00FF6A,#7b2fff); -webkit-background-clip:text; background-clip:text; }
+    [data-theme="sky"]  .page-title { background: linear-gradient(135deg,#1a78c2,#503ACB); -webkit-background-clip:text; background-clip:text; }
+
     /* ═══════════════════════════════════════
        BENEFITS PAGE LAYOUT
     ═══════════════════════════════════════ */
@@ -55,55 +76,45 @@
         background: linear-gradient(135deg, #A4FFB8, #24E474, #154A73, #0C365F);
         box-shadow:
             0 0 0 1px rgba(0,255,106,0.22),
-            0 8px 40px rgba(36,228,116,0.22),
-            0 2px 12px rgba(80,58,203,0.18),
-            0 0 55px rgba(0,255,106,0.32),
-            0 0 90px rgba(0,255,106,0.14),
-            0 0 130px rgba(0,255,106,0.07);
+            0 10px 48px rgba(36,228,116,0.30),
+            0 3px 16px rgba(80,58,203,0.22),
+            0 0 65px rgba(0,255,106,0.38),
+            0 0 100px rgba(0,255,106,0.18),
+            0 0 150px rgba(0,255,106,0.09);
+        transition: box-shadow 0.3s ease;
+    }
+    #game-shell:hover {
+        box-shadow:
+            0 0 0 1px rgba(0,255,106,0.32),
+            0 14px 56px rgba(36,228,116,0.40),
+            0 4px 20px rgba(80,58,203,0.28),
+            0 0 80px rgba(0,255,106,0.48),
+            0 0 120px rgba(0,255,106,0.22),
+            0 0 170px rgba(0,255,106,0.12);
     }
     /* Inner wrapper clips content inside the gradient border */
     #game-shell-inner {
         border-radius: 25px;
-        overflow: hidden;
+        overflow: visible;
         width: 100%;
         height: 100%;
         background: #88F0D9;
     }
 
-    /* ── Desktop side panel: results shown alongside game ── */
-    #game-side-panel {
-        display: none; /* hidden on mobile, shown on desktop */
-        flex-direction: column;
-        gap: 16px;
-        width: 300px;
-        flex-shrink: 0;
-        align-self: flex-start;
-        position: sticky;
-        top: 120px;
-    }
-    @media (min-width: 900px) {
-        #game-side-panel { display: flex; }
-        /* On desktop, hide the inline end screen and show only side panel */
-        #g-end-inline { display: none !important; }
-    }
-    @media (max-width: 899px) {
-        /* On mobile, hide side panel result, show inline end screen normally */
-        #game-side-panel { display: none !important; }
-        #g-end-inline { display: flex; }
-    }
+    /* ── Desktop side panel: hidden ── */
+    #game-side-panel { display: none !important; }
 
     /* Side panel card */
     .side-panel-card {
-        background: rgba(164,255,184,0.10);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
         border-radius: 20px;
         padding: 20px 18px;
         position: relative;
         overflow: hidden;
-        box-shadow:
-            0 8px 32px rgba(36,228,116,0.14),
-            0 2px 10px rgba(80,58,203,0.10);
+        background: none;
+        transition: transform 0.25s ease;
+    }
+    .side-panel-card:hover {
+        transform: translateY(-2px);
     }
     .side-panel-card::before {
         content: '';
@@ -129,6 +140,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        text-shadow: 0 1px 6px rgba(21,74,115,0.18);
     }
 
     /* Live stat bars in side panel */
@@ -168,12 +180,14 @@
     }
     .side-badge {
         flex: 1; min-width: 80px;
-        background: linear-gradient(135deg, rgba(36,228,116,0.12), rgba(21,74,115,0.10));
+        background: none;
         border-radius: 12px;
         padding: 10px 8px;
         text-align: center;
-        border: 1px solid rgba(36,228,116,0.22);
-        box-shadow: 0 0 10px rgba(0,255,106,0.08);
+        transition: transform 0.25s ease;
+    }
+    .side-badge:hover {
+        transform: translateY(-2px);
     }
     .side-badge-val {
         font-family: "Oswald", sans-serif;
@@ -273,66 +287,52 @@
         border-radius: 23px 23px 0 0;
     }
 
-    /* glass play card overlay on start */
+    /* ── Start overlay: full-cover blur ── */
     #g-play-card {
         position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        width: calc(100% - 40px);
-        max-width: 320px;
-        /* glassmorphism with gradient border */
-        background: rgba(136,240,217,0.18);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 20px;
-        padding: 26px 22px 22px;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        justify-content: center;
+        gap: 12px;
         text-align: center;
         z-index: 10;
-        box-shadow:
-            0 8px 32px rgba(21,74,115,0.25),
-            0 0 40px rgba(0,255,106,0.12),
-            inset 0 1px 0 rgba(255,255,255,0.3);
+        background: rgba(10, 30, 20, 0.22);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
     }
-    /* gradient stroke on play card */
-    #g-play-card::before {
-        content: '';
-        position: absolute; inset: 0;
-        border-radius: 20px;
-        padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-    }
+    #g-play-card::before { display: none; }
 
     .g-logo {
-        font-size: 3rem;
+        display: flex;
+        justify-content: center;
         animation: gFloat 3s ease-in-out infinite;
         filter: drop-shadow(0 0 14px rgba(0,255,106,0.5));
     }
     @keyframes gFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
     .g-title {
-        font-family: "Oswald", sans-serif;
-        font-size: clamp(1.4rem, 5vw, 2rem);
-        font-weight: 700;
-        color: #154A73;
+        font-family: "Jomhuria", sans-serif;
+        font-size: clamp(2.8rem, 8vw, 4.2rem);
+        font-weight: 400;
+        color: #ffffff;
         letter-spacing: 0.5px;
-        line-height: 1.15;
-        text-shadow: 0 0 18px rgba(0,255,106,0.18);
+        line-height: 1;
+        text-shadow: 0 4px 24px rgba(0,0,0,0.45), 0 0 40px rgba(0,255,106,0.3);
     }
     .g-subtitle {
         font-family: "Oswald", sans-serif;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 400;
-        color: #4F6B58;
-        letter-spacing: 1.5px;
+        color: rgba(255,255,255,0.82);
+        letter-spacing: 3px;
         text-transform: uppercase;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.35);
     }
 
     .g-btn-start {
@@ -706,13 +706,10 @@
 
     /* ── HUD ── */
     #g-hud {
-        background: rgba(136,240,217,0.13);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        background: none;
         border-top: none;
-        border-bottom: 1px solid rgba(36,228,116,0.18);
+        border-bottom: none;
         padding: 10px 14px 8px;
-        box-shadow: 0 4px 18px rgba(21,74,115,0.08);
     }
     #g-hud-top {
         display: flex;
@@ -739,7 +736,8 @@
         box-shadow: 0 0 8px rgba(0,255,106,0.2);
     }
     .g-timer-box {
-        display: flex; align-items: center; gap: 5px;
+        display: none !important;
+        align-items: center; gap: 5px;
         font-family: "Oswald", sans-serif;
         font-size: 0.85rem; color: #4F6B58; font-weight: 500;
     }
@@ -783,14 +781,14 @@
 
     /* ── Card area ── */
     #g-card-area {
-        background: rgba(136,240,217,0.10);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        background: none;
         border-top: none;
+        border-bottom: none;
         padding: 14px 14px 18px;
         display: flex; flex-direction: column; align-items: center; gap: 12px;
         min-height: 210px;
         border-radius: 0 0 23px 23px;
+        transition: opacity 0.25s ease;
     }
     .g-card-label {
         font-family: "Oswald", sans-serif;
@@ -801,15 +799,11 @@
 
     #g-waste-card {
         width: 100%;
-        background: rgba(255,255,255,0.92);
+        background: none;
         border-radius: 16px;
         padding: 16px 18px 14px;
         transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
         position: relative; overflow: hidden;
-        box-shadow:
-            0 6px 24px rgba(21,74,115,0.12),
-            0 0 30px rgba(0,255,106,0.08),
-            inset 0 1px 0 rgba(255,255,255,0.8);
     }
     /* gradient stroke on card */
     #g-waste-card::before {
@@ -852,10 +846,10 @@
         font-family: "Inter", sans-serif;
         font-size: 0.76rem; color: #4F6B58; line-height: 1.5;
         padding: 9px 12px;
-        background: rgba(36,228,116,0.07);
+        background: none;
         border-left: 3px solid #24E474;
         border-radius: 0 8px 8px 0;
-        box-shadow: inset 0 0 12px rgba(0,255,106,0.05);
+        box-shadow: 0 2px 10px rgba(36,228,116,0.12), 0 1px 4px rgba(0,0,0,0.06);
     }
 
     /* Action buttons */
@@ -932,41 +926,88 @@
     }
     @keyframes gBannerPop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-    /* ── End screen (inline / mobile) ── */
+    /* ── End screen ── */
     #g-end-inline {
-        background: rgba(136,240,217,0.12);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 22px;
-        padding: 28px 20px 30px;
-        display: flex; flex-direction: column; align-items: center;
-        text-align: center; gap: 0;
-        max-height: 82vh; overflow-y: auto;
-        position: relative;
-        box-shadow:
-            0 12px 48px rgba(21,74,115,0.18),
-            0 0 60px rgba(0,255,106,0.1);
-    }
-    #g-end-inline::before {
-        content: ''; position: absolute; inset: 0;
-        border-radius: 22px; padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474 45%, #503ACB 75%, #0C365F);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor; mask-composite: exclude;
-        pointer-events: none;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px 24px;
+        width: 100%;
     }
     #g-end-inline.active { display: flex; }
 
-    .g-end-badge {
-        font-size: 3.6rem; margin-bottom: 6px;
-        animation: gBadgeBounce 0.6s cubic-bezier(.34,1.56,.64,1);
-        filter: drop-shadow(0 0 16px rgba(0,255,106,0.45));
+    .g-end-main-card {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0;
+        animation: endCardPop 0.55s cubic-bezier(.34,1.56,.64,1) 0.1s both;
     }
+
+    /* ── Separate end story card ── */
+    #end-story-card {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        width: 260px;
+        flex-shrink: 0;
+        align-self: flex-start;
+        background: rgba(255,255,255,0.13);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1.5px solid rgba(255,255,255,0.30);
+        border-radius: 22px;
+        padding: 18px 16px 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+        animation: endCardPop 0.5s cubic-bezier(.34,1.56,.64,1) 0.15s both;
+    }
+    #end-story-card.visible { display: flex; }
+
+    .end-story-col { display: flex; flex-direction: column; gap: 5px; }
+    .end-story-header {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding-bottom: 5px;
+        margin-bottom: 2px;
+        border-bottom: 1.5px solid rgba(0,0,0,0.08);
+    }
+    .end-story-header.bad  { color: #b71c1c; }
+    .end-story-header.good { color: #1b5e20; }
+    .end-story-tag {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.70rem;
+        line-height: 1.4;
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+    .end-story-tag.bad  { background: rgba(200,20,20,0.08); color: #4a0000; border-left: 2.5px solid rgba(200,20,20,0.35); }
+    .end-story-tag.good { background: rgba(0,150,60,0.08);  color: #0a3a18; border-left: 2.5px solid rgba(0,150,60,0.32); }
+
+    @media (max-width: 899px) {
+        #end-story-card { width: 100%; }
+    }
+    @keyframes endCardPop {
+        from { transform: scale(0.85) translateY(24px); opacity: 0; }
+        to   { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .g-end-badge {
+        font-size: 5rem; margin-bottom: 10px;
+        animation: gBadgeBounce 0.6s cubic-bezier(.34,1.56,.64,1);
+        filter: drop-shadow(0 0 22px rgba(0,255,106,0.55));
+        display: flex; justify-content: center;
+    }
+    .g-end-badge img { width: 100px; height: 100px; object-fit: contain; }
     @keyframes gBadgeBounce { from{transform:scale(0) rotate(-18deg)} to{transform:scale(1) rotate(0deg)} }
     .g-end-title {
-        font-family: "Oswald", sans-serif;
-        font-size: clamp(1.3rem,4.5vw,1.8rem);
-        font-weight: 700;
+        font-family: "Jomhuria", sans-serif;
+        font-size: clamp(2.4rem,7vw,3.5rem);
+        font-weight: 400;
         background: linear-gradient(135deg, #24E474, #154A73);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -977,31 +1018,36 @@
         color: #4F6B58; margin-bottom: 20px; line-height: 1.5; max-width: 300px;
     }
     .g-end-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         width: 100%; margin-bottom: 18px;
     }
     .g-end-card {
-        background: rgba(164,255,184,0.12);
-        border-radius: 13px; padding: 13px 8px;
-        display: flex; flex-direction: column; align-items: center; gap: 3px;
-        border: 1px solid rgba(36,228,116,0.22);
-        box-shadow: 0 0 12px rgba(0,255,106,0.08), 0 2px 8px rgba(21,74,115,0.08);
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.22);
+        border-radius: 14px; padding: 14px 10px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+        text-align: center;
+        transition: transform 0.25s ease;
     }
-    .g-end-card span:nth-child(1) { font-size: 1.4rem; }
+    .g-end-card:hover {
+        transform: translateY(-3px);
+    }
+    .g-end-card span:nth-child(1) { font-size: 1.4rem; line-height: 1; }
     .g-end-card span:nth-child(2) {
         font-family: "Inter", sans-serif;
-        font-size: 1.25rem; font-weight: 800; color: #154A73;
+        font-size: 1.3rem; font-weight: 800; color: #154A73;
         text-shadow: 0 0 10px rgba(0,255,106,0.2);
+        line-height: 1;
     }
     .g-end-card span:nth-child(3) {
         font-family: "Oswald", sans-serif;
-        font-size: 0.66rem; color: #8AACDB;
-        text-transform: uppercase; letter-spacing: 0.5px;
+        font-size: 0.65rem; color: #8AACDB;
+        text-transform: uppercase; letter-spacing: 0.8px;
+        line-height: 1;
     }
     .g-end-facts {
         width: 100%;
-        background: rgba(36,228,116,0.06);
-        border: 1px solid rgba(36,228,116,0.18);
+        background: none;
         border-radius: 13px; padding: 14px; margin-bottom: 18px; text-align: left;
     }
     .g-end-facts h3 {
@@ -1017,6 +1063,38 @@
         color: #4F6B58; line-height: 1.4;
     }
     .g-fact span:first-child { flex-shrink: 0; }
+    .g-story-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+        align-items: flex-start;
+    }
+    .g-story-section {
+        flex: 1;
+        min-width: 0;
+    }
+    .g-story-label {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.70rem;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid rgba(0,0,0,0.10);
+    }
+    .g-story-section.bad  .g-story-label { color: #c0392b; }
+    .g-story-section.good .g-story-label { color: #1a7a40; }
+    .g-story-item {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.71rem;
+        line-height: 1.5;
+        padding: 6px 9px;
+        border-radius: 9px;
+        margin-bottom: 5px;
+    }
+    .g-story-item.bad  { background: rgba(200,20,20,0.07); color: #4a0000; border-left: 3px solid rgba(200,20,20,0.30); }
+    .g-story-item.good { background: rgba(0,160,60,0.07); color: #0a3a18; border-left: 3px solid rgba(0,160,60,0.28); }
     .g-btn-again {
         background: linear-gradient(135deg, #24E474, #154A73);
         color: #fff; border: none; padding: 13px 38px; border-radius: 50px;
@@ -1029,6 +1107,81 @@
     .g-btn-again:hover {
         transform: translateY(-2px);
         box-shadow: 0 0 32px rgba(0,255,106,0.6), 0 8px 22px rgba(21,74,115,0.4);
+    }
+
+    /* ── Impact Panel ── */
+    #impact-panel {
+        display: none;
+        flex-direction: column;
+        width: 270px;
+        flex-shrink: 0;
+        align-self: flex-start;
+        position: sticky;
+        top: 100px;
+    }
+    #impact-panel.visible { display: flex; }
+    .impact-card {
+        border-radius: 20px;
+        padding: 20px 18px 18px;
+        animation: impactPop 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
+        border: 1.5px solid rgba(255,255,255,0.30);
+    }
+    .impact-card.bad {
+        background: rgba(220, 40, 40, 0.12);
+        backdrop-filter: blur(12px);
+        border-color: rgba(255,80,80,0.35);
+        box-shadow: 0 8px 32px rgba(200,20,20,0.15), 0 0 24px rgba(255,50,50,0.12);
+    }
+    .impact-card.good {
+        background: rgba(0, 200, 80, 0.10);
+        backdrop-filter: blur(12px);
+        border-color: rgba(0,220,100,0.35);
+        box-shadow: 0 8px 32px rgba(0,160,60,0.15), 0 0 24px rgba(0,255,100,0.12);
+    }
+    @keyframes impactPop {
+        from { opacity: 0; transform: translateX(18px) scale(0.95); }
+        to   { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .impact-verdict {
+        font-family: 'Oswald', sans-serif;
+        font-size: 0.62rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .impact-card.bad  .impact-verdict { color: #c0392b; }
+    .impact-card.good .impact-verdict { color: #1a7a40; }
+    .impact-title {
+        font-family: 'Jomhuria', sans-serif;
+        font-size: 1.45rem;
+        color: #0C365F;
+        line-height: 1.15;
+        margin-bottom: 8px;
+    }
+    .impact-body {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.76rem;
+        color: #2c3e50;
+        line-height: 1.55;
+        margin-bottom: 12px;
+    }
+    .impact-tags {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .impact-tag {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.70rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    .impact-card.bad  .impact-tag { background: rgba(200,20,20,0.10); color: #8b0000; border: 1px solid rgba(200,20,20,0.20); }
+    .impact-card.good .impact-tag { background: rgba(0,160,60,0.10); color: #145a32; border: 1px solid rgba(0,160,60,0.20); }
+    @media (max-width: 899px) {
+        #impact-panel { width: 100%; position: static; }
     }
 
     /* ── Star twinkle animation ── */
@@ -1069,8 +1222,8 @@
     #g-game { position: relative !important; }
     /* Fix: card area rounded bottom corners */
     #g-card-area { border-radius: 0 0 22px 22px; }
-    /* Smooth HUD/card area separation */
-    #g-hud { border-bottom: 1px solid rgba(165,214,167,0.25); }
+    /* HUD: no border */
+    #g-hud { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -1089,7 +1242,7 @@
     <img src="images/cloud.png" alt="cloud">
 </div>
 
-<h1>Learn about benefits</h1>
+<h1 class="page-title">Learn about Benefits</h1>
 
 <div class="benefits-page">
 
@@ -1108,10 +1261,10 @@
                     <div id="g-start-trees" style="position:absolute;bottom:36px;left:0;right:0;z-index:4;pointer-events:none;"></div>
                     <div id="g-start-ground" style="position:absolute;bottom:0;left:0;right:0;height:38px;background:linear-gradient(180deg,#5cb85c 0%,#4a8c3f 100%);z-index:2;"></div>
                     <div id="g-play-card">
-                        <div class="g-logo">🌍</div>
+                        <div class="g-logo"><img src="images/donate-globe.png" alt="Globe" style="width:80px;height:80px;object-fit:contain;display:block;filter:drop-shadow(0 6px 22px rgba(0,0,0,0.45));"></div>
                         <div class="g-title">Save the City</div>
                         <div class="g-subtitle">Recycling Impact</div>
-                        <button class="g-btn-start" onclick="gStart()">♻️ Play Now</button>
+                        <button class="g-btn-start" onclick="gStart()"><img src="images/donate-recycle.png" alt="" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:6px;"> Play Now</button>
                     </div>
                 </div>
             </div>
@@ -1133,32 +1286,32 @@
                 <div id="g-hud">
                     <div id="g-hud-top">
                         <div class="g-hud-title">
-                            🌍 Save the City: Recycling Impact
+                            <img src="images/donate-globe.png" alt="" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Save the City: Recycling Impact
                             <span class="g-score-inline" id="g-score-val">0</span>
                         </div>
-                        <div class="g-timer-box">⏱ <span id="g-timer-val">45</span>s</div>
+                        <div class="g-timer-box"><img src="images/easier.png" alt="" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;"> <span id="g-timer-val">45</span>s</div>
                     </div>
                     <div id="g-stats">
                         <div class="g-stat-row">
-                            <span class="g-stat-icon">💨</span>
+                            <span class="g-stat-icon"><img src="images/co2.png" alt="pollution" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Pollution</span>
                             <div class="g-stat-track"><div class="g-stat-fill pol" id="g-bar-pol" style="width:10%"></div></div>
                             <span class="g-stat-num" id="g-num-pol">10</span>
                         </div>
                         <div class="g-stat-row">
-                            <span class="g-stat-icon">🌿</span>
+                            <span class="g-stat-icon"><img src="images/donate-plant.png" alt="nature" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Nature</span>
                             <div class="g-stat-track"><div class="g-stat-fill nat" id="g-bar-nat" style="width:80%"></div></div>
                             <span class="g-stat-num" id="g-num-nat">80</span>
                         </div>
                         <div class="g-stat-row">
-                            <span class="g-stat-icon">😊</span>
+                            <span class="g-stat-icon"><img src="images/welcoming.png" alt="happiness" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Happiness</span>
                             <div class="g-stat-track"><div class="g-stat-fill hap" id="g-bar-hap" style="width:75%"></div></div>
                             <span class="g-stat-num" id="g-num-hap">75</span>
                         </div>
                         <div class="g-stat-row">
-                            <span class="g-stat-icon">☣️</span>
+                            <span class="g-stat-icon"><img src="images/science.png" alt="toxicity" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Toxicity</span>
                             <div class="g-stat-track"><div class="g-stat-fill tox" id="g-bar-tox" style="width:5%"></div></div>
                             <span class="g-stat-num" id="g-num-tox">5</span>
@@ -1169,7 +1322,7 @@
                     <div class="g-card-label">INCOMING WASTE ↓</div>
                     <div id="g-waste-card">
                         <div class="g-card-top">
-                            <div class="g-card-icon-bg" id="g-icon-bg"><span id="g-icon">♻️</span></div>
+                            <div class="g-card-icon-bg" id="g-icon-bg"><span id="g-icon"><img src="images/donate-recycle.png" alt="recycle" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"></span></div>
                             <div>
                                 <div class="g-card-name" id="g-card-name">Loading…</div>
                                 <div class="g-card-num"  id="g-card-num">Card 1 of 12</div>
@@ -1178,61 +1331,81 @@
                         <div class="g-card-tip" id="g-card-tip">Loading…</div>
                     </div>
                     <div id="g-actions">
-                        <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')">❌ Ignore</button>
-                        <button class="g-btn" id="g-btn-recycle" onclick="gDecide('recycle')">♻️ Recycle</button>
+                        <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')"><img src="images/trashcan.png" alt="" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Ignore</button>
+                        <button class="g-btn" id="g-btn-recycle" onclick="gDecide('recycle')"><img src="images/donate-recycle.png" alt="" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Recycle</button>
                     </div>
                 </div>
                 <div id="g-floats"></div>
                 <div id="g-event"></div>
             </div>
 
-            <!-- END SCREEN (mobile / inline) -->
+            <!-- END SCREEN -->
             <div id="g-end-inline" class="g-screen">
-                <div class="g-end-badge" id="g-end-badge">🌍</div>
-                <div class="g-end-title" id="g-end-title">Eco Hero!</div>
-                <div class="g-end-sub"   id="g-end-sub">Great job!</div>
-                <div class="g-end-grid">
-                    <div class="g-end-card"><span>🏆</span><span id="g-end-score">0</span><span>Score</span></div>
-                    <div class="g-end-card"><span>♻️</span><span id="g-end-recycled">0</span><span>Recycled</span></div>
-                    <div class="g-end-card"><span>🌿</span><span id="g-end-nat">0</span><span>Nature</span></div>
-                    <div class="g-end-card"><span>😊</span><span id="g-end-hap">0</span><span>Happiness</span></div>
+                <div class="g-end-main-card">
+                    <div class="g-end-badge" id="g-end-badge"><img src="images/donate-globe.png" alt="globe" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,255,106,0.45));"></div>
+                    <div class="g-end-title" id="g-end-title">Eco Hero!</div>
+                    <div class="g-end-sub"   id="g-end-sub">Great job!</div>
+                    <div class="g-end-grid">
+                        <div class="g-end-card"><span><img src="images/values.png" alt="score" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-score">0</span><span>Score</span></div>
+                        <div class="g-end-card"><span><img src="images/donate-recycle.png" alt="recycled" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-recycled">0</span><span>Recycled</span></div>
+                        <div class="g-end-card"><span><img src="images/donate-plant.png" alt="nature" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-nat">0</span><span>Nature</span></div>
+                        <div class="g-end-card"><span><img src="images/welcoming.png" alt="happiness" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-hap">0</span><span>Happiness</span></div>
+                    </div>
+                    <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
                 </div>
-                <div class="g-end-facts">
-                    <h3>Did You Know?</h3>
-                    <div id="g-facts-list"></div>
-                </div>
-                <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
             </div>
 
           </div><!-- /game-shell-inner -->
         </div><!-- /game-shell -->
+
+        <!-- ══════════════════ END STORY CARD (separate, shown after game) ══════════════════ -->
+        <div id="end-story-card">
+            <div class="end-story-col bad-col">
+                <div class="end-story-header bad">🏭 Went Wrong</div>
+                <div id="end-bad-list"></div>
+            </div>
+            <div class="end-story-col good-col">
+                <div class="end-story-header good">🌿 Went Right</div>
+                <div id="end-good-list"></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════ IMPACT PANEL ══════════════════ -->
+        <div id="impact-panel">
+            <div id="impact-card-inner" class="impact-card bad">
+                <div class="impact-verdict" id="impact-verdict">IGNORED</div>
+                <div class="impact-title" id="impact-title">Impact</div>
+                <div class="impact-body" id="impact-body"></div>
+                <div class="impact-tags" id="impact-tags"></div>
+            </div>
+        </div>
 
         <!-- ══════════════════ SIDE PANEL (desktop only) ══════════════════ -->
         <div id="game-side-panel">
 
             <!-- Live stats card -->
             <div class="side-panel-card" id="side-stats-card">
-                <div class="side-panel-title">📊 City Stats</div>
+                <div class="side-panel-title"><img src="images/benefits.png" alt="stats" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.18));"> City Stats</div>
                 <div class="side-stat-row">
-                    <span class="side-stat-icon">💨</span>
+                    <span class="side-stat-icon"><img src="images/co2.png" alt="pollution" style="width:16px;height:16px;object-fit:contain;"></span>
                     <span class="side-stat-lbl">Pollution</span>
                     <div class="side-stat-track"><div class="side-stat-fill pol" id="sp-bar-pol" style="width:10%"></div></div>
                     <span class="side-stat-num" id="sp-num-pol">10</span>
                 </div>
                 <div class="side-stat-row">
-                    <span class="side-stat-icon">🌿</span>
+                    <span class="side-stat-icon"><img src="images/donate-plant.png" alt="nature" style="width:16px;height:16px;object-fit:contain;"></span>
                     <span class="side-stat-lbl">Nature</span>
                     <div class="side-stat-track"><div class="side-stat-fill nat" id="sp-bar-nat" style="width:80%"></div></div>
                     <span class="side-stat-num" id="sp-num-nat">80</span>
                 </div>
                 <div class="side-stat-row">
-                    <span class="side-stat-icon">😊</span>
+                    <span class="side-stat-icon"><img src="images/welcoming.png" alt="happiness" style="width:16px;height:16px;object-fit:contain;"></span>
                     <span class="side-stat-lbl">Happiness</span>
                     <div class="side-stat-track"><div class="side-stat-fill hap" id="sp-bar-hap" style="width:75%"></div></div>
                     <span class="side-stat-num" id="sp-num-hap">75</span>
                 </div>
                 <div class="side-stat-row">
-                    <span class="side-stat-icon">☣️</span>
+                    <span class="side-stat-icon"><img src="images/science.png" alt="toxicity" style="width:16px;height:16px;object-fit:contain;"></span>
                     <span class="side-stat-lbl">Toxicity</span>
                     <div class="side-stat-track"><div class="side-stat-fill tox" id="sp-bar-tox" style="width:5%"></div></div>
                     <span class="side-stat-num" id="sp-num-tox">5</span>
@@ -1252,7 +1425,7 @@
             <!-- Result card (appears after game ends) -->
             <div class="side-panel-card" id="side-result-card" style="display:none;">
                 <div id="side-result">
-                    <div class="side-result-badge" id="sp-end-badge">🌍</div>
+                    <div class="side-result-badge" id="sp-end-badge"><img src="images/donate-globe.png" alt="globe" style="width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.2));"></div>
                     <div class="side-result-title" id="sp-end-title">Eco Hero!</div>
                     <div class="side-result-sub"   id="sp-end-sub">Great recycling!</div>
                     <div class="side-facts-title">Did You Know?</div>
@@ -1277,87 +1450,207 @@
 const G_CATS = [
   {
     id:'plastic', name:'Plastic', icon:'🧴', color:'#1565C0', glow:'rgba(21,101,192,0.09)',
-    tip:'Plastic takes 400+ years to decompose. Recycling saves oil and reduces ocean waste.',
-    ignore:{ pol:+12, nat:-6, hap:-5, tox:+4, float:'🗑 Waste Rising!' },
-    recycle:{ pol:-5, nat:+4, hap:+6, tox:-2, float:'✨ Clean Plastic!', score:15 },
-    fact:'♻️ 1 recycled plastic bottle saves enough energy to power a light bulb for 6 hours.'
+    tip:'Most plastic takes 400–1000 years to decompose. Recycling saves oceans and energy.',
+    ignore:{ pol:+8, nat:-5, hap:-8, tox:+5, float:'⚠️ Plastic in waterways!' },
+    recycle:{ pol:-5, nat:+4, hap:+8, tox:-3, float:'✅ Oceans protected!', score:14 },
+    fact:'🧴 Recycling one plastic bottle saves enough energy to power a light bulb for 6 hours.',
+    ignoreDetail:{
+      title:'Plastic enters the ecosystem',
+      body:'PET bottles enter waterways as microplastics. 74% of stranded Olive Ridley turtles (Lepidochelys olivacea) had ingested plastic bags. BPA leaches into drinking water, mimicking oestrogen and raising cancer risk.',
+      tags:['🐢 Sea turtles ingest bags','🧪 BPA disrupts hormones','🌱 Sunflower roots suffocate']
+    },
+    recycleDetail:{
+      title:'Waterways begin to recover',
+      body:'Recycling 1 tonne of PET saves 3.8 barrels of oil. European perch (Perca fluviatilis) return to cleaner rivers. Fewer incinerated plastics cut PM2.5 particulates, reducing asthma visits by ~14%.',
+      tags:['🐟 Perch return to river','💨 Air quality improves','🌊 Mussels filter the water']
+    }
   },
   {
     id:'glass', name:'Glass', icon:'🍶', color:'#00695C', glow:'rgba(0,105,92,0.09)',
     tip:'Glass is 100% recyclable and can be recycled endlessly without quality loss.',
     ignore:{ pol:+5, nat:-4, hap:-10, tox:+3, float:'⚠️ Danger! Broken Glass!' },
     recycle:{ pol:-3, nat:+3, hap:+8, tox:-2, float:'✅ Safe & Recycled!', score:12 },
-    fact:'🍶 Glass recycling reduces mining waste by 80% vs making new glass.'
+    fact:'🍶 Glass recycling reduces mining waste by 80% vs making new glass.',
+    ignoreDetail:{
+      title:'Glass shatters urban wildlife',
+      body:'Broken glass in parks lacerates hedgehogs (Erinaceus europaeus) — foot injuries prove fatal in 60% of cases. Silica dust causes silicosis: irreversible lung scarring in sanitation workers. Sand quarrying for new glass destroys river habitats of the painter\'s mussel (Unio pictorum).',
+      tags:['🦔 Hedgehogs fatally injured','🫁 Silicosis in workers','🏖️ Sand quarrying destroys habitat']
+    },
+    recycleDetail:{
+      title:'Energy saved, habitats spared',
+      body:'Recycled glass cullet melts 50°C cooler than raw materials, saving 30% energy and 246 kg CO₂ per tonne. Marsh marigold (Caltha palustris) re-establishes in wetlands no longer excavated for sand.',
+      tags:['⚡ 30% less furnace energy','🌸 Wetland plants return','🦊 Urban foxes unharmed']
+    }
   },
   {
     id:'paper', name:'Paper', icon:'📄', color:'#4E342E', glow:'rgba(78,52,46,0.09)',
     tip:'Paper recycling saves trees and water. One ton of recycled paper saves 17 trees.',
     ignore:{ pol:+4, nat:-12, hap:-5, tox:+2, float:'🌲 Forests Shrinking!' },
     recycle:{ pol:-3, nat:+10, hap:+5, tox:-1, float:'🌿 Trees Saved!', score:13 },
-    fact:'📄 Recycling one ton of paper saves 17 trees and 7,000 gallons of water.'
+    fact:'📄 Recycling one ton of paper saves 17 trees and 7,000 gallons of water.',
+    ignoreDetail:{
+      title:'Forests fall, rivers poisoned',
+      body:'Virgin pulp production clears Norway spruce (Picea abies) forest, displacing Eurasian red squirrel (Sciurus vulgaris) colonies. Chlorine bleaching releases dioxins that accumulate in Atlantic salmon (Salmo salar) tissue at 800× background levels. Landfilled paper generates methane — 30× more potent than CO₂.',
+      tags:['🐿️ Red squirrels lose forest','🐟 Dioxins in salmon tissue','☁️ Methane 30× worse than CO₂']
+    },
+    recycleDetail:{
+      title:'Forests breathe again',
+      body:'One tonne of recycled paper saves 17 trees, 7,000 gallons of water, and 64% energy. Common crossbill (Loxia curvirostra) keeps its spruce forest home. Recycled-pulp mills cut wastewater by 55%.',
+      tags:['🌳 17 trees saved per tonne','🐦 Crossbills keep their forest','💧 55% less wastewater']
+    }
   },
   {
     id:'cardboard', name:'Cardboard & Books', icon:'📦', color:'#6D4C41', glow:'rgba(109,76,65,0.09)',
     tip:'Cardboard & books come from forests. Recycling cuts deforestation significantly.',
     ignore:{ pol:+5, nat:-10, hap:-6, tox:+2, float:'🌳 Forests Disappear!' },
     recycle:{ pol:-4, nat:+9, hap:+5, tox:-1, float:'📚 Greenery Grows!', score:13 },
-    fact:'📦 Recycling cardboard uses 75% less energy than making it from scratch.'
+    fact:'📦 Recycling cardboard uses 75% less energy than making it from scratch.',
+    ignoreDetail:{
+      title:'Groundwater and forests suffer',
+      body:'Landfill leachate raises zinc levels in local wells to 8× safe limits. Clearcutting for virgin fibre destroys wood anemone (Anemone nemorosa) ground cover and beech (Fagus sylvatica) understory. Anaerobic breakdown produces H₂S gas — toxic to soil organisms at just 1 ppm.',
+      tags:['💧 Zinc 8× safe limit in wells','🌺 Wood anemone vanishes','☠️ H₂S kills soil organisms']
+    },
+    recycleDetail:{
+      title:'Forests and soil microbiome recover',
+      body:'Uses 75% less energy than virgin pulp and avoids chlorine bleaching. Sparing beech forests keeps ground beetles (Carabus coriaceus) — natural slug controllers — active. Each tonne recycled avoids ~900 kg CO₂.',
+      tags:['⚡ 75% energy saved','🪲 Ground beetles control pests','💚 900 kg CO₂ avoided']
+    }
   },
   {
     id:'metal', name:'Metal & Bottles', icon:'🥫', color:'#37474F', glow:'rgba(55,71,79,0.09)',
     tip:'Metal recycling is energy-efficient. Aluminum can be recycled in just 60 days.',
     ignore:{ pol:+10, nat:-5, hap:-7, tox:+6, float:'🏭 Industrial Smog!' },
     recycle:{ pol:-7, nat:+4, hap:+6, tox:-3, float:'⚡ Energy Saved!', score:14 },
-    fact:'🥫 Recycling aluminum saves 95% of the energy needed to make new aluminum.'
+    fact:'🥫 Recycling aluminum saves 95% of the energy needed to make new aluminum.',
+    ignoreDetail:{
+      title:'Acid rain and smog choke the city',
+      body:'Smelting virgin iron releases SO₂ that forms acid rain (pH 3–4), killing heather (Calluna vulgaris) moorlands. Streams acidify below pH 5 — fatal for brook trout (Salvelinus fontinalis). PM2.5 from smelters raises COPD hospital admissions by 11%.',
+      tags:['🌿 Heather moorlands die','🐟 Trout vanish from streams','🫁 COPD hospitalisations +11%']
+    },
+    recycleDetail:{
+      title:'Clean air, clean rivers',
+      body:'Aluminium recycling saves 95% of smelting energy. Cleaner air lets common swift (Apus apus) hunt aerial insects again. River pH recovers to 6.5–7.5, welcoming Atlantic salmon smolts.',
+      tags:['⚡ 95% energy saved (Al)','🐦 Swifts return to the skies','🐟 Salmon smolts enter river']
+    }
   },
   {
     id:'electronics', name:'Electronics', icon:'📱', color:'#1A237E', glow:'rgba(26,35,126,0.09)',
-    tip:'E-waste contains toxic metals like lead & mercury. Recycle at certified centers.',
+    tip:'E-waste contains toxic metals like lead & mercury. Recycle at certified centres.',
     ignore:{ pol:+8, nat:-7, hap:-8, tox:+14, float:'☢ E-Waste Toxic!' },
     recycle:{ pol:-5, nat:+5, hap:+8, tox:-8, float:'📱 Tech Recycled!', score:18 },
-    fact:'📱 1 million recycled phones recover ~35 lbs of copper and trace amounts of gold.'
+    fact:'📱 1 million recycled phones recover ~35 lbs of copper and trace amounts of gold.',
+    ignoreDetail:{
+      title:'Toxic metals poison the city',
+      body:'Lead from circuit boards leaches into soil at 400× safe limits, causing neurological damage in children within 1 km. Mercury from screens methylates in lake sediment — causing Minamata disease. Cadmium from cells causes Itai-Itai disease: kidney failure and painful bone loss.',
+      tags:['🧠 Lead damages children\'s brains','💀 Mercury → Minamata disease','🦴 Cadmium → bone disease']
+    },
+    recycleDetail:{
+      title:'Precious metals recovered safely',
+      body:'1 million phones yield ~16 kg copper, 34 g gold, worth ~€15,000. Certified smelters contain 95% of lead safely. Recovered indium spares alluvial riverbeds — protecting water vole (Arvicola amphibius) burrows.',
+      tags:['🥇 Gold & silver reclaimed','🌊 Riverbeds unexcavated','🦦 Water voles keep their burrows']
+    }
   },
   {
     id:'batteries', name:'Batteries', icon:'🔋', color:'#1B5E20', glow:'rgba(27,94,32,0.14)',
     tip:'⚠️ Batteries contain highly toxic chemicals. NEVER put in regular bins — huge hazard!',
     ignore:{ pol:+6, nat:-14, hap:-10, tox:+18, float:'☣️ TOXIC LEAK!' },
     recycle:{ pol:-4, nat:+8, hap:+9, tox:-12, float:'🔋 Hazard Removed!', score:20 },
-    fact:'🔋 One car battery can contaminate 25 tons of soil and 1 million liters of water!'
+    fact:'🔋 One car battery can contaminate 25 tons of soil and 1 million liters of water!',
+    ignoreDetail:{
+      title:'Catastrophic ground contamination',
+      body:'One lead-acid battery contaminates 25 tonnes of soil and 1 million litres of groundwater. Lithium leachate kills soil bacteria (Nitrosomonas europaea), collapsing nitrogen fixation. European common frog (Rana temporaria) larval survival drops 94% in affected ponds.',
+      tags:['🐸 Frog larvae die in ponds','🌱 Nitrogen cycle collapses','💧 1M litres poisoned per battery']
+    },
+    recycleDetail:{
+      title:'Ecosystem rebounds',
+      body:'99% of battery lead is recovered and reused — a near-perfect closed loop. Reduced Atacama mining protects Andean flamingo (Phoenicopterus andinus) nesting lagoons. Earthworm (Lumbricus terrestris) populations recover, restoring vital soil structure.',
+      tags:['🦩 Flamingo lagoons spared','🪱 Earthworms return to soil','♻️ 99% of lead recovered']
+    }
   },
   {
     id:'textiles', name:'Clothing & Textiles', icon:'👕', color:'#880E4F', glow:'rgba(136,14,79,0.09)',
     tip:'Textile waste fills landfills fast. Donate or recycle — give clothes a second life.',
     ignore:{ pol:+7, nat:-5, hap:-8, tox:+4, float:'👗 Landfill Overflow!' },
     recycle:{ pol:-4, nat:+4, hap:+7, tox:-2, float:'👕 Reused & Saved!', score:12 },
-    fact:'👕 The fashion industry produces 92 million tons of textile waste yearly.'
+    fact:'👕 The fashion industry produces 92 million tons of textile waste yearly.',
+    ignoreDetail:{
+      title:'Carcinogens and microplastics spread',
+      body:'Azo dyes break down to benzidine — an IARC Group 1 carcinogen linked to bladder cancer. Acrylic fibres shed 728,000 microplastics per wash, building up in Atlantic salmon (Salmo salar) tissue. Cotton pesticide residues collapse honey bee (Apis mellifera) colonies at just 0.001 mg/L.',
+      tags:['🔬 Benzidine → bladder cancer','🐝 Bee colonies collapse','🐟 Microplastics in salmon']
+    },
+    recycleDetail:{
+      title:'Resources saved, bees recover',
+      body:'Recycled polyester uses 59% less energy than virgin. One kg of recycled cotton saves up to 10,000 litres of water. Reduced pesticide pressure lets honey bee and bumblebee (Bombus terrestris) colonies stabilise.',
+      tags:['💧 10,000 L water saved per kg','⚡ 59% less energy (recycled poly)','🐝 Bumblebee colonies stabilise']
+    }
   },
   {
     id:'organic', name:'Organic & Food Waste', icon:'🍎', color:'#558B2F', glow:'rgba(85,139,47,0.09)',
     tip:'Food waste releases methane in landfills. Composting turns waste into rich soil.',
     ignore:{ pol:+14, nat:-6, hap:-9, tox:+5, float:'🦟 Methane & Flies!' },
     recycle:{ pol:-8, nat:+7, hap:+8, tox:-3, float:'🌱 Composted!', score:14 },
-    fact:'🍎 Composting food waste reduces methane and enriches soil naturally.'
+    fact:'🍎 Composting food waste reduces methane and enriches soil naturally.',
+    ignoreDetail:{
+      title:'Disease, methane and soil death',
+      body:'Landfilled food generates methane — 86× more potent than CO₂ over 20 years. Norway rats (Rattus norvegicus) spread Leptospira interrogans (Weil\'s disease), causing human liver and kidney failure. Leachate drops soil pH below 5.5, killing earthworms (Lumbricus terrestris).',
+      tags:['🐀 Rats spread Weil\'s disease','☁️ Methane 86× worse than CO₂','🪱 Earthworms die, soil degrades']
+    },
+    recycleDetail:{
+      title:'Soil thrives, robin returns',
+      body:'Composting 1 tonne avoids up to 1 tonne CO₂-equivalent vs landfilling. Compost raises soil water retention by 25%, cutting irrigation needs. European robin (Erithacus rubecula) returns to forage in the enriched soil.',
+      tags:['🌱 Soil water retention +25%','🐦 Robins return to gardens','☁️ Up to 1t CO₂ avoided per tonne']
+    }
   },
   {
     id:'wood', name:'Wood & Furniture', icon:'🪵', color:'#5D4037', glow:'rgba(93,64,55,0.09)',
     tip:'Reusing or recycling wood reduces deforestation and saves habitats.',
     ignore:{ pol:+6, nat:-11, hap:-7, tox:+3, float:'🌳 Nature Damaged!' },
     recycle:{ pol:-4, nat:+9, hap:+6, tox:-2, float:'🪵 Balance Restored!', score:13 },
-    fact:'🪵 Upcycling wood furniture prevents deforestation and toxic varnish burning.'
+    fact:'🪵 Upcycling wood furniture prevents deforestation and toxic varnish burning.',
+    ignoreDetail:{
+      title:'Toxic smoke and deforestation',
+      body:'Burning CCA-treated wood releases arsenic and Cr(VI) — both IARC Group 1 carcinogens — at 200× safe air limits. Creosote PAHs leach into groundwater at 200× drinking limits. Deforestation destroys habitat for lesser spotted woodpecker (Dryobates minor).',
+      tags:['🫁 Cr(VI) causes lung cancer','🌲 Woodpecker habitat lost','🧪 Arsenic in groundwater']
+    },
+    recycleDetail:{
+      title:'Ancient trees shelter hundreds of species',
+      body:'Reclaimed timber protects alder (Alnus glutinosa) river corridors used by Eurasian otter (Lutra lutra) for denning. One preserved oak (Quercus robur) supports 280+ species. Wood chips as biomass displace 0.9 t CO₂ per tonne vs coal.',
+      tags:['🦦 Otters keep river corridors','🦋 280+ species in oak trees','♻️ 0.9t CO₂ displaced per tonne']
+    }
   },
   {
     id:'stationery', name:'Stationery', icon:'✏️', color:'#F57F17', glow:'rgba(245,127,23,0.09)',
     tip:'Pens, markers, and notebooks can often be refilled or recycled separately.',
     ignore:{ pol:+5, nat:-4, hap:-6, tox:+5, float:'📎 Mixed Waste Chaos!' },
     recycle:{ pol:-3, nat:+4, hap:+5, tox:-3, float:'✏️ Tidy & Sorted!', score:11 },
-    fact:'✏️ Most pens end up in landfills — look for take-back programs from brands.'
+    fact:'✏️ Most pens end up in landfills — look for take-back programmes from brands.',
+    ignoreDetail:{
+      title:'VOCs, carcinogens and frog hormones',
+      body:'Pen inks contain xylene and toluene — VOCs that form ozone above 80 µg/m³, triggering asthma. PVC binders release phthalates (DEHP) that feminise male frogs (Rana temporaria) at 10 µg/L in ponds. Pencil graphite in deep landfill degrades to carcinogenic PAHs in aquifers.',
+      tags:['💨 Ozone triggers asthma','🐸 Phthalates feminise frogs','🧪 PAHs reach deep aquifers']
+    },
+    recycleDetail:{
+      title:'450 million pens diverted yearly',
+      body:'Take-back programmes divert ~450 million pens from EU landfills yearly, recovering 85–95% of components. Reduced VOCs lower urban ozone by 4 µg/m³. Asthma clinic visits near schools decrease measurably.',
+      tags:['♻️ 450M pens diverted per year','🌿 Xylene soil levels drop','🌍 Urban ozone falls 4 µg/m³']
+    }
   },
   {
     id:'garden', name:'Garden Waste', icon:'🌿', color:'#2E7D32', glow:'rgba(46,125,50,0.09)',
-    tip:'Garden waste can be composted into natural fertilizer, reducing chemical use.',
+    tip:'Garden waste can be composted into natural fertiliser, reducing chemical use.',
     ignore:{ pol:+6, nat:-8, hap:-5, tox:+3, float:'🌾 Clutter Growing!' },
     recycle:{ pol:-5, nat:+10, hap:+7, tox:-2, float:'🌱 Garden Flourishes!', score:13 },
-    fact:'🌿 Composting garden waste creates free nutrient-rich soil that replaces chemical fertilizers.'
+    fact:'🌿 Composting garden waste creates free nutrient-rich soil that replaces chemical fertilisers.',
+    ignoreDetail:{
+      title:'Methane, fungi die, crops fail',
+      body:'1 tonne of garden waste generates ~90 m³ methane (55–60% CH₄) in landfill. Rotting piles kill mycorrhizal fungi (Glomus intraradices), disrupting phosphorus uptake in 85% of plant species. Capsid bugs (Blepharidopterus angulatus) then spread cucumber mosaic virus to allotment crops.',
+      tags:['🍄 Mycorrhizal fungi die off','☁️ 90 m³ methane per tonne','🦟 Mosaic virus spreads to crops']
+    },
+    recycleDetail:{
+      title:'Soil ecosystem flourishes',
+      body:'Compost delivers 5–8% nitrogen per tonne, replacing synthetic fertilisers. Applications triple earthworm density, improving drainage by 40%. Song thrush (Turdus philomelos) returns to forage in the restored soil.',
+      tags:['🪱 Earthworms triple in density','🎵 Song thrush returns','🌱 No synthetic fertiliser needed']
+    }
   }
 ];
 
@@ -1573,7 +1866,7 @@ function gBuildStartScene() {
 //  GAME FLOW
 // ════════════════════════════════════════════════════════
 function gStart() {
-    Object.assign(GS,{pol:10,nat:80,hap:75,tox:5,score:0,recycled:0,ignored:0,timeLeft:45,running:false});
+    Object.assign(GS,{pol:10,nat:80,hap:75,tox:5,score:0,recycled:0,ignored:0,running:false,ignoredIds:[],recycledIds:[]});
     GS.deck = [...G_CATS].sort(()=>Math.random()-0.5);
     GS.cardIdx = 0;
     // reset side panel
@@ -1583,6 +1876,8 @@ function gStart() {
     if(src){ src.style.display='none'; }
     if(ssc){ ssc.style.display='block'; }
     if(sr){ sr.classList.remove('visible'); }
+    document.getElementById('impact-panel').classList.remove('visible');
+    const sc=document.getElementById('end-story-card'); if(sc) sc.classList.remove('visible');
     gScreen('g-game');
     gBuildScene();
     gApplyThemeToGameScene();
@@ -1591,17 +1886,9 @@ function gStart() {
     gShowCard();
     clearInterval(GS.timerID);
     GS.running = true;
-    GS.timerID = setInterval(gTick, 1000);
 }
 
-function gTick() {
-    if(!GS.running) return;
-    GS.timeLeft--;
-    const tv=document.getElementById('g-timer-val');
-    tv.textContent=GS.timeLeft;
-    tv.classList.toggle('urgent',GS.timeLeft<=10);
-    if(GS.timeLeft<=0) gEnd();
-}
+// timer removed — game ends after all items
 
 function gEnd() {
     GS.running=false;
@@ -1613,7 +1900,7 @@ function gEnd() {
 //  CARD
 // ════════════════════════════════════════════════════════
 function gShowCard() {
-    if(GS.cardIdx>=GS.deck.length){ GS.deck=[...G_CATS].sort(()=>Math.random()-0.5); GS.cardIdx=0; }
+    if(GS.cardIdx>=GS.deck.length){ gEnd(); return; }
     const cat=GS.deck[GS.cardIdx];
     const card=document.getElementById('g-waste-card');
     document.getElementById('g-icon').textContent=cat.icon;
@@ -1645,16 +1932,20 @@ function gDecide(action) {
         gApply(cat.recycle);
         GS.score+=cat.recycle.score;
         GS.recycled++;
+        GS.recycledIds.push(cat.id);
         gFloat(cat.recycle.float,'good');
         gSoundRecycle();
         card.className='exit-r';
         gCatFX_Recycle(cat.id);
+        gShowImpact('good', cat.recycleDetail);
     } else {
         gApply(cat.ignore);
         GS.ignored++;
+        GS.ignoredIds.push(cat.id);
         gFloat(cat.ignore.float,'bad');
         card.className='exit-i';
         gCatFX_Ignore(cat.id);
+        gShowImpact('bad', cat.ignoreDetail);
     }
     gUpdateHUD();
     gUpdateScene();
@@ -1663,8 +1954,37 @@ function gDecide(action) {
         GS.cardIdx++;
         document.getElementById('g-btn-recycle').disabled=false;
         document.getElementById('g-btn-ignore').disabled=false;
-        if(GS.timeLeft>0) gShowCard();
+        gShowCard();
     },400);
+}
+
+// ════════════════════════════════════════════════════════
+//  IMPACT PANEL
+// ════════════════════════════════════════════════════════
+function gShowImpact(type, detail) {
+    const panel = document.getElementById('impact-panel');
+    const card  = document.getElementById('impact-card-inner');
+    const verdict = document.getElementById('impact-verdict');
+    const title = document.getElementById('impact-title');
+    const body  = document.getElementById('impact-body');
+    const tags  = document.getElementById('impact-tags');
+    if(!panel||!detail) return;
+    card.className = 'impact-card ' + type;
+    verdict.textContent = type === 'good' ? '✅ RECYCLED' : '❌ IGNORED';
+    title.textContent = detail.title;
+    body.textContent  = detail.body;
+    tags.innerHTML = '';
+    (detail.tags||[]).forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'impact-tag';
+        el.textContent = t;
+        tags.appendChild(el);
+    });
+    panel.classList.add('visible');
+    // Re-trigger animation
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = '';
 }
 
 function gApply(e) {
@@ -2330,16 +2650,48 @@ function gShowEnd() {
     document.getElementById('g-end-nat').textContent=Math.round(GS.nat);
     document.getElementById('g-end-hap').textContent=Math.round(GS.hap);
 
-    const facts=[...G_CATS].sort(()=>Math.random()-0.5).slice(0,4);
-
+    // City impact story
     const fl=document.getElementById('g-facts-list');
     fl.innerHTML='';
-    facts.forEach(f=>{
-        const d=document.createElement('div');
-        d.className='g-fact';
-        d.innerHTML=`<span>${f.icon}</span><span>${f.fact}</span>`;
-        fl.appendChild(d);
-    });
+
+    // Build city narrative
+    const badConsequences = {
+        plastic: '🧴 Microplastics flooded the river; BPA contaminated drinking water.',
+        glass: '🍶 Broken glass injured hedgehogs; silica dust caused lung scarring in workers.',
+        paper: '📄 Spruce forests cleared; dioxins accumulated in river salmon.',
+        cardboard: '📦 Zinc in local wells hit 8× safe limits; forest wildflowers vanished.',
+        metal: '🥫 Acid rain (pH 3–4) killed moorland heather; trout left acidified streams.',
+        electronics: '📱 Lead at 400× safe limits poisoned soil near the dump; children affected.',
+        batteries: '🔋 25 tonnes of soil contaminated; frog larval survival dropped 94%.',
+        textiles: '👕 Carcinogenic dyes released into soil; bee colonies collapsed.',
+        organic: '🍎 Rats spread Weil\'s disease; methane spiked at 86× CO₂ potency.',
+        wood: '🪵 Toxic arsenic released from burning treated wood; groundwater fouled.',
+        stationery: '✏️ Pen VOCs raised ozone near school; asthma visits rose 23%.',
+        garden: '🌿 90 m³ methane per tonne; mycorrhizal fungi died, yields fell 30%.'
+    };
+    const goodConsequences = {
+        plastic: '🧴 Perch returned to the river; asthma visits fell ~14%.',
+        glass: '🍶 246 kg CO₂ and 30% energy saved per tonne recycled.',
+        paper: '📄 17 trees and 7,000 gallons of water saved per tonne.',
+        cardboard: '📦 75% less energy used; ground beetles kept slugs in check.',
+        metal: '🥫 95% energy saved (Al); river pH recovered, salmon returned.',
+        electronics: '📱 16 kg copper and 34 g gold recovered per million phones.',
+        batteries: '🔋 99% of lead recovered; flamingo lagoons spared from mining.',
+        textiles: '👕 59% less energy; 10,000 L water saved per kg cotton.',
+        organic: '🍎 Up to 1 t CO₂ avoided; robins returned to the garden.',
+        wood: '🪵 Otter corridors preserved; one oak grove sheltered 280+ species.',
+        stationery: '✏️ 450M pens diverted yearly; urban ozone fell 4 µg/m³.',
+        garden: '🌿 Earthworms tripled; song thrush returned to restored soil.'
+    };
+
+    // Populate separate story card
+    const badList  = document.getElementById('end-bad-list');
+    const goodList = document.getElementById('end-good-list');
+    if(badList)  { badList.innerHTML  = ''; GS.ignoredIds.forEach(id  => { if(badConsequences[id])  badList.innerHTML  += `<div class="end-story-tag bad">${badConsequences[id]}</div>`;  }); }
+    if(goodList) { goodList.innerHTML = ''; GS.recycledIds.forEach(id => { if(goodConsequences[id]) goodList.innerHTML += `<div class="end-story-tag good">${goodConsequences[id]}</div>`; }); }
+    const sc = document.getElementById('end-story-card');
+    if(sc) sc.classList.add('visible');
+    if(fl) fl.innerHTML = '';
 
     // populate desktop side panel result
     spSet('sp-end-badge',badge);
@@ -2351,7 +2703,7 @@ function gShowEnd() {
         facts.forEach(f=>{
             const d=document.createElement('div');
             d.className='side-fact';
-            d.innerHTML=`<span>${f.icon}</span><span>${f.fact}</span>`;
+            d.innerHTML=`<span>${f.fact}</span>`;
             spfl.appendChild(d);
         });
     }

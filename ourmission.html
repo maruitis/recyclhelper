@@ -1,35 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Our mission</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/mansstils.css">
-<script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
-    </head>
-    <body>
-        <nav>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Mission — RecycleHelper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/mansstils.css">
+    <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
+
+    <style>
+
+        /* ── Page title ───────────────────────────────────────── */
+        .mission-title {
+            font-family: 'Jomhuria', sans-serif;
+            font-size: 76px;
+            font-weight: 400;
+            color: #0E0973;
+            text-align: center;
+            margin: 10px 0 24px;
+            line-height: 1;
+            opacity: 0;
+            transform: translateY(-24px);
+            animation: msFade 0.7s ease 0.1s forwards;
+            text-shadow: 0 4px 18px rgba(14,9,115,0.18), 0 2px 6px rgba(0,0,0,0.10);
+        }
+
+        /* ── Two-column body ──────────────────────────────────── */
+        .mission-body {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 0;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 0 36px 100px;
+            box-sizing: border-box;
+        }
+
+        /* ════════════════════════════════════
+           LEFT SIDE
+        ════════════════════════════════════ */
+        .mission-left {
+            flex: 1.4;
+            min-width: 0;
+            padding-right: 44px;
+            filter: drop-shadow(0 8px 32px rgba(14,9,115,0.07));
+        }
+
+        /* Mission paragraphs */
+        .mission-text {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 19px;
+            color: #1a3a52;
+            line-height: 1.65;
+            margin: 0 0 14px;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: msFade 0.6s ease forwards;
+        }
+        .mission-text:nth-of-type(1) { animation-delay: 0.25s; }
+        .mission-text:nth-of-type(2) { animation-delay: 0.40s; }
+
+        /* "What We Want to Achieve" heading */
+        .mission-achieve-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #0E0973;
+            margin: 32px 0 18px;
+            letter-spacing: 0.3px;
+            opacity: 0;
+            animation: msFade 0.6s ease 0.55s forwards;
+        }
+
+        /* Cards grid */
+        .mission-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .mission-card {
+            background: none;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            border-radius: 0;
+            padding: 10px 4px;
+            cursor: default;
+            transition: transform 0.32s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: msFade 0.55s ease forwards;
+        }
+        .mission-card:nth-child(1) { animation-delay: 0.68s; }
+        .mission-card:nth-child(2) { animation-delay: 0.80s; }
+        .mission-card:nth-child(3) { animation-delay: 0.92s; }
+        .mission-card:nth-child(4) { animation-delay: 1.04s; }
+
+        .mission-card:hover { transform: translateY(-5px); }
+
+        .mission-card-icon {
+            width: 62px;
+            height: 62px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            display: block;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .mission-card-icon.globe-big {
+            width: 80px;
+            height: 80px;
+        }
+        .mission-card:hover .mission-card-icon {
+            transform: scale(1.15) rotate(-5deg);
+            filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
+        }
+
+        .mission-card-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0E0973;
+            margin: 0 0 6px;
+        }
+
+        .mission-card-desc {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 15px;
+            color: #2a4a62;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ── Vertical divider ─────────────────────────────────── */
+        .mission-vdivider {
+            width: 2px;
+            align-self: stretch;
+            background: linear-gradient(to bottom, transparent, #1DDE51 25%, #00C8FF 75%, transparent);
+            border-radius: 2px;
+            flex-shrink: 0;
+            opacity: 0;
+            animation: msFade 0.6s ease 0.6s forwards;
+        }
+
+        /* ════════════════════════════════════
+           RIGHT SIDE
+        ════════════════════════════════════ */
+        .mission-right {
+            flex: 0 0 300px;
+            padding-left: 44px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 100px;
+            opacity: 0;
+            animation: msSlideLeft 0.7s ease 0.9s forwards;
+            filter: drop-shadow(0 8px 28px rgba(180,60,140,0.08));
+        }
+
+        .mission-hashtag-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: #0E0973;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .mission-hashtag-sub {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 14px;
+            color: #5a7a8a;
+            margin: -12px 0 0;
+            line-height: 1.4;
+        }
+
+        /* Hashtag pills */
+        .mission-hashtags {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hashtag-pill {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            background: rgba(255,255,255,0.5);
+            border: 1.5px solid rgba(100,200,120,0.35);
+            border-radius: 16px;
+            padding: 14px 18px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.28s ease, box-shadow 0.28s ease,
+                        background 0.28s ease, border-color 0.28s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Shimmer sweep on hover */
+        .hashtag-pill::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+            transition: left 0.45s ease;
+        }
+        .hashtag-pill:hover::before { left: 160%; }
+
+        .hashtag-pill:hover {
+            transform: translateX(6px) scale(1.02);
+            box-shadow: 0 6px 22px rgba(0,160,80,0.22);
+            background: rgba(255,255,255,0.78);
+            border-color: rgba(0,200,100,0.6);
+        }
+        .hashtag-pill:active { transform: scale(0.97); }
+
+        .hashtag-tag {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0c7a40;
+            transition: color 0.25s ease;
+        }
+        .hashtag-pill:hover .hashtag-tag { color: #085c30; }
+
+        .hashtag-hint {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: #6a9080;
+            opacity: 0.8;
+        }
+
+        /* ── Instagram profile link ───────────────────────────── */
+        .insta-profile-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .insta-profile-link {
+            display: flex;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .insta-profile-link:hover {
+            transform: scale(1.1) rotate(-4deg);
+        }
+        .insta-logo {
+            width: 82px;
+            height: 82px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(200,60,150,0.35));
+            transition: filter 0.3s ease;
+        }
+
+        .insta-tap-hint {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 13px;
+            color: #b060a8;
+            text-align: center;
+            letter-spacing: 0.2px;
+            opacity: 0.85;
+        }
+        .insta-profile-link:hover .insta-logo {
+            filter: drop-shadow(0 6px 20px rgba(200,60,150,0.60));
+        }
+
+        /* Toast notification */
+        .hash-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(20,20,20,0.88);
+            color: #fff;
+            font-family: 'Jaldi', sans-serif;
+            font-size: 15px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .hash-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Keyframes ────────────────────────────────────────── */
+        @keyframes msFade {
+            to { opacity: 1; transform: translate(0,0); }
+        }
+        @keyframes msSlideLeft {
+            from { opacity: 0; transform: translateX(32px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ── Dark theme ───────────────────────────────────────── */
+        [data-theme="dark"] .mission-title          { color: #90c8ff; }
+        [data-theme="dark"] .mission-text           { color: #b0cce0; }
+        [data-theme="dark"] .mission-achieve-title  { color: #90c8ff; }
+        [data-theme="dark"] .mission-card           { background: none; border: none; box-shadow: none; }
+        [data-theme="dark"] .mission-card:hover     { background: none; box-shadow: none; }
+        [data-theme="dark"] .mission-card-title     { color: #90c8ff; }
+        [data-theme="dark"] .mission-card-desc      { color: #88aac8; }
+        [data-theme="dark"] .mission-hashtag-title  { color: #90c8ff; }
+        [data-theme="dark"] .mission-hashtag-sub    { color: #5a8098; }
+        [data-theme="dark"] .hashtag-pill           { background: rgba(10,25,55,0.6); border-color: rgba(0,200,100,0.25); }
+        [data-theme="dark"] .hashtag-pill:hover     { background: rgba(15,35,75,0.9); }
+        [data-theme="dark"] .insta-tap-hint          { color: #d080e8; }
+        [data-theme="dark"] .hashtag-tag            { color: #c080ff; }
+        [data-theme="dark"] .hashtag-pill:hover .hashtag-tag { color: #d8a8ff; }
+
+        /* ── Sky theme ────────────────────────────────────────── */
+        [data-theme="sky"] .mission-title           { color: #0a4f8a; }
+        [data-theme="sky"] .mission-text            { color: #0a3a5a; }
+        [data-theme="sky"] .mission-achieve-title   { color: #0a4f8a; }
+        [data-theme="sky"] .mission-card            { background: none; border: none; box-shadow: none; }
+        [data-theme="sky"] .mission-card-title      { color: #0a4f8a; }
+        [data-theme="sky"] .mission-card-desc       { color: #0a3a5a; }
+        [data-theme="sky"] .mission-hashtag-title   { color: #0a4f8a; }
+        [data-theme="sky"] .hashtag-tag             { color: #0a7a50; }
+
+        /* ── Mobile ───────────────────────────────────────────── */
+        @media (max-width: 860px) {
+            .mission-body       { flex-direction: column; gap: 32px; padding: 0 18px 80px; }
+            .mission-left       { padding-right: 0; }
+            .mission-right      { position: static; flex: unset; width: 100%; padding-left: 0; }
+            .mission-vdivider   { width: 80px; height: 2px; align-self: center;
+                                  background: linear-gradient(90deg, transparent, #1DDE51, #00C8FF, transparent); }
+            .mission-title      { font-size: 54px; }
+            .mission-cards      { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .mission-title      { font-size: 42px; }
+            .mission-text       { font-size: 16px; }
+            .mission-cards      { grid-template-columns: 1fr; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
     <a href="index.html" class="nav-link">Home</a>
     <a href="aboutus.html" class="nav-link">About us</a>
     <a href="ourmission.html" class="nav-link">Our mission</a>
     <a href="donate.html" class="nav-link">Donate</a>
 </nav>
-        <div class="cloud cloud-left">
-    <img src="images/cloud.png" alt="cloud">
+
+<div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
+<div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
+
+<h1 class="mission-title">Our Mission</h1>
+
+<div class="mission-body">
+
+    <!-- ══════════════════ LEFT ══════════════════ -->
+    <div class="mission-left">
+
+        <p class="mission-text">
+            Our mission is to make recycling accessible, understandable, and practical
+            for everyone. We aim to reduce waste pollution by helping users identify how
+            to sort materials correctly and develop sustainable habits in daily life.
+        </p>
+        <p class="mission-text">
+            Through technology and education, we want to encourage cleaner cities,
+            smarter consumption, and a healthier planet for future generations.
+        </p>
+
+        <h2 class="mission-achieve-title">What We Want to Achieve</h2>
+
+        <div class="mission-cards">
+
+            <div class="mission-card">
+                <img class="mission-card-icon globe-big" src="images/donate-globe.png" alt="Planet">
+                <p class="mission-card-title">Reduce Pollution</p>
+                <p class="mission-card-desc">Help decrease unnecessary waste ending up in landfills and our environment.</p>
+            </div>
+
+            <div class="mission-card">
+                <img class="mission-card-icon" src="images/donate-recycle.png" alt="Recycling">
+                <p class="mission-card-title">Improve Recycling Habits</p>
+                <p class="mission-card-desc">Teach people how to recycle correctly, item by item, country by country.</p>
+            </div>
+
+            <div class="mission-card">
+                <img class="mission-card-icon" src="images/education.png" alt="Education">
+                <p class="mission-card-title">Educate Communities</p>
+                <p class="mission-card-desc">Spread awareness about sustainability and environmental responsibility.</p>
+            </div>
+
+            <div class="mission-card">
+                <img class="mission-card-icon" src="images/easier.png" alt="Easier living">
+                <p class="mission-card-title">Make Eco-Friendly Living Easier</p>
+                <p class="mission-card-desc">Provide simple, free tools that anyone can use, no expertise required.</p>
+            </div>
+
+        </div>
+    </div>
+
+   
+
+    <!-- ══════════════════ RIGHT ══════════════════ -->
+    <div class="mission-right">
+
+        <!-- Instagram logo → opens our profile -->
+        <div class="insta-profile-wrap">
+            <a href="https://www.instagram.com/recyclehelper.eu/?utm_source=ig_web_button_share_sheet"
+               target="_blank" rel="noopener" class="insta-profile-link" title="Follow us on Instagram">
+                <img src="images/instagram.png" alt="Instagram" class="insta-logo">
+            </a>
+            <span class="insta-tap-hint">Tap to visit our profile</span>
+        </div>
+
+        <p class="mission-hashtag-title">Post your recycling journey!</p>
+        <p class="mission-hashtag-sub">Tap a hashtag — your caption gets copied &amp; Instagram opens. Just paste and post!</p>
+
+        <div class="mission-hashtags">
+
+            <div class="hashtag-pill" data-tag="#OneScanAway"
+                 data-caption="One scan and I know exactly where it goes ♻️ #OneScanAway #RecycleHelper #sustainability #gogreen">
+                <span class="hashtag-tag">#OneScanAway</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
+
+            <div class="hashtag-pill" data-tag="#NoMoreStressJustScanAndPress"
+                 data-caption="No more guessing, no more stress. Just scan and press 📱♻️ #NoMoreStressJustScanAndPress #RecycleHelper #easyrecycling">
+                <span class="hashtag-tag">#NoMoreStressJustScanAndPress</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
+
+            <div class="hashtag-pill" data-tag="#RecycleWithRecycleHelper"
+                 data-caption="Making the planet cleaner, one item at a time 🌍💚 #RecycleWithRecycleHelper #sustainability #zerowaste #greenlife">
+                <span class="hashtag-tag">#RecycleWithRecycleHelper</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
+
+            <div class="hashtag-pill" data-tag="#MakeRecyclingEasier"
+                 data-caption="Recycling should be easy for everyone. Let's make it happen 💪🌿 #MakeRecyclingEasier #RecycleHelper #ecolife #cleanplanet">
+                <span class="hashtag-tag">#MakeRecyclingEasier</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
+
+        </div>
+    </div>
+
 </div>
-<div class="cloud cloud-right">
-    <img src="images/cloud.png" alt="cloud">
-</div>
-        <h1>Our mission</h1>
-        <h2> EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
-    <script src="js/theme.js"></script>
-    <script src="js/language.js"></script>
-    </body>
+
+<!-- Toast notification -->
+<div class="hash-toast" id="hashToast">📋 Caption copied! Opening Instagram…</div>
+
+<h2>EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
+
+<script>
+    // Hashtag click: copy caption → open Instagram
+    document.querySelectorAll('.hashtag-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            const caption = pill.dataset.caption;
+            const tag     = pill.dataset.tag;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(caption).catch(() => {
+                // Fallback for older browsers
+                const ta = document.createElement('textarea');
+                ta.value = caption;
+                ta.style.position = 'fixed';
+                ta.style.opacity  = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            });
+
+            // Show toast
+            const toast = document.getElementById('hashToast');
+            toast.textContent = '📋 Caption copied! Opening Instagram…';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+
+            // Open Instagram (after tiny delay so toast shows first)
+            setTimeout(() => {
+                // Try mobile deep link first, fall back to web
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile) {
+                    window.location.href = 'instagram://camera';
+                    // Fallback to web if app not installed
+                    setTimeout(() => { window.open('https://www.instagram.com/', '_blank'); }, 1200);
+                } else {
+                    window.open('https://www.instagram.com/', '_blank');
+                }
+            }, 400);
+        });
+    });
+</script>
+
+<script src="js/theme.js"></script>
+<script src="js/language.js"></script>
+</body>
 </html>

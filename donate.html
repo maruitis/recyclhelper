@@ -1,35 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Donate</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Lalezar&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/mansstils.css">
-<script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
-    </head>
-    <body>
-        <nav>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Us — RecycleHelper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Gasoek+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jomhuria&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/mansstils.css">
+    <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
+
+    <style>
+
+        /* ── Headline ─────────────────────────────────────────── */
+        .donate-title {
+            font-family: 'Jomhuria', sans-serif;
+            font-size: 76px;
+            font-weight: 400;
+            color: #0E0973;
+            text-align: center;
+            margin: 10px 0 28px;
+            line-height: 1;
+            opacity: 0;
+            transform: translateY(-28px);
+            animation: donFadeDown 0.7s ease 0.1s forwards;
+            text-shadow: 0 4px 18px rgba(14,9,115,0.18), 0 2px 6px rgba(0,0,0,0.10);
+        }
+
+        /* ── Two-column body ──────────────────────────────────── */
+        .donate-body {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 48px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 36px 100px;
+            box-sizing: border-box;
+        }
+
+        /* ── LEFT: reasons ────────────────────────────────────── */
+        .donate-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+            filter: drop-shadow(0 8px 32px rgba(14,9,115,0.08));
+        }
+
+        .donate-reason {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            opacity: 0;
+            transform: translateX(-36px);
+            animation: donFadeRight 0.6s ease forwards;
+        }
+        .donate-reason:nth-child(1) { animation-delay: 0.25s; }
+        .donate-reason:nth-child(2) { animation-delay: 0.42s; }
+        .donate-reason:nth-child(3) { animation-delay: 0.59s; }
+        .donate-reason:nth-child(4) { animation-delay: 0.76s; }
+
+        .donate-reason-icon {
+            flex-shrink: 0;
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+
+        /* Globe gets a slow spin on hover */
+        .donate-reason:nth-child(1):hover .donate-reason-icon {
+            transform: scale(1.1) rotate(15deg);
+            filter: drop-shadow(0 6px 18px rgba(0,160,100,0.35));
+        }
+        .donate-reason:nth-child(2):hover .donate-reason-icon,
+        .donate-reason:nth-child(3):hover .donate-reason-icon,
+        .donate-reason:nth-child(4):hover .donate-reason-icon {
+            transform: scale(1.12) rotate(-5deg);
+            filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
+        }
+
+        .donate-reason-text {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 19px;
+            font-weight: 400;
+            color: #1a3a52;
+            line-height: 1.55;
+            margin: 0;
+            padding-top: 6px;
+        }
+        .donate-reason-text strong {
+            color: #0E0973;
+            font-weight: 700;
+            display: block;
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        /* Globe specifically: floating animation */
+        .globe-icon {
+            animation: globeFloat 4s ease-in-out 1.2s infinite;
+        }
+        @keyframes globeFloat {
+            0%,100% { transform: translateY(0)  rotate(0deg); }
+            50%      { transform: translateY(-6px) rotate(4deg); }
+        }
+        .donate-reason:nth-child(1):hover .globe-icon {
+            animation-play-state: paused;
+        }
+
+        /* ── Vertical divider ─────────────────────────────────── */
+        .donate-vdivider {
+            width: 2px;
+            align-self: stretch;
+            background: linear-gradient(to bottom, transparent, #1DDE51 30%, #00C8FF 70%, transparent);
+            border-radius: 2px;
+            opacity: 0;
+            animation: donFadeDown 0.6s ease 0.8s forwards;
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT: contact ───────────────────────────────────── */
+        .donate-right {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            opacity: 0;
+            animation: donFadeLeft 0.7s ease 0.9s forwards;
+            position: sticky;
+            top: 100px;
+            filter: drop-shadow(0 8px 28px rgba(0,120,200,0.10));
+        }
+
+        .donate-contact-text {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1a3a52;
+            text-align: center;
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        /* ── Email image button ───────────────────────────────── */
+        .donate-email-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            background: none;
+            padding: 8px;
+            transition: transform 0.3s ease;
+        }
+        .donate-email-btn:hover  { transform: scale(1.08) translateY(-5px); }
+        .donate-email-btn:active { transform: scale(0.96); }
+
+        .donate-email-img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            border-radius: 32px;
+            filter: drop-shadow(0 8px 24px rgba(0,120,255,0.38))
+                    drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+            animation: donPulse 3s ease-in-out 2s infinite;
+            transition: filter 0.3s ease;
+        }
+        .donate-email-btn:hover .donate-email-img {
+            filter: drop-shadow(0 12px 36px rgba(0,150,255,0.6))
+                    drop-shadow(0 4px 14px rgba(0,0,0,0.22));
+            animation-play-state: paused;
+        }
+
+        .donate-email-address {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0055cc;
+            letter-spacing: 0.2px;
+            text-align: center;
+            transition: color 0.25s ease;
+        }
+        .donate-email-btn:hover .donate-email-address { color: #0033aa; }
+
+        .donate-click-hint {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #6a8890;
+            margin: 0;
+            text-align: center;
+            transition: color 0.25s ease;
+        }
+        .donate-email-btn:hover .donate-click-hint { color: #0055cc; }
+
+        /* ── Keyframes ────────────────────────────────────────── */
+        @keyframes donFadeDown  { to { opacity: 1; transform: translateY(0); } }
+        @keyframes donFadeRight { to { opacity: 1; transform: translateX(0); } }
+        @keyframes donFadeLeft  {
+            from { opacity: 0; transform: translateX(36px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes donPulse {
+            0%,100% { filter: drop-shadow(0 8px 24px rgba(0,120,255,0.38)) drop-shadow(0 2px 8px rgba(0,0,0,0.18)); }
+            50%      { filter: drop-shadow(0 8px 40px rgba(0,160,255,0.65)) drop-shadow(0 2px 12px rgba(0,0,0,0.20)); }
+        }
+
+        /* ── Dark theme ───────────────────────────────────────── */
+        [data-theme="dark"] .donate-title              { color: #90c8ff; }
+        [data-theme="dark"] .donate-reason-text        { color: #b0cce0; }
+        [data-theme="dark"] .donate-reason-text strong { color: #90c8ff; }
+        [data-theme="dark"] .donate-contact-text       { color: #90b8d8; }
+        [data-theme="dark"] .donate-email-address      { color: #60b8ff; }
+        [data-theme="dark"] .donate-click-hint         { color: #5090a8; }
+
+        /* ── Sky theme ────────────────────────────────────────── */
+        [data-theme="sky"] .donate-title              { color: #0a4f8a; }
+        [data-theme="sky"] .donate-reason-text        { color: #0a3a5a; }
+        [data-theme="sky"] .donate-reason-text strong { color: #0a4f8a; }
+        [data-theme="sky"] .donate-contact-text       { color: #0a3a5a; }
+        [data-theme="sky"] .donate-email-address      { color: #0a5ab0; }
+
+        /* ── Mobile: stack vertically ─────────────────────────── */
+        @media (max-width: 768px) {
+            .donate-body        { flex-direction: column; gap: 32px; padding: 0 18px 80px; }
+            .donate-vdivider    { width: 80px; height: 2px; align-self: center;
+                                  background: linear-gradient(90deg, transparent, #1DDE51, #00C8FF, transparent); }
+            .donate-right       { position: static; flex: unset; width: 100%; }
+            .donate-title       { font-size: 54px; }
+            .donate-reason-icon { width: 60px; height: 60px; }
+            .donate-reason-text { font-size: 16px; }
+            .donate-email-img   { width: 110px; height: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
     <a href="index.html" class="nav-link">Home</a>
     <a href="aboutus.html" class="nav-link">About us</a>
     <a href="ourmission.html" class="nav-link">Our mission</a>
     <a href="donate.html" class="nav-link">Donate</a>
 </nav>
-        <div class="cloud cloud-left">
-    <img src="images/cloud.png" alt="cloud">
+
+<div class="cloud cloud-left"><img src="images/cloud.png" alt="cloud"></div>
+<div class="cloud cloud-right"><img src="images/cloud.png" alt="cloud"></div>
+
+<h1 class="donate-title">Support Us</h1>
+
+<div class="donate-body">
+
+    <!-- ── LEFT: reasons ────────────────────────────────────── -->
+    <div class="donate-left">
+
+        <div class="donate-reason">
+            <img class="donate-reason-icon globe-icon" src="images/donate-globe.png" alt="Planet">
+            <p class="donate-reason-text">
+                <strong>Recycling saves our planet.</strong>
+                Every feature we build helps more people sort waste correctly,
+                reducing landfill and cutting carbon emissions one item at a time.
+            </p>
+        </div>
+
+        <div class="donate-reason">
+            <img class="donate-reason-icon" src="images/donate-book.png" alt="Education">
+            <p class="donate-reason-text">
+                <strong>Education is the key.</strong>
+                Your support keeps RecycleHelper free for everyone -
+                schools, families, and communities who want to make a difference.
+            </p>
+        </div>
+
+        <div class="donate-reason">
+            <img class="donate-reason-icon" src="images/donate-plant.png" alt="Growth">
+            <p class="donate-reason-text">
+                <strong>Help us grow.</strong>
+                We are a small independent team adding new countries, items,
+                and languages every month. Your contribution directly funds that work.
+            </p>
+        </div>
+
+        <div class="donate-reason">
+            <img class="donate-reason-icon" src="images/donate-recycle.png" alt="Recycle">
+            <p class="donate-reason-text">
+                <strong>Every bit counts.</strong>
+                Even a small donation helps us keep the servers running,
+                the data accurate, and the platform available worldwide for free.
+            </p>
+        </div>
+
+    </div>
+
+    
+
+    <!-- ── RIGHT: contact ───────────────────────────────────── -->
+    <div class="donate-right">
+
+        <p class="donate-contact-text">
+            Want to support us<br>or partner with us?<br>
+            Reach out and we'd love<br>to hear from you.
+        </p>
+
+        <a class="donate-email-btn"
+           href="mailto:team@recyclehelper.eu?subject=Supporting%20RecycleHelper&body=Hello%20RecycleHelper%20team%2C%0A%0AI%20came%20across%20your%20platform%20and%20would%20love%20to%20support%20your%20mission.%0A%0AHere%20is%20how%20I%20would%20like%20to%20help%3A%0A%0A%5BYour%20message%20here%5D%0A%0ABest%20regards%2C%0A%5BYour%20name%5D"
+           title="Click to send us an email">
+            <img class="donate-email-img" src="images/email.png" alt="Email us">
+            <span class="donate-email-address">team@recyclehelper.eu</span>
+            <p class="donate-click-hint">Click the icon to open your email app </p>
+        </a>
+
+    </div>
+
 </div>
-<div class="cloud cloud-right">
-    <img src="images/cloud.png" alt="cloud">
-</div>
-        <h1>Donate</h1>
-        <h2> EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
-    <script src="js/theme.js"></script>
-    <script src="js/language.js"></script>
-    </body>
+
+<h2>EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
+
+<script src="js/theme.js"></script>
+<script src="js/language.js"></script>
+</body>
 </html>

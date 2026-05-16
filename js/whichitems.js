@@ -295,14 +295,14 @@ document.addEventListener("DOMContentLoaded", () => {
         <hr class="wi-divider">
 
         <div>
-          <p class="wi-section-title">♻️ How to recycle</p>
+          <p class="wi-section-title"><img src="images/donate-recycle.png" alt="" class="wi-section-icon"> How to recycle</p>
           <ul class="wi-section-text">${howToHTML}</ul>
         </div>
 
         <hr class="wi-divider">
 
         <div>
-          <p class="wi-section-title">🌍 Why recycle</p>
+          <p class="wi-section-title"><img src="images/donate-globe.png" alt="" class="wi-section-icon"> Why recycle</p>
           <p class="wi-section-text">${cat.why}</p>
         </div>
       </div>`;
