@@ -795,10 +795,10 @@
     .g-stat-row {
         border-radius: 6px;
         padding: 2px 4px;
-        transition: background 0.2s ease;
+        transition: transform 0.2s ease, filter 0.2s ease;
         cursor: default;
     }
-    .g-stat-row:hover { background: rgba(36,228,116,0.08); }
+    .g-stat-row:hover { transform: translateX(3px); filter: drop-shadow(0 0 6px rgba(36,228,116,0.35)); }
 
     /* ── Card area ── */
     #g-card-area {

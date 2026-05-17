@@ -39,7 +39,6 @@ body.rh-leaving {
 .nav-link {
     transition: transform 0.31s cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 0.31s ease,
-                background-color 0.31s ease,
                 color 0.29s ease,
                 letter-spacing 0.31s ease !important;
 }
@@ -234,23 +233,9 @@ button:not(:disabled):active {
 ══════════════════════════════════════════════════════════════ */
 .info-card {
     transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.42s ease,
-                background 0.42s ease !important;
+                box-shadow 0.42s ease !important;
     position: relative;
 }
-.info-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 25px;
-    background: linear-gradient(135deg,
-        rgba(36, 228, 116, 0),
-        rgba(36, 228, 116, 0.1));
-    opacity: 0;
-    transition: opacity 0.42s ease;
-    pointer-events: none;
-}
-.info-card:hover::after { opacity: 1; }
 .info-card:hover {
     transform: translateY(-12px) scale(1.025) !important;
     box-shadow: 0 24px 56px rgba(0, 0, 0, 0.17),
@@ -281,21 +266,8 @@ button:not(:disabled):active {
 }
 
 .about-card {
-    transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.42s ease,
-                background 0.42s ease,
-                border-color 0.42s ease !important;
     border-radius: 20px;
-    border: 1px solid transparent;
     padding: 20px 16px;
-}
-.about-card:hover {
-    transform: translateY(-10px) scale(1.03) !important;
-    box-shadow: 0 20px 52px rgba(0, 0, 0, 0.15),
-                0 0 40px rgba(36, 228, 116, 0.26),
-                0 0 80px rgba(36, 228, 116, 0.1) !important;
-    border-color: rgba(36, 228, 116, 0.4) !important;
-    background: rgba(255, 255, 255, 0.35) !important;
 }
 .about-card-icon {
     transition: transform 0.46s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -309,39 +281,14 @@ button:not(:disabled):active {
 
 .about-stat {
     border-radius: 18px;
-    transition: transform 0.39s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.39s ease,
-                background 0.39s ease !important;
-}
-.about-stat:hover {
-    transform: translateY(-7px) scale(1.06) !important;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12),
-                0 0 28px rgba(36, 228, 116, 0.26) !important;
-    background: rgba(255, 255, 255, 0.28) !important;
 }
 .about-stat-num {
-    transition: filter 0.39s ease, transform 0.39s ease;
     display: block;
-}
-.about-stat:hover .about-stat-num {
-    filter: brightness(1.12) drop-shadow(0 0 10px rgba(36, 228, 116, 0.65));
-    transform: scale(1.05);
 }
 
 .about-value-row {
     border-radius: 14px;
     padding-left: 8px;
-    transition: transform 0.39s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.39s ease,
-                background 0.39s ease,
-                padding-left 0.39s ease !important;
-}
-.about-value-row:hover {
-    transform: translateX(10px) !important;
-    background: rgba(36, 228, 116, 0.08) !important;
-    box-shadow: inset 4px 0 0 rgba(36, 228, 116, 0.65),
-                0 4px 18px rgba(0, 0, 0, 0.08) !important;
-    padding-left: 14px;
 }
 .about-value-icon {
     transition: transform 0.46s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -352,15 +299,6 @@ button:not(:disabled):active {
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25))
             drop-shadow(0 0 12px rgba(36, 228, 116, 0.45)) !important;
 }
-.about-cta-btn {
-    transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.34s ease !important;
-}
-.about-cta-btn:hover {
-    transform: translateY(-5px) scale(1.04) !important;
-    box-shadow: 0 0 48px rgba(0, 255, 106, 0.65),
-                0 8px 28px rgba(21, 74, 115, 0.38) !important;
-}
 
 /* ══════════════════════════════════════════════════════════════
    9. MISSION PAGE
@@ -368,15 +306,6 @@ button:not(:disabled):active {
 .mission-card {
     border-radius: 18px;
     padding: 14px 10px !important;
-    transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.42s ease,
-                background 0.42s ease !important;
-}
-.mission-card:hover {
-    transform: translateY(-8px) scale(1.025) !important;
-    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.13),
-                0 0 30px rgba(0, 200, 100, 0.24) !important;
-    background: rgba(255, 255, 255, 0.22) !important;
 }
 .mission-card-icon {
     transition: transform 0.46s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -391,14 +320,12 @@ button:not(:disabled):active {
 .hashtag-pill {
     transition: transform 0.39s cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 0.39s ease,
-                background 0.39s ease,
                 border-color 0.39s ease !important;
 }
 .hashtag-pill:hover {
     transform: translateX(10px) scale(1.03) !important;
     box-shadow: 0 10px 32px rgba(0, 160, 80, 0.3),
                 0 0 28px rgba(0, 220, 100, 0.22) !important;
-    background: rgba(255, 255, 255, 0.88) !important;
     border-color: rgba(0, 200, 100, 0.7) !important;
 }
 .insta-profile-link {
@@ -417,17 +344,7 @@ button:not(:disabled):active {
 .donate-reason {
     border-radius: 18px;
     padding: 10px 12px 10px 8px;
-    transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.42s ease,
-                background 0.42s ease !important;
     cursor: default;
-}
-.donate-reason:hover {
-    transform: translateX(10px) scale(1.01) !important;
-    background: rgba(255, 255, 255, 0.32) !important;
-    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.1),
-                0 0 28px rgba(36, 228, 116, 0.2),
-                inset 4px 0 0 rgba(36, 228, 116, 0.5) !important;
 }
 .donate-reason-icon {
     transition: transform 0.49s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -463,12 +380,11 @@ button:not(:disabled):active {
 .stat-item {
     border-radius: 10px;
     padding: 3px 6px;
-    transition: transform 0.28s ease, background 0.28s ease !important;
+    transition: transform 0.28s ease, filter 0.28s ease !important;
     cursor: default;
 }
 .stat-item:hover {
     transform: scale(1.04) !important;
-    background: rgba(255, 255, 255, 0.22) !important;
 }
 .stat-item:hover .stat-value { filter: drop-shadow(0 0 10px rgba(82,109,168,0.7)); }
 .stat-item:hover .stat-label,
@@ -670,46 +586,15 @@ button:not(:disabled):active {
                 0 0 160px 10px rgba(0,255,106,0.3) !important;
 }
 [data-theme="dark"] .info-card:hover {
-    background: rgba(10,25,60,0.55) !important;
     box-shadow: 0 24px 64px rgba(0,0,0,0.65),
                 0 0 64px rgba(0,255,106,0.38),
                 0 0 130px rgba(0,200,80,0.16) !important;
 }
-[data-theme="dark"] .about-card:hover {
-    background: rgba(8,20,50,0.5) !important;
-    box-shadow: 0 20px 56px rgba(0,0,0,0.55),
-                0 0 48px rgba(0,255,106,0.32),
-                0 0 90px rgba(123,47,255,0.14) !important;
-    border-color: rgba(0,255,106,0.35) !important;
-}
-[data-theme="dark"] .about-stat:hover {
-    background: rgba(8,20,50,0.45) !important;
-    box-shadow: 0 14px 36px rgba(0,0,0,0.45),
-                0 0 32px rgba(0,255,106,0.3) !important;
-}
-[data-theme="dark"] .about-value-row:hover {
-    background: rgba(0,255,106,0.06) !important;
-    box-shadow: inset 4px 0 0 rgba(0,255,106,0.85),
-                0 4px 18px rgba(0,0,0,0.3) !important;
-}
-[data-theme="dark"] .mission-card:hover {
-    background: rgba(8,20,50,0.45) !important;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5),
-                0 0 44px rgba(0,255,106,0.3),
-                0 0 80px rgba(123,47,255,0.15) !important;
-}
 [data-theme="dark"] .hashtag-pill:hover {
-    background: rgba(15,35,80,0.92) !important;
     box-shadow: 0 10px 32px rgba(0,0,0,0.5),
                 0 0 36px rgba(123,47,255,0.38),
                 0 0 60px rgba(0,255,106,0.2) !important;
     border-color: rgba(0,255,106,0.45) !important;
-}
-[data-theme="dark"] .donate-reason:hover {
-    background: rgba(8,20,50,0.45) !important;
-    box-shadow: 0 10px 32px rgba(0,0,0,0.45),
-                0 0 32px rgba(0,255,106,0.24),
-                inset 4px 0 0 rgba(0,255,106,0.65) !important;
 }
 [data-theme="dark"] .lifehack-card:hover {
     box-shadow: 0 20px 60px rgba(0,0,0,0.5),
@@ -776,33 +661,17 @@ button:not(:disabled):active {
                 0 0 52px rgba(80,130,255,0.3) !important;
 }
 [data-theme="sky"] .about-card:hover {
-    box-shadow: 0 20px 52px rgba(80,160,240,0.2),
-                0 0 44px rgba(80,130,255,0.26) !important;
-    border-color: rgba(80,130,255,0.4) !important;
-}
-[data-theme="sky"] .about-stat:hover {
-    box-shadow: 0 14px 36px rgba(80,160,240,0.2),
-                0 0 28px rgba(80,130,255,0.25) !important;
-}
-[data-theme="sky"] .about-value-row:hover {
-    background: rgba(80,130,255,0.07) !important;
-    box-shadow: inset 4px 0 0 rgba(80,130,255,0.65),
-                0 4px 18px rgba(80,160,240,0.12) !important;
+    filter: drop-shadow(0 8px 28px rgba(80,130,255,0.28)) !important;
 }
 [data-theme="sky"] .mission-card:hover {
-    box-shadow: 0 16px 48px rgba(80,160,240,0.2),
-                0 0 36px rgba(80,130,255,0.24) !important;
+    filter: drop-shadow(0 8px 22px rgba(80,130,255,0.22)) !important;
 }
 [data-theme="sky"] .hashtag-pill:hover {
     box-shadow: 0 10px 32px rgba(80,130,255,0.32),
                 0 0 30px rgba(80,160,240,0.22) !important;
     border-color: rgba(80,130,255,0.55) !important;
 }
-[data-theme="sky"] .donate-reason:hover {
-    box-shadow: 0 10px 32px rgba(80,160,240,0.18),
-                0 0 28px rgba(80,130,255,0.2),
-                inset 4px 0 0 rgba(80,130,255,0.55) !important;
-}
+
 [data-theme="sky"] .container-card:hover {
     box-shadow: 0 20px 52px rgba(80,160,240,0.24),
                 0 0 50px rgba(80,130,255,0.32) !important;
@@ -883,3 +752,16 @@ button:not(:disabled):active {
 }
 [data-theme="dark"] :focus-visible { outline-color: rgba(0,255,106,0.8); }
 [data-theme="sky"]  :focus-visible { outline-color: rgba(80,130,255,0.75); }
+
+/* ══════════════════════════════════════════════════════════════
+   21. NO-BACKGROUND-ON-HOVER SAFETY NET
+   Locks background to "no change" on text/row/pill elements
+   by explicitly inheriting the base value on hover.
+══════════════════════════════════════════════════════════════ */
+.about-value-row:hover,
+.about-stat:hover,
+.donate-reason:hover,
+.stat-item:hover,
+.g-stat-row:hover {
+    background-color: transparent !important;
+}

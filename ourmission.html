@@ -200,7 +200,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: transform 0.28s ease, box-shadow 0.28s ease,
-                        background 0.28s ease, border-color 0.28s ease;
+                        border-color 0.28s ease;
             position: relative;
             overflow: hidden;
         }
@@ -219,8 +219,7 @@
 
         .hashtag-pill:hover {
             transform: translateX(6px) scale(1.02);
-            box-shadow: 0 6px 22px rgba(0,160,80,0.22);
-            background: rgba(255,255,255,0.78);
+            box-shadow: 0 6px 22px rgba(0,160,80,0.22), 0 0 18px rgba(0,200,100,0.2);
             border-color: rgba(0,200,100,0.6);
         }
         .hashtag-pill:active { transform: scale(0.97); }
@@ -318,7 +317,7 @@
         [data-theme="dark"] .mission-hashtag-title  { color: #90c8ff; }
         [data-theme="dark"] .mission-hashtag-sub    { color: #5a8098; }
         [data-theme="dark"] .hashtag-pill           { background: rgba(10,25,55,0.6); border-color: rgba(0,200,100,0.25); }
-        [data-theme="dark"] .hashtag-pill:hover     { background: rgba(15,35,75,0.9); }
+        [data-theme="dark"] .hashtag-pill:hover     { box-shadow: 0 6px 28px rgba(0,0,0,0.5), 0 0 32px rgba(123,47,255,0.38), 0 0 60px rgba(0,255,106,0.2); border-color: rgba(0,255,106,0.45); }
         [data-theme="dark"] .insta-tap-hint          { color: #d080e8; }
         [data-theme="dark"] .hashtag-tag            { color: #c080ff; }
         [data-theme="dark"] .hashtag-pill:hover .hashtag-tag { color: #d8a8ff; }
