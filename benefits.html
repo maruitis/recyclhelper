@@ -57,11 +57,11 @@
             flex-direction: row;
             align-items: flex-start;
             justify-content: center;
-            gap: 32px;
+            gap: 14px;
         }
     }
 
-    /* ── Game shell — gradient border + neon shadow ── */
+    /* ── Game shell — neon glow only, no stroke ── */
     #game-shell {
         width: 100%;
         max-width: 500px;
@@ -71,11 +71,7 @@
         background: transparent;
         position: relative;
         z-index: 1;
-        /* Gradient stroke — 1px */
-        padding: 1px;
-        background: linear-gradient(135deg, #A4FFB8, #24E474, #154A73, #0C365F);
         box-shadow:
-            0 0 0 1px rgba(0,255,106,0.22),
             0 10px 48px rgba(36,228,116,0.30),
             0 3px 16px rgba(80,58,203,0.22),
             0 0 65px rgba(0,255,106,0.38),
@@ -85,16 +81,15 @@
     }
     #game-shell:hover {
         box-shadow:
-            0 0 0 1px rgba(0,255,106,0.32),
             0 14px 56px rgba(36,228,116,0.40),
             0 4px 20px rgba(80,58,203,0.28),
             0 0 80px rgba(0,255,106,0.48),
             0 0 120px rgba(0,255,106,0.22),
             0 0 170px rgba(0,255,106,0.12);
     }
-    /* Inner wrapper clips content inside the gradient border */
+    /* Inner wrapper clips content inside the shell */
     #game-shell-inner {
-        border-radius: 25px;
+        border-radius: 26px;
         overflow: visible;
         width: 100%;
         height: 100%;
@@ -283,8 +278,12 @@
         position: relative;
         width: 100%;
         height: 260px;
-        overflow: hidden;
         border-radius: 23px 23px 0 0;
+    }
+    /* Blur the scene behind the play-card overlay directly (more reliable than backdrop-filter) */
+    #g-start-scene > :not(#g-play-card) {
+        filter: blur(3px);
+        transform: scale(1.05);
     }
 
     /* ── Start overlay: full-cover blur ── */
@@ -302,11 +301,21 @@
         gap: 12px;
         text-align: center;
         z-index: 10;
-        background: rgba(10, 30, 20, 0.22);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(22px) saturate(1.5);
+        -webkit-backdrop-filter: blur(22px) saturate(1.5);
+        border: 1px solid rgba(255,255,255,0.18);
+        transition: background 0.4s ease;
     }
     #g-play-card::before { display: none; }
+    [data-theme="dark"] #g-play-card {
+        background: rgba(255,255,255,0.07);
+        border-color: rgba(255,255,255,0.10);
+    }
+    [data-theme="sky"] #g-play-card {
+        background: rgba(255,248,220,0.14);
+        border-color: rgba(255,255,255,0.22);
+    }
 
     .g-logo {
         display: flex;
@@ -339,7 +348,7 @@
         background: linear-gradient(135deg, #24E474, #154A73);
         color: #fff;
         border: none;
-        padding: 13px 38px;
+        padding: 38px 88px 38px 86px;
         border-radius: 50px;
         font-family: "Oswald", sans-serif;
         font-size: 1.05rem;
@@ -347,11 +356,15 @@
         letter-spacing: 1px;
         cursor: pointer;
         box-shadow:
-            0 0 20px rgba(0,255,106,0.45),
-            0 4px 16px rgba(21,74,115,0.3);
+            0 0 24px rgba(0,255,106,0.50),
+            0 5px 18px rgba(21,74,115,0.32);
         transition: all 0.22s;
-        margin-top: 4px;
+        margin-top: 2px;
         position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
     .g-btn-start:hover {
         transform: translateY(-2px);
@@ -778,6 +791,13 @@
         font-size: 0.66rem; color: #4F6B58;
         width: 22px; text-align: right; flex-shrink: 0;
     }
+    .g-stat-row {
+        border-radius: 6px;
+        padding: 2px 4px;
+        transition: background 0.2s ease;
+        cursor: default;
+    }
+    .g-stat-row:hover { background: rgba(36,228,116,0.08); }
 
     /* ── Card area ── */
     #g-card-area {
@@ -802,9 +822,11 @@
         background: none;
         border-radius: 16px;
         padding: 16px 18px 14px;
-        transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+        transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease, box-shadow 0.25s ease;
         position: relative; overflow: hidden;
+        cursor: default;
     }
+    #g-waste-card:hover { box-shadow: 0 6px 24px rgba(36,228,116,0.12); }
     /* gradient stroke on card */
     #g-waste-card::before {
         content: ''; position: absolute; inset: 0;
@@ -815,7 +837,8 @@
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         pointer-events: none;
-        opacity: 0.85;
+        opacity: 1;
+        padding: 1.5px;
     }
     #g-waste-card.entering { animation: gCardIn 0.45s cubic-bezier(.34,1.56,.64,1) forwards; }
     @keyframes gCardIn { from{transform:translateY(28px) scale(0.92);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
@@ -830,8 +853,9 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 1.9rem; flex-shrink: 0;
         box-shadow: 0 3px 12px rgba(0,0,0,0.10);
-        transition: background 0.5s, box-shadow 0.5s;
+        transition: background 0.5s, box-shadow 0.5s, transform 0.25s ease;
     }
+    .g-card-icon-bg:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
     .g-card-name {
         font-family: "Oswald", sans-serif;
         font-size: 1.08rem; font-weight: 600;
@@ -926,13 +950,21 @@
     }
     @keyframes gBannerPop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-    /* ── End screen ── */
+    /* ── End screen — glass overlay on top of game scene ── */
     #g-end-inline {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
         display: none;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
         padding: 20px 16px 24px;
         width: 100%;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(28px) saturate(1.5);
+        -webkit-backdrop-filter: blur(28px) saturate(1.5);
+        overflow-y: auto;
     }
     #g-end-inline.active { display: flex; }
 
@@ -943,29 +975,79 @@
         align-items: center;
         text-align: center;
         gap: 0;
+        flex: 1;
+        justify-content: space-between;
         animation: endCardPop 0.55s cubic-bezier(.34,1.56,.64,1) 0.1s both;
     }
+    .g-end-top { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .g-end-grid-wrap { display: flex; align-items: center; justify-content: center; flex: 1; width: 100%; }
+
 
     /* ── Separate end story card ── */
     #end-story-card {
         display: none;
         flex-direction: column;
         gap: 10px;
-        width: 260px;
-        flex-shrink: 0;
+        width: 100%;
         align-self: flex-start;
-        background: rgba(255,255,255,0.13);
+        background: rgba(36,228,116,0.07);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        border: 1.5px solid rgba(255,255,255,0.30);
+        border: 1.5px solid rgba(36,228,116,0.22);
         border-radius: 22px;
         padding: 18px 16px 16px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+        box-shadow:
+            0 8px 32px rgba(0,0,0,0.12),
+            0 0 28px rgba(36,228,116,0.16),
+            0 0 64px rgba(36,228,116,0.09);
         animation: endCardPop 0.5s cubic-bezier(.34,1.56,.64,1) 0.15s both;
+        transition: box-shadow 0.3s ease;
+    }
+    #end-story-card:hover {
+        box-shadow:
+            0 10px 38px rgba(0,0,0,0.15),
+            0 0 36px rgba(36,228,116,0.24),
+            0 0 80px rgba(36,228,116,0.13);
     }
     #end-story-card.visible { display: flex; }
 
-    .end-story-col { display: flex; flex-direction: column; gap: 5px; }
+    /* ── Sky theme: blue tint + neon blue glow ── */
+    [data-theme="sky"] #end-story-card {
+        background: rgba(100,180,255,0.09);
+        border-color: rgba(80,160,255,0.26);
+        box-shadow:
+            0 8px 32px rgba(0,0,0,0.10),
+            0 0 28px rgba(80,160,255,0.20),
+            0 0 64px rgba(80,160,255,0.11);
+    }
+    [data-theme="sky"] #end-story-card:hover {
+        box-shadow:
+            0 10px 38px rgba(0,0,0,0.13),
+            0 0 36px rgba(80,160,255,0.30),
+            0 0 80px rgba(80,160,255,0.15);
+    }
+
+    /* ── Dark theme: glass bg + bright text ── */
+    [data-theme="dark"] #end-story-card {
+        background: rgba(255,255,255,0.06);
+        backdrop-filter: blur(18px) saturate(1.4);
+        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        border-color: rgba(255,255,255,0.11);
+        box-shadow: 0 8px 40px rgba(0,0,0,0.40);
+    }
+    [data-theme="dark"] #end-story-card:hover {
+        box-shadow: 0 10px 48px rgba(0,0,0,0.50);
+    }
+    [data-theme="dark"] .end-story-header { border-bottom-color: rgba(255,255,255,0.10); }
+    [data-theme="dark"] .end-story-tag.bad  { color: #ffb3ae; background: rgba(255,60,60,0.22); border-left-color: rgba(255,80,80,0.55); }
+    [data-theme="dark"] .end-story-tag.good { color: #a5f5ce; background: rgba(0,255,100,0.16); border-left-color: rgba(0,255,100,0.50); }
+
+    .end-story-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        transition: opacity 0.3s ease;
+    }
     .end-story-header {
         font-family: 'Oswald', sans-serif;
         font-size: 0.68rem;
@@ -973,8 +1055,9 @@
         letter-spacing: 1.2px;
         text-transform: uppercase;
         padding-bottom: 5px;
-        margin-bottom: 2px;
+        margin-bottom: 0;
         border-bottom: 1.5px solid rgba(0,0,0,0.08);
+        transition: color 0.3s ease;
     }
     .end-story-header.bad  { color: #b71c1c; }
     .end-story-header.good { color: #1b5e20; }
@@ -982,11 +1065,28 @@
         font-family: 'Inter', sans-serif;
         font-size: 0.70rem;
         line-height: 1.4;
-        padding: 4px 8px;
-        border-radius: 8px;
+        padding: 5px 8px;
+        border-radius: 0;
+        transition: background 0.2s ease, color 0.2s ease;
     }
+    .end-story-tag:last-child { border-radius: 0 0 6px 6px; }
+    .end-story-tag:first-child { border-radius: 6px 6px 0 0; }
     .end-story-tag.bad  { background: rgba(200,20,20,0.08); color: #4a0000; border-left: 2.5px solid rgba(200,20,20,0.35); }
     .end-story-tag.good { background: rgba(0,150,60,0.08);  color: #0a3a18; border-left: 2.5px solid rgba(0,150,60,0.32); }
+    .end-story-tag:hover { filter: brightness(1.14); transform: translateX(2px); }
+    .end-story-section:hover .end-story-header { letter-spacing: 1.5px; }
+
+    /* ── Dark theme: bright readable text ── */
+    [data-theme="dark"] .impact-title { color: #e8f5e9; }
+    [data-theme="dark"] .impact-body  { color: #b0bec5; }
+    [data-theme="dark"] .impact-card.bad  .impact-verdict { color: #ff6b6b; }
+    [data-theme="dark"] .impact-card.good .impact-verdict { color: #69f0ae; }
+    [data-theme="dark"] .impact-card.bad  .impact-tag { background: rgba(255,80,80,0.15); color: #ff8a80; border-color: rgba(255,80,80,0.30); }
+    [data-theme="dark"] .impact-card.good .impact-tag { background: rgba(0,255,100,0.12); color: #69f0ae; border-color: rgba(0,255,100,0.28); }
+    [data-theme="dark"] .end-story-header.bad  { color: #ff6b6b; }
+    [data-theme="dark"] .end-story-header.good { color: #69f0ae; }
+    [data-theme="dark"] .end-story-tag.bad  { color: #ff8a80; background: rgba(255,80,80,0.10); border-left-color: rgba(255,80,80,0.35); }
+    [data-theme="dark"] .end-story-tag.good { color: #69f0ae; background: rgba(0,255,100,0.10); border-left-color: rgba(0,255,100,0.32); }
 
     @media (max-width: 899px) {
         #end-story-card { width: 100%; }
@@ -1103,21 +1203,41 @@
         cursor: pointer;
         box-shadow: 0 0 20px rgba(0,255,106,0.4), 0 5px 16px rgba(21,74,115,0.3);
         transition: all 0.2s;
+        margin-top: 70px;
     }
     .g-btn-again:hover {
         transform: translateY(-2px);
         box-shadow: 0 0 32px rgba(0,255,106,0.6), 0 8px 22px rgba(21,74,115,0.4);
     }
 
+    /* ── Right panel wrapper ── */
+    #right-panel {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        align-self: flex-start;
+        /* collapsed — no space taken until game starts */
+        width: 0;
+        min-width: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: width 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease 0.1s;
+    }
+    #right-panel.active {
+        width: 270px;
+        opacity: 1;
+        overflow: visible;
+    }
+    @media (max-width: 899px) {
+        #right-panel { width: 100% !important; min-width: unset !important; opacity: 1 !important; overflow: visible !important; transition: none !important; }
+        #right-panel.active { width: 100%; }
+    }
+
     /* ── Impact Panel ── */
     #impact-panel {
         display: none;
         flex-direction: column;
-        width: 270px;
-        flex-shrink: 0;
-        align-self: flex-start;
-        position: sticky;
-        top: 100px;
+        width: 100%;
     }
     #impact-panel.visible { display: flex; }
     .impact-card {
@@ -1125,7 +1245,9 @@
         padding: 20px 18px 18px;
         animation: impactPop 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
         border: 1.5px solid rgba(255,255,255,0.30);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
+    .impact-card:hover { transform: translateY(-3px); }
     .impact-card.bad {
         background: rgba(220, 40, 40, 0.12);
         backdrop-filter: blur(12px);
@@ -1264,7 +1386,7 @@
                         <div class="g-logo"><img src="images/donate-globe.png" alt="Globe" style="width:80px;height:80px;object-fit:contain;display:block;filter:drop-shadow(0 6px 22px rgba(0,0,0,0.45));"></div>
                         <div class="g-title">Save the City</div>
                         <div class="g-subtitle">Recycling Impact</div>
-                        <button class="g-btn-start" onclick="gStart()"><img src="images/donate-recycle.png" alt="" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;margin-right:6px;"> Play Now</button>
+                        <button class="g-btn-start" onclick="gStart()">Play Now</button>
                     </div>
                 </div>
             </div>
@@ -1305,13 +1427,13 @@
                             <span class="g-stat-num" id="g-num-nat">80</span>
                         </div>
                         <div class="g-stat-row">
-                            <span class="g-stat-icon"><img src="images/welcoming.png" alt="happiness" style="width:15px;height:15px;object-fit:contain;"></span>
+                            <span class="g-stat-icon"><img src="images/hapiness.png" alt="happiness" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Happiness</span>
                             <div class="g-stat-track"><div class="g-stat-fill hap" id="g-bar-hap" style="width:75%"></div></div>
                             <span class="g-stat-num" id="g-num-hap">75</span>
                         </div>
                         <div class="g-stat-row">
-                            <span class="g-stat-icon"><img src="images/science.png" alt="toxicity" style="width:15px;height:15px;object-fit:contain;"></span>
+                            <span class="g-stat-icon"><img src="images/toxicity.png" alt="toxicity" style="width:15px;height:15px;object-fit:contain;"></span>
                             <span class="g-stat-lbl">Toxicity</span>
                             <div class="g-stat-track"><div class="g-stat-fill tox" id="g-bar-tox" style="width:5%"></div></div>
                             <span class="g-stat-num" id="g-num-tox">5</span>
@@ -1331,7 +1453,7 @@
                         <div class="g-card-tip" id="g-card-tip">Loading…</div>
                     </div>
                     <div id="g-actions">
-                        <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')"><img src="images/trashcan.png" alt="" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Ignore</button>
+                        <button class="g-btn" id="g-btn-ignore"  onclick="gDecide('ignore')"><img src="images/ignore.png" alt="" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Ignore</button>
                         <button class="g-btn" id="g-btn-recycle" onclick="gDecide('recycle')"><img src="images/donate-recycle.png" alt="" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:5px;"> Recycle</button>
                     </div>
                 </div>
@@ -1342,41 +1464,47 @@
             <!-- END SCREEN -->
             <div id="g-end-inline" class="g-screen">
                 <div class="g-end-main-card">
-                    <div class="g-end-badge" id="g-end-badge"><img src="images/donate-globe.png" alt="globe" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,255,106,0.45));"></div>
-                    <div class="g-end-title" id="g-end-title">Eco Hero!</div>
-                    <div class="g-end-sub"   id="g-end-sub">Great job!</div>
-                    <div class="g-end-grid">
-                        <div class="g-end-card"><span><img src="images/values.png" alt="score" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-score">0</span><span>Score</span></div>
-                        <div class="g-end-card"><span><img src="images/donate-recycle.png" alt="recycled" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-recycled">0</span><span>Recycled</span></div>
-                        <div class="g-end-card"><span><img src="images/donate-plant.png" alt="nature" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-nat">0</span><span>Nature</span></div>
-                        <div class="g-end-card"><span><img src="images/welcoming.png" alt="happiness" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-hap">0</span><span>Happiness</span></div>
+                    <div class="g-end-top">
+                        <div class="g-end-badge" id="g-end-badge"><img src="images/donate-globe.png" alt="globe" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,255,106,0.45));"></div>
+                        <div class="g-end-title" id="g-end-title">Eco Hero!</div>
+                        <div class="g-end-sub"   id="g-end-sub">Great job!</div>
                     </div>
-                    <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
+                    <div class="g-end-grid-wrap">
+                        <div class="g-end-grid">
+                            <div class="g-end-card"><span><img src="images/values.png" alt="score" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-score">0</span><span>Score</span></div>
+                            <div class="g-end-card"><span><img src="images/donate-recycle.png" alt="recycled" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-recycled">0</span><span>Recycled</span></div>
+                            <div class="g-end-card"><span><img src="images/donate-plant.png" alt="nature" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-nat">0</span><span>Nature</span></div>
+                            <div class="g-end-card"><span><img src="images/hapiness.png" alt="happiness" style="width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.20));"></span><span id="g-end-hap">0</span><span>Happiness</span></div>
+                        </div>
+                    </div>
                 </div>
+                <button class="g-btn-again" onclick="gStart()">↩ Play Again</button>
             </div>
 
           </div><!-- /game-shell-inner -->
         </div><!-- /game-shell -->
 
-        <!-- ══════════════════ END STORY CARD (separate, shown after game) ══════════════════ -->
-        <div id="end-story-card">
-            <div class="end-story-col bad-col">
-                <div class="end-story-header bad">🏭 Went Wrong</div>
-                <div id="end-bad-list"></div>
+        <!-- ══════════════════ RIGHT PANEL (impact during game / story after) ══════════════════ -->
+        <div id="right-panel">
+            <!-- Shown during game -->
+            <div id="impact-panel">
+                <div id="impact-card-inner" class="impact-card bad">
+                    <div class="impact-verdict" id="impact-verdict">IGNORED</div>
+                    <div class="impact-title" id="impact-title">Impact</div>
+                    <div class="impact-body" id="impact-body"></div>
+                    <div class="impact-tags" id="impact-tags"></div>
+                </div>
             </div>
-            <div class="end-story-col good-col">
-                <div class="end-story-header good">🌿 Went Right</div>
-                <div id="end-good-list"></div>
-            </div>
-        </div>
-
-        <!-- ══════════════════ IMPACT PANEL ══════════════════ -->
-        <div id="impact-panel">
-            <div id="impact-card-inner" class="impact-card bad">
-                <div class="impact-verdict" id="impact-verdict">IGNORED</div>
-                <div class="impact-title" id="impact-title">Impact</div>
-                <div class="impact-body" id="impact-body"></div>
-                <div class="impact-tags" id="impact-tags"></div>
+            <!-- Shown after game ends -->
+            <div id="end-story-card">
+                <div class="end-story-section">
+                    <div class="end-story-header bad">🏭 Went Wrong</div>
+                    <div id="end-bad-list"></div>
+                </div>
+                <div class="end-story-section">
+                    <div class="end-story-header good">🌿 Went Right</div>
+                    <div id="end-good-list"></div>
+                </div>
             </div>
         </div>
 
@@ -1399,7 +1527,7 @@
                     <span class="side-stat-num" id="sp-num-nat">80</span>
                 </div>
                 <div class="side-stat-row">
-                    <span class="side-stat-icon"><img src="images/welcoming.png" alt="happiness" style="width:16px;height:16px;object-fit:contain;"></span>
+                    <span class="side-stat-icon"><img src="images/hapiness.png" alt="hapiness" style="width:16px;height:16px;object-fit:contain;"></span>
                     <span class="side-stat-lbl">Happiness</span>
                     <div class="side-stat-track"><div class="side-stat-fill hap" id="sp-bar-hap" style="width:75%"></div></div>
                     <span class="side-stat-num" id="sp-num-hap">75</span>
@@ -1869,6 +1997,8 @@ function gStart() {
     Object.assign(GS,{pol:10,nat:80,hap:75,tox:5,score:0,recycled:0,ignored:0,running:false,ignoredIds:[],recycledIds:[]});
     GS.deck = [...G_CATS].sort(()=>Math.random()-0.5);
     GS.cardIdx = 0;
+    const rp = document.getElementById('right-panel');
+    if(rp) rp.classList.add('active');
     // reset side panel
     const src=document.getElementById('side-result-card');
     const ssc=document.getElementById('side-stats-card');
@@ -1876,8 +2006,8 @@ function gStart() {
     if(src){ src.style.display='none'; }
     if(ssc){ ssc.style.display='block'; }
     if(sr){ sr.classList.remove('visible'); }
-    document.getElementById('impact-panel').classList.remove('visible');
-    const sc=document.getElementById('end-story-card'); if(sc) sc.classList.remove('visible');
+    document.getElementById('impact-panel').style.display = 'none';
+    const sc=document.getElementById('end-story-card'); if(sc) sc.style.display = 'none';
     gScreen('g-game');
     gBuildScene();
     gApplyThemeToGameScene();
@@ -1980,7 +2110,7 @@ function gShowImpact(type, detail) {
         el.textContent = t;
         tags.appendChild(el);
     });
-    panel.classList.add('visible');
+    panel.style.display = 'flex';
     // Re-trigger animation
     card.style.animation = 'none';
     void card.offsetWidth;
@@ -2628,6 +2758,7 @@ function tk(k){ return (typeof translateKey==='function') ? (translateKey(k)||k)
 
 function gShowEnd() {
     gScreen('g-end-inline');
+    document.getElementById('g-game').classList.add('active'); // keep city scene as blurred bg
     const eco=GS.recycled-GS.ignored*0.5;
     let badge,title,sub;
     if(eco>=GS.recycled*0.65 && GS.pol<45 && GS.tox<45){
@@ -2652,7 +2783,6 @@ function gShowEnd() {
 
     // City impact story
     const fl=document.getElementById('g-facts-list');
-    fl.innerHTML='';
 
     // Build city narrative
     const badConsequences = {
@@ -2689,31 +2819,11 @@ function gShowEnd() {
     const goodList = document.getElementById('end-good-list');
     if(badList)  { badList.innerHTML  = ''; GS.ignoredIds.forEach(id  => { if(badConsequences[id])  badList.innerHTML  += `<div class="end-story-tag bad">${badConsequences[id]}</div>`;  }); }
     if(goodList) { goodList.innerHTML = ''; GS.recycledIds.forEach(id => { if(goodConsequences[id]) goodList.innerHTML += `<div class="end-story-tag good">${goodConsequences[id]}</div>`; }); }
+    document.getElementById('impact-panel').style.display = 'none';
     const sc = document.getElementById('end-story-card');
-    if(sc) sc.classList.add('visible');
+    if(sc) sc.style.display = 'flex';
     if(fl) fl.innerHTML = '';
 
-    // populate desktop side panel result
-    spSet('sp-end-badge',badge);
-    spSet('sp-end-title',title);
-    spSet('sp-end-sub',sub);
-    const spfl=document.getElementById('sp-facts-list');
-    if(spfl){
-        spfl.innerHTML='';
-        facts.forEach(f=>{
-            const d=document.createElement('div');
-            d.className='side-fact';
-            d.innerHTML=`<span>${f.fact}</span>`;
-            spfl.appendChild(d);
-        });
-    }
-    // show side result card, hide stats card on desktop
-    const src=document.getElementById('side-result-card');
-    const ssc=document.getElementById('side-stats-card');
-    const sr=document.getElementById('side-result');
-    if(src){ src.style.display='block'; }
-    if(ssc){ ssc.style.display='none'; }
-    if(sr){ sr.classList.add('visible'); }
 }
 
 // ════════════════════════════════════════════════════════

@@ -33,12 +33,12 @@ if (detailsContainer && data.detail) {
         <div class="detail-spec-section">
             <h3>${data.detail}</h3>
             <div class="detail-options">
-                <button class="detail-option-btn" data-val="yes">Yes</button>
-                <button class="detail-option-btn" data-val="no">No</button>
+                <img class="detail-option-btn" data-val="yes" src="images/yes.png" alt="Yes">
+                <img class="detail-option-btn" data-val="no" src="images/no.png" alt="No">
             </div>
         </div>
     `;
-    
+
     detailsContainer.querySelectorAll('.detail-option-btn').forEach(btn => {
         btn.onclick = () => {
             // odin vibor
