@@ -2764,56 +2764,56 @@ nav {
         gap: 16px;
         margin-top: 20px;
     }
-    /* 2-above, 1-centered-below grid */
+    /* Single-column card list */
     .cards-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        padding: 10px 12px 90px;
-        gap: 10px;
-        width: 100%;
-        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
+        padding: 10px 16px 90px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     .info-card {
-        width: 100%;
-        max-width: none;
-        height: 112px;
-        border-radius: 20px;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.13), 0 0 22px rgba(0,255,106,0.16);
+        width: calc(100vw - 32px) !important;
+        max-width: 480px !important;
+        height: 150px !important;
+        border-radius: 20px !important;
+        overflow: visible !important;
+        padding-left: 18px !important;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.13), 0 0 22px rgba(0,255,106,0.16) !important;
         touch-action: manipulation;
         transition: transform 0.15s ease, box-shadow 0.18s ease;
+        position: relative !important;
     }
-    /* 3rd card: spans both columns, centred at half-width */
     .info-card:nth-child(3) {
-        grid-column: 1 / -1;
-        width: calc(50% - 5px);
-        margin: 0 auto;
+        width: calc(100vw - 32px) !important;
+        grid-column: auto !important;
+        margin: 0 !important;
     }
     .info-card:active {
-        transform: scale(0.97);
-        box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        transform: scale(0.97) !important;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.1) !important;
     }
-    .info-card { overflow: visible !important; }
     .card-text {
-        font-size: 13px;
-        line-height: 1.2;
-        padding: 10px 6px 10px 12px;
-        max-width: 100%;
-        z-index: 1;
+        font-size: clamp(22px, 6vw, 32px) !important;
+        line-height: 1.1 !important;
+        padding: 12px 0 12px 0 !important;
+        max-width: 56% !important;
+        z-index: 1 !important;
     }
     .img-wrapper {
         position: absolute !important;
         right: 0 !important;
-        top: -18px !important;
-        bottom: -5px !important;
-        width: 80px !important;
+        top: -22px !important;
+        bottom: -8px !important;
+        width: 130px !important;
         z-index: 2 !important;
-        clip-path: inset(-60px 0px -10px -300px) !important;
+        clip-path: inset(-60px 0px -5px -600px) !important;
     }
-    /* Per-card top offsets on mobile */
-    .info-card:nth-child(1) .img-wrapper { top: -18px !important; }
-    .info-card:nth-child(2) .img-wrapper { top: -24px !important; }
-    .info-card:nth-child(3) .img-wrapper { top: -20px !important; width: 72px !important; }
-    .card-img { max-height: 130px; }
+    .info-card:nth-child(2) .img-wrapper { top: -30px !important; }
+    .info-card:nth-child(3) .img-wrapper { top: -24px !important; width: 120px !important; }
+    .card-img { width: 100% !important; height: 100% !important; object-fit: contain !important; }
 
     /* Fixed slogan: readable on small screen */
     #site-slogan {
@@ -2861,8 +2861,9 @@ nav {
 
     /* Each card: compact strip, expand on tap */
     .lifehack-card {
-        width: calc(100vw - 80px) !important;
-        max-width: 280px;
+        width: 260px !important;
+        max-width: 260px !important;
+        min-width: 0 !important;
         margin-left: 0 !important;
         transform: none !important;
         opacity: 1 !important;
@@ -2876,6 +2877,7 @@ nav {
         overflow: hidden !important;
         touch-action: manipulation;
         transition: box-shadow 0.3s ease, transform 0.25s ease !important;
+        position: relative !important;
     }
 
     /* Subtle lift on touch start */
@@ -3113,12 +3115,13 @@ nav {
     nav { padding: 8px 10px 6px; gap: 6px; }
     .nav-link { min-width: 66px; height: 30px; font-size: 11px; padding: 0 10px; }
 
-    /* Cards 2+1 grid on very small screens */
-    .cards-container { padding: 8px 10px 90px; gap: 8px; }
-    .info-card  { height: 100px; border-radius: 18px; }
-    .info-card:nth-child(3) { width: calc(50% - 4px); }
-    .card-text  { font-size: 12px; padding: 8px 4px 8px 10px; }
-    .card-img   { max-height: 88px; }
+    /* Single-column cards on very small screens */
+    .cards-container { padding: 8px 10px 90px !important; gap: 14px !important; }
+    .info-card  { height: 130px !important; border-radius: 18px !important; }
+    .info-card:nth-child(3) { width: calc(100vw - 32px) !important; }
+    .card-text  { font-size: clamp(18px, 5.5vw, 26px) !important; padding: 10px 0 10px 0 !important; }
+    .img-wrapper { width: 110px !important; }
+    .card-img   { width: 100% !important; height: 100% !important; object-fit: contain !important; }
 
     #site-slogan { font-size: 18px !important; }
 
