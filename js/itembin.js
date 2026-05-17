@@ -170,7 +170,7 @@ function renderBinResult(countryKey, group) {
 
   const imgHTML = entry.color
     ? `<img src="images/${entry.color}container.png" alt="${entry.name}" class="bin-card-img">`
-    : `<div class="bin-card-icon">♻️</div>`;
+    : `<img src="images/donate-recycle.png" alt="Drop-off point" class="bin-card-img">`;
 
   const noteHTML = entry.note
     ? `<div class="bin-card-note">${entry.note}</div>`

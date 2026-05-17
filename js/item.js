@@ -51,11 +51,13 @@ if (detailsContainer && data.detail) {
             const noCol = document.getElementById('noCol');
 
             if (choice === 'yes') {
-              document.getElementById('yesCol').classList.add('glow-active');
-              document.getElementById('noCol').classList.remove('glow-active');
+              document.getElementById('yesCol').classList.add('glow-yes');
+              document.getElementById('yesCol').classList.remove('glow-no');
+              document.getElementById('noCol').classList.remove('glow-yes', 'glow-no');
             } else {
-              document.getElementById('noCol').classList.add('glow-active');
-              document.getElementById('yesCol').classList.remove('glow-active');  
+              document.getElementById('noCol').classList.add('glow-no');
+              document.getElementById('noCol').classList.remove('glow-yes');
+              document.getElementById('yesCol').classList.remove('glow-yes', 'glow-no');
             }
 
             // sohronjaet dlja filtertags
