@@ -2792,13 +2792,28 @@ nav {
         transform: scale(0.97);
         box-shadow: 0 3px 12px rgba(0,0,0,0.1);
     }
+    .info-card { overflow: visible !important; }
     .card-text {
         font-size: 13px;
         line-height: 1.2;
         padding: 10px 6px 10px 12px;
-        max-width: 62%;
+        max-width: 100%;
+        z-index: 1;
     }
-    .card-img { max-height: 96px; }
+    .img-wrapper {
+        position: absolute !important;
+        right: 0 !important;
+        top: -18px !important;
+        bottom: -5px !important;
+        width: 80px !important;
+        z-index: 2 !important;
+        clip-path: inset(-60px 0px -10px -300px) !important;
+    }
+    /* Per-card top offsets on mobile */
+    .info-card:nth-child(1) .img-wrapper { top: -18px !important; }
+    .info-card:nth-child(2) .img-wrapper { top: -24px !important; }
+    .info-card:nth-child(3) .img-wrapper { top: -20px !important; width: 72px !important; }
+    .card-img { max-height: 130px; }
 
     /* Fixed slogan: readable on small screen */
     #site-slogan {
@@ -2846,8 +2861,8 @@ nav {
 
     /* Each card: compact strip, expand on tap */
     .lifehack-card {
-        width: calc(100vw - 32px) !important;
-        max-width: 400px;
+        width: calc(100vw - 80px) !important;
+        max-width: 280px;
         margin-left: 0 !important;
         transform: none !important;
         opacity: 1 !important;
@@ -2882,26 +2897,14 @@ nav {
         position: relative;
     }
 
-    /* Strong fade: transparent at top → solid card colour at bottom */
-    .card-clip::after {
-        display: block !important;
-        height: 52px;
-        background: linear-gradient(to bottom, #829DD9 0%, transparent 100%) !important;
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-
     /* Expanded: open to full content */
     .lifehack-card.card-open .card-clip {
         max-height: 600px !important;
     }
-    .lifehack-card.card-open .card-clip::after {
-        opacity: 0 !important;
-    }
 
     /* Text layout: leave room for image on right */
     .idea-content {
-        padding-right: 82px !important;
+        padding-right: 98px !important;
     }
 
     .idea-title  { font-size: 26px !important; line-height: 1 !important; }
@@ -2914,9 +2917,9 @@ nav {
         right: 8px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        width: 68px !important;
-        height: 68px !important;
-        opacity: 0.88 !important;
+        width: 88px !important;
+        height: 88px !important;
+        opacity: 0.92 !important;
         transition: width 0.4s ease, height 0.4s ease,
                     opacity 0.3s ease, transform 0.4s ease !important;
     }
@@ -2925,16 +2928,16 @@ nav {
     .lifehack-card:nth-child(1) .diy-card-img,
     .lifehack-card:nth-child(2) .diy-card-img,
     .lifehack-card:nth-child(3) .diy-card-img {
-        width: 68px !important;
-        height: 68px !important;
-        opacity: 0.88 !important;
+        width: 88px !important;
+        height: 88px !important;
+        opacity: 0.92 !important;
         top: 50% !important;
     }
 
     /* Expanded: image grows a bit */
     .lifehack-card.card-open .diy-card-img {
-        width: 90px !important;
-        height: 90px !important;
+        width: 112px !important;
+        height: 112px !important;
         opacity: 1 !important;
         transform: translateY(-50%) scale(1.06) !important;
     }
