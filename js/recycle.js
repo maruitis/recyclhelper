@@ -200,6 +200,9 @@ window.onclick = function(event) {
 /* ── Card image expand on click ─────────────────────────── */
 function toggleCardImage(clickedCard, allCards) {
     const isExpanded = clickedCard.classList.contains('card-img-expanded');
-    allCards.forEach(c => c && c.classList.remove('card-img-expanded'));
-    if (!isExpanded) clickedCard.classList.add('card-img-expanded');
+    allCards.forEach(c => c && c.classList.remove('card-img-expanded', 'card-open'));
+    if (!isExpanded) {
+        clickedCard.classList.add('card-img-expanded');
+        clickedCard.classList.add('card-open');
+    }
 }
