@@ -1476,13 +1476,16 @@ transform: translateY(-395px) translateX(530px);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(2, 6, 24, 0.92);
+    background: rgba(2, 6, 24, 0.88);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     animation: smFadeIn 0.22s ease;
+    /* safe-area padding for notched phones */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @keyframes smFadeIn {
-    from { opacity: 0; backdrop-filter: blur(0px); }
-    to   { opacity: 1; backdrop-filter: blur(10px); }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 /* ── Scanner box ─────────────────────────────────────────── */
@@ -3974,16 +3977,151 @@ nav {
     /* ─ Glass panels: full width ─ */
     .glass-panel { width: 100% !important; box-sizing: border-box; }
 
-    /* ─ Scanner modal ─ */
-    .scanner-box           { width: 96vw; border-radius: 22px; max-height: 96vh; }
-    .scanner-view          { padding: 12px 13px 16px; }
-    .scanner-header        { padding: 12px 14px 10px; }
-    .scanner-mode-cards    { gap: 9px; }
-    .scanner-mode-card     { padding: 14px 11px 12px; }
-    .mode-card-emoji       { font-size: 1.5rem; }
-    .mode-card-name        { font-size: 0.88rem; }
+    /* ══ SCANNER MODAL — mobile ══════════════════════════════════
+       Bottom-sheet layout, single clean border, all aligned       */
+
+    /* Overlay: anchor box to bottom of screen */
+    #scannerModal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    /* Box: full-width bottom sheet, rounded top corners only */
+    .scanner-box {
+        width: 100%;
+        max-width: 100%;
+        max-height: 91vh;
+        border-radius: 22px 22px 0 0;
+        /* Kill double-border: suppress the ::before gradient layer */
+        /* and simplify to one clean neon border on top edge only  */
+        border-top: 1.5px solid rgba(36,228,116,0.5);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        box-shadow:
+            0 -6px 32px rgba(36,228,116,0.12),
+            0 -2px 0 rgba(36,228,116,0.2),
+            0 -40px 80px rgba(0,0,0,0.55);
+        animation: smSlideFromBottom 0.38s cubic-bezier(0.34, 1.45, 0.64, 1) both;
+    }
+    @keyframes smSlideFromBottom {
+        from { transform: translateY(100%); opacity: 0.7; }
+        to   { transform: translateY(0);    opacity: 1;   }
+    }
+
+    /* Suppress the ::before gradient border — it doubles up on mobile */
+    .scanner-box::before { display: none; }
+
+    /* Drag handle pill at top of bottom sheet */
+    .scanner-box::after {
+        content: '';
+        display: block;
+        width: 38px;
+        height: 4px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 2px;
+        margin: 8px auto 0;
+        flex-shrink: 0;
+    }
+
+    /* Tighten all view padding */
+    .scanner-view {
+        padding: 10px 14px 16px;
+        gap: 9px;
+    }
+
+    /* Header: tighter, larger touch targets */
+    .scanner-header {
+        padding: 10px 14px 9px;
+    }
+    .scanner-close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    .scanner-torch-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* ── Mode select ── */
+    .scanner-mode-intro { padding: 2px 0 2px; }
+    .scanner-mode-hero  { font-size: 2.2rem; }
     .scanner-mode-headline { font-size: 1.1rem; }
-    .result-name           { font-size: 0.9rem; }
+    .scanner-mode-subline  { font-size: 0.75rem; }
+
+    /* Keep 2-col cards but trim padding and desc */
+    .scanner-mode-cards { gap: 10px; }
+    .scanner-mode-card  {
+        padding: 14px 12px 13px;
+        border-radius: 18px;
+    }
+    .mode-card-emoji { font-size: 1.6rem; }
+    .mode-card-name  { font-size: 0.9rem; margin-bottom: 4px; }
+    .mode-card-desc  { display: none; }  /* remove inner text box on mobile */
+    .mode-card-pills { gap: 3px; }
+    .mode-card-pills span { font-size: 0.6rem; padding: 2px 6px; }
+
+    /* ── Scanning view ── */
+    .scanner-viewport { padding-top: 60%; border-radius: 14px; }
+
+    /* Hide the text status bar background-box look */
+    .scanner-status {
+        font-size: 0.8rem;
+        background: none;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+    }
+    .scanner-bottom-row { gap: 6px; }
+    .scanner-upload-label { font-size: 0.72rem; padding: 5px 10px; }
+
+    /* ── Loading view ── */
+    .scanner-ai-orb { width: 76px; height: 76px; margin: 4px auto; }
+    .ai-orb-ring.r2 { inset: 10px; }
+    .ai-orb-ring.r3 { inset: 20px; }
+    .ai-orb-icon    { font-size: 1.3rem; }
+    .scanner-loading-msg { font-size: 0.82rem; }
+
+    /* Kill inner box border on skeleton */
+    .scanner-skeleton {
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    /* ── Result view ── */
+    .scanner-view--result { gap: 8px; }
+
+    .result-product-card {
+        padding: 11px 13px;
+        border-radius: 15px;
+        gap: 9px;
+    }
+    .result-icon  { font-size: 2rem; }
+    .result-name  { font-size: 0.92rem; }
+    .result-brand { font-size: 0.68rem; }
+    .result-conf-badge { padding: 5px 9px; min-width: 46px; border-radius: 10px; }
+    .rcb-num { font-size: 1rem; }
+
+    .result-chips { gap: 6px; }
+    .result-chip  { padding: 4px 9px; min-width: 68px; border-radius: 9px; }
+    .rc-val { font-size: 0.72rem; }
+
+    .result-cats-title { font-size: 0.65rem; }
+    .result-cats { gap: 6px; }
+
+    .result-cat-card {
+        padding: 9px 11px;
+        border-radius: 12px;
+        gap: 9px;
+    }
+    .rcc-icon { font-size: 1.35rem; }
+    .rcc-name { font-size: 0.84rem; }
+    .rcc-conf { font-size: 0.67rem; }
+    .rcc-best { font-size: 0.58rem; padding: 2px 6px; }
+
+    .result-retry-btn { font-size: 0.76rem; padding: 5px 14px; }
 
     /* ─ Quiz on mobile ─ */
     .quiz-col-btn { touch-action: manipulation; }
@@ -3998,6 +4136,44 @@ nav {
     h3  { font-size: 26px; }
     nav { padding: 8px 10px 6px; gap: 6px; }
     .nav-link { min-width: 66px; height: 30px; font-size: 11px; padding: 0 10px; }
+
+    /* ── Scanner: small phone overrides ──────────────────────── */
+    .scanner-box        { max-height: 94vh; border-radius: 18px 18px 0 0; }
+    .scanner-view       { padding: 8px 12px 14px; gap: 8px; }
+    .scanner-header     { padding: 8px 12px 8px; }
+
+    /* Mode cards: stack vertically on tiny screens */
+    .scanner-mode-cards { grid-template-columns: 1fr; gap: 8px; }
+    .scanner-mode-card  { padding: 12px 14px; border-radius: 16px; }
+    .mode-card-top      { margin-bottom: 6px; }
+    .mode-card-name     { font-size: 0.92rem; }
+
+    /* Viewport: square-ish for easier aiming */
+    .scanner-viewport   { padding-top: 70%; }
+
+    /* Capture button: larger tap area */
+    .scanner-capture-btn { padding: 10px 26px; font-size: 0.88rem; }
+
+    /* Result: very compact */
+    .result-product-card { padding: 10px 11px; gap: 8px; }
+    .result-icon         { font-size: 1.8rem; }
+    .result-name         { font-size: 0.87rem; }
+    .result-conf-badge   { min-width: 42px; padding: 5px 8px; }
+    .rcb-num             { font-size: 0.95rem; }
+
+    .result-chip         { padding: 4px 8px; min-width: 60px; }
+    .rc-lbl              { font-size: 0.55rem; }
+    .rc-val              { font-size: 0.7rem; }
+
+    .result-cat-card     { padding: 9px 10px; gap: 8px; border-radius: 11px; }
+    .rcc-icon            { font-size: 1.25rem; }
+    .rcc-name            { font-size: 0.81rem; }
+    .rcc-best            { display: none; }  /* too cramped on tiny screen */
+
+    .scanner-ai-orb      { width: 68px; height: 68px; }
+    .ai-orb-ring.r2      { inset: 9px; }
+    .ai-orb-ring.r3      { inset: 18px; }
+    .ai-orb-icon         { font-size: 1.15rem; }
 
     /* Single-column cards on very small screens */
     .cards-container { padding: 8px 10px 90px !important; gap: 14px !important; }
