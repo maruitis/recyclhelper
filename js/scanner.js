@@ -1,12 +1,11 @@
-// ─── scanner.js ──────────────────────────────────────────────────────────────
-//  Flow: Open → Scan (AI or Barcode) → Confirm item → Pick 3 categories
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── scanner.js  v2.0 ─────────────────────────────────────────────────────
+//  Premium RecycleHelper Scanner
+//  Flow: Mode Select → Scan (Barcode | AI Vision) → Loading → Result → item.html
+// ──────────────────────────────────────────────────────────────────────────
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    COCO-SSD LABEL MAP
-   Maps every COCO-SSD class → rich search text used by getTopCategories.
-   null = skip this detection (living things / infrastructure).
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
 const COCO_MAP = {
     'bottle':        'plastic bottle drink water bottle beverage',
     'wine glass':    'glass wine bottle glass drink',
@@ -50,7 +49,6 @@ const COCO_MAP = {
     'refrigerator':  'laptop electronic appliance fridge kitchen',
     'oven':          'laptop electronic appliance kitchen',
     'toaster':       'laptop electronic appliance kitchen toaster',
-    // Skip living things & infrastructure
     'person': null, 'bicycle': null, 'car': null, 'motorcycle': null,
     'airplane': null, 'bus': null, 'train': null, 'truck': null,
     'boat': null, 'traffic light': null, 'fire hydrant': null,
@@ -61,15 +59,10 @@ const COCO_MAP = {
     'broccoli': null, 'carrot': null,
 };
 
-/* ════════════════════════════════════════════════════════════════
-   CATEGORY KEYWORD SCORING
-   Every category lists ALL words/phrases that indicate an item
-   belongs there — including ImageNet class names (underscored form
-   cleaned to spaces), brand names, materials, product types.
-   Longer multi-word phrases score higher (more specific).
-════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY KEYWORDS
+══════════════════════════════════════════════════════════════ */
 const CATEGORY_KEYWORDS = {
-
     'plastic bottle': [
         'plastic bottle','pet bottle','water bottle','pop bottle','soda bottle','cola bottle',
         'juice bottle','smoothie bottle','sports drink bottle','energy drink bottle',
@@ -84,7 +77,6 @@ const CATEGORY_KEYWORDS = {
         'bottle','water','soda','cola','juice','smoothie','squash','energy drink',
         'fizzy','sparkling water','mineral water','pop','soft drink','cordial','beverage',
     ],
-
     'glass bottle': [
         'glass bottle','wine bottle','beer bottle','spirits bottle','whiskey bottle',
         'whisky bottle','vodka bottle','rum bottle','gin bottle','champagne bottle',
@@ -97,7 +89,6 @@ const CATEGORY_KEYWORDS = {
         'prosecco','cider','ale','lager','stout','mead','sake','liquor','alcohol','brew',
         'glass wine','glass beer','wine glass','beer glass',
     ],
-
     'glass jar': [
         'glass jar','mason jar','jam jar','honey jar','pickle jar','preserve jar',
         'pasta sauce jar','coffee jar','nut butter jar','condiment jar','baby food jar',
@@ -106,7 +97,6 @@ const CATEGORY_KEYWORDS = {
         'jam','honey','pickle','preserve','marmalade','peanut butter','nutella','compote',
         'chutney','pasta sauce','instant coffee','ground coffee','baby food','salsa',
         'relish','tahini','miso','hummus',
-        // Ceramics map here (closest available category for ceramic items)
         'ceramic','ceramics','porcelain','china','pottery','stoneware','earthenware',
         'terracotta','ceramic mug','coffee mug','tea cup','teapot','ceramic pot',
         'ceramic bowl','ceramic plate','ceramic dish','ceramic vase',
@@ -114,7 +104,6 @@ const CATEGORY_KEYWORDS = {
         'crystal','crystal glass','crystal vase','cut glass','glassware',
         'beer mug','cocktail glass','goblet','glass pitcher',
     ],
-
     'tin can': [
         'tin can','aluminium can','aluminum can','steel can','food tin','soup can',
         'baked beans can','sardine can','tuna can','paint tin','paint can',
@@ -125,12 +114,9 @@ const CATEGORY_KEYWORDS = {
         'metal container','metal tin','biscuit tin','cookie tin','sweet tin',
         'tobacco tin','mint tin','tea tin','coffee tin',
         'tin','aluminium','aluminum','steel','metal',
-        // Precious / other metals (closest category for metal recycling)
         'silver','gold','copper','brass','bronze','chrome','zinc','pewter','iron',
-        'stainless steel','cast iron','galvanised',
-        'can opener','paint bucket',
+        'stainless steel','cast iron','galvanised','can opener','paint bucket',
     ],
-
     'book': [
         'book','novel','textbook','paperback','hardcover','hardback','magazine',
         'comic','comic book','graphic novel','guide','manual','biography',
@@ -142,14 +128,12 @@ const CATEGORY_KEYWORDS = {
         'reference book','coffee table book','library book','second hand book',
         'book jacket','comic book','menu','binder','library','bookshelf','book store',
     ],
-
     'newspaper': [
         'newspaper','tabloid','broadsheet','daily paper','newsprint','gazette',
         'herald','times','guardian','daily mail','the sun','mirror newspaper',
         'news','press','chronicle','tribune','reporter','daily paper','weekly paper',
         'sunday paper','local paper','freesheet','metro paper','city am',
     ],
-
     'paper': [
         'paper','tissue','napkin','kitchen roll','toilet paper','toilet roll',
         'notepad','envelope','stationery','document','receipt','paper bag',
@@ -161,7 +145,6 @@ const CATEGORY_KEYWORDS = {
         'cardboard sleeve','coffee sleeve','paper packaging',
         'envelope','paper towel','toilet tissue','tissue paper',
     ],
-
     'laptop': [
         'laptop','laptop computer','notebook computer','desktop computer',
         'personal computer','pc','mac','macbook','chromebook','gaming laptop',
@@ -181,7 +164,6 @@ const CATEGORY_KEYWORDS = {
         'camera','digital camera','dslr','mirrorless camera','action camera','gopro',
         'video camera','camcorder','projector','smart tv','television set',
         'set top box','streaming device','chromecast','fire stick','apple tv',
-        // Kitchen & small appliances go here (no appliance category exists)
         'electric kettle','hair dryer','hair straightener','curling iron',
         'electric shaver','electric toothbrush','clothes iron','steam iron',
         'vacuum cleaner','cordless vacuum','robot vacuum','dyson',
@@ -189,19 +171,14 @@ const CATEGORY_KEYWORDS = {
         'kitchen appliance','appliance','electronic','electrical device',
         'blender','food processor','stand mixer','microwave oven',
         'toaster','kettle','coffee maker','espresso machine',
-        'laptop computer','notebook computer','desktop computer','monitor',
-        'keyboard','hard disk','space bar','trackball',
     ],
-
     'mobile phone': [
         'mobile phone','smartphone','cell phone','cellular telephone','cellular phone',
         'handset','iphone','android phone','samsung phone','samsung galaxy',
         'google pixel','huawei phone','xiaomi','nokia phone','motorola phone',
         'oneplus phone','oppo phone','vivo','realme','phone case','sim card',
         'phone','mobile','cellular','flip phone','feature phone','prepay phone',
-        'cell phone','cellular telephone','mobile phone',
     ],
-
     'light bulb': [
         'light bulb','led bulb','cfl bulb','fluorescent bulb','incandescent bulb',
         'halogen bulb','smart bulb','energy saving bulb','compact fluorescent lamp',
@@ -212,7 +189,6 @@ const CATEGORY_KEYWORDS = {
         'led strip light','fairy lights','christmas lights','string lights',
         'spotlight lamp','track lighting','pendant light','chandelier bulb',
     ],
-
     'batteries': [
         'battery','batteries','alkaline battery','rechargeable battery','lithium battery',
         'lithium ion battery','nickel metal hydride','nimh battery',
@@ -223,9 +199,7 @@ const CATEGORY_KEYWORDS = {
         'power bank','portable charger','battery pack',
         'duracell','energizer','varta','panasonic battery','gp batteries',
         'remote control','tv remote','game remote','wireless mouse battery',
-        'voltaic pile','electric battery','battery charger',
     ],
-
     'shirts': [
         'shirt','t-shirt','tee shirt','tee','blouse','polo shirt','polo',
         'jersey top','vest top','tank top','tank','sleeveless top','camisole',
@@ -238,7 +212,6 @@ const CATEGORY_KEYWORDS = {
         'clothing','apparel','garment','wear','fashion','clothes',
         'jersey','tshirt','tee shirt','polo shirt','sweatshirt',
     ],
-
     'jeans': [
         'jeans','denim jeans','denim','skinny jeans','slim jeans','slim fit jeans',
         'wide leg jeans','bootcut jeans','straight jeans','straight leg jeans',
@@ -247,9 +220,7 @@ const CATEGORY_KEYWORDS = {
         'levis','wrangler','lee jeans','diesel jeans','true religion jeans',
         'g-star jeans','nudie jeans','pepe jeans',
         'blue jeans','black jeans','white jeans','ripped jeans','distressed jeans',
-        'acid wash jeans','raw denim',
     ],
-
     'sweater': [
         'sweater','jumper','pullover','cardigan','knitwear','knit sweater',
         'sweatshirt','hoodie','hooded sweatshirt','zip hoodie','half zip sweater',
@@ -257,11 +228,8 @@ const CATEGORY_KEYWORDS = {
         'wool sweater','chunky knit','cable knit','fine knit','rib knit',
         'turtleneck','polo neck','crew neck sweater','crewneck','v-neck sweater',
         'cashmere sweater','merino sweater','lambswool sweater','mohair sweater',
-        'anorak','track top','puffer jacket','quilted jacket','gilet jacket',
         'wool','cashmere','merino wool','lambswool','mohair','angora','fleece',
-        'cardigan','jersey sweater','sweatshirt',
     ],
-
     'shoes': [
         'shoes','shoe','boot','boots','ankle boot','knee boot','thigh boot',
         'sneaker','sneakers','trainer','trainers','athletic shoe','running shoe',
@@ -272,14 +240,11 @@ const CATEGORY_KEYWORDS = {
         'moccasin','espadrille','slip on shoe','boat shoe','driving shoe',
         'football boot','cleat shoe','cycling shoe','hiking boot','walking boot',
         'work boot','steel toe boot','wellington boot','welly','rain boot',
-        'dance shoe','ballet flat','mary jane shoe',
         'nike','adidas','puma','reebok','converse','vans shoe','new balance shoe',
         'asics shoe','saucony','brooks running shoe','hoka','on running',
         'ugg boot','timberland boot','dr martens','birkenstock','crocs shoe',
         'footwear','sole shoe','heel shoe','shoelace',
-        'running shoe','loafer','sandal','moccasin','clog shoe','cowboy boot','ski boot',
     ],
-
     'house textile': [
         'towel','bath towel','hand towel','face towel','beach towel','guest towel',
         'bath mat','shower mat','bath robe','dressing gown','bathrobe',
@@ -299,9 +264,7 @@ const CATEGORY_KEYWORDS = {
         'handbag','tote bag','shoulder bag','crossbody bag','clutch bag','evening bag',
         'shopping tote','canvas bag','reusable bag','fabric bag',
         'linen','silk','cotton fabric','polyester','nylon fabric','synthetic',
-        'bath towel','shower curtain','window shade','quilt','pillow','sleeping bag',
     ],
-
     'plastic box': [
         'plastic container','plastic box','plastic tub','storage container','storage box',
         'plastic bin','laundry basket','washing basket','plastic crate',
@@ -319,9 +282,7 @@ const CATEGORY_KEYWORDS = {
         'plastic toy','lego brick','action figure','plastic figurine','toy box',
         'foam','polystyrene foam','expanded polystyrene','styrofoam',
         'rubber item','rubber','acrylic','perspex','plexiglass','vinyl','pvc item',
-        'plastic bag','bucket','barrel plastic','tub plastic','mailbox plastic',
     ],
-
     'cardboard box': [
         'cardboard box','cardboard','carton','corrugated box','corrugated cardboard',
         'kraft box','kraft paper','shipping box','delivery box','parcel box',
@@ -334,9 +295,7 @@ const CATEGORY_KEYWORDS = {
         'wrapping paper tube','poster tube','cardboard cylinder',
         'egg box','egg carton','egg container cardboard',
         'amazon box','delivery parcel','postage box','cardboard parcel',
-        'carton','packing crate','cardboard crate','wooden crate cardboard',
     ],
-
     'wooden furniture': [
         'wooden furniture','wood furniture','furniture','wooden item',
         'chair','dining chair','office chair','armchair','rocking chair',
@@ -352,16 +311,10 @@ const CATEGORY_KEYWORDS = {
         'stool','bar stool','step stool','footstool','ottoman','pouffe',
         'bench','garden bench','window seat','storage bench',
         'bed frame','bed','headboard','bunk bed','loft bed',
-        'nightstand','bedside table','bedside cabinet',
-        'picture frame','mirror frame','wall shelf','coat rack','hat stand',
         'wooden','wood','timber','plywood','mdf board','chipboard','particle board',
         'hardwood','softwood','oak','pine','mahogany','walnut wood','birch wood',
         'bamboo','teak','maple wood','cherry wood','beech wood','ash wood',
-        'rocking chair','folding chair','studio couch','chair','desk',
-        'dining table','coffee table','bookcase','wardrobe','chest of drawers',
-        'filing cabinet','entertainment center',
     ],
-
     'pens': [
         'pen','pens','marker pen','markers','highlighter pen','highlighters',
         'ballpoint pen','ballpoint','rollerball pen','rollerball','gel pen','gel ink pen',
@@ -371,10 +324,7 @@ const CATEGORY_KEYWORDS = {
         'overhead projector pen','calligraphy pen','brush pen','sign pen',
         'correction pen','white-out pen','tipp-ex pen',
         'stationery','writing pen','drawing pen','art supplies pen',
-        'office supplies pen','desk pen','pen holder','pen set',
-        'ballpoint','quill','fountain pen','rubber eraser',
     ],
-
     'pencils': [
         'pencil','pencils','graphite pencil','drawing pencil','sketching pencil',
         'coloured pencil','colored pencil','colour pencil','color pencil',
@@ -384,196 +334,172 @@ const CATEGORY_KEYWORDS = {
         'crayon','wax crayon','oil pastel crayon','pastel stick','charcoal pencil',
         'charcoal stick','conte crayon','compressed charcoal','drawing charcoal',
         'pencil box','pencil case','pencil tin','pencil set',
-        'art pencil','sketching','illustration pencil','doodle pencil',
-        'pencil box','pencil case','crayon set',
     ],
 };
 
-/* ════════════════════════════════════════════════════════════════
-   MATERIAL / ITEM HINTS
-   Words that strongly imply a particular recycling category.
-   Used as a scoring boost on top of keyword matching.
-   Key = word to look for in the search text.
-   Value = ordered array of categories to boost (first = biggest boost).
-════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   MATERIAL HINTS
+══════════════════════════════════════════════════════════════ */
 const MATERIAL_HINTS = {
-    // ── Plastics ─────────────────────────────────────────────
-    'plastic':          ['plastic bottle', 'plastic box'],
-    'hdpe':             ['plastic bottle', 'plastic box'],
-    'ldpe':             ['plastic box', 'plastic bottle'],
-    'polypropylene':    ['plastic box', 'plastic bottle'],
-    'polyethylene':     ['plastic bottle', 'plastic box'],
-    'polystyrene':      ['plastic box'],
-    'styrofoam':        ['plastic box'],
-    'acrylic':          ['plastic box', 'plastic bottle'],
-    'pvc':              ['plastic box', 'plastic bottle'],
-    'vinyl':            ['plastic box', 'plastic bottle'],
-    'rubber':           ['plastic box', 'shoes'],
-    'foam':             ['plastic box'],
-    'neoprene':         ['plastic box', 'sweater'],
-
-    // ── Glass & ceramics ─────────────────────────────────────
-    'glass':            ['glass bottle', 'glass jar'],
-    'ceramic':          ['glass jar', 'glass bottle'],
-    'ceramics':         ['glass jar', 'glass bottle'],
-    'porcelain':        ['glass jar', 'glass bottle'],
-    'china':            ['glass jar', 'glass bottle'],
-    'pottery':          ['glass jar', 'glass bottle'],
-    'stoneware':        ['glass jar', 'glass bottle'],
-    'earthenware':      ['glass jar', 'glass bottle'],
-    'terracotta':       ['glass jar', 'plastic box'],
-    'crystal':          ['glass jar', 'glass bottle'],
-    'glassware':        ['glass jar', 'glass bottle'],
-
-    // ── Metals ───────────────────────────────────────────────
-    'metal':            ['tin can', 'batteries'],
-    'aluminium':        ['tin can', 'batteries'],
-    'aluminum':         ['tin can', 'batteries'],
-    'steel':            ['tin can'],
-    'iron':             ['tin can', 'wooden furniture'],
-    'silver':           ['tin can', 'batteries'],
-    'gold':             ['tin can', 'batteries'],
-    'copper':           ['tin can', 'batteries'],
-    'brass':            ['tin can', 'batteries'],
-    'bronze':           ['tin can', 'batteries'],
-    'tin':              ['tin can'],
-    'chrome':           ['tin can', 'laptop'],
-    'zinc':             ['tin can', 'batteries'],
-
-    // ── Paper & card ─────────────────────────────────────────
-    'paper':            ['paper', 'cardboard box', 'newspaper'],
-    'cardboard':        ['cardboard box', 'paper'],
-    'card':             ['cardboard box', 'paper'],
-    'kraft':            ['cardboard box', 'paper'],
-    'corrugated':       ['cardboard box'],
-    'newsprint':        ['newspaper', 'paper'],
-
-    // ── Textiles & fabrics ────────────────────────────────────
-    'fabric':           ['shirts', 'sweater', 'house textile'],
-    'textile':          ['house textile', 'shirts', 'sweater'],
-    'clothing':         ['shirts', 'sweater', 'jeans'],
-    'apparel':          ['shirts', 'sweater', 'jeans'],
-    'garment':          ['shirts', 'sweater', 'jeans'],
-    'clothes':          ['shirts', 'sweater', 'jeans'],
-    'fashion':          ['shirts', 'jeans', 'sweater'],
-    'wear':             ['shirts', 'sweater', 'jeans'],
-    'cloth':            ['shirts', 'sweater', 'house textile'],
-    'cotton':           ['shirts', 'house textile', 'jeans'],
-    'polyester':        ['shirts', 'house textile', 'sweater'],
-    'nylon':            ['shoes', 'house textile', 'sweater'],
-    'silk':             ['house textile', 'shirts'],
-    'linen':            ['house textile', 'shirts'],
-    'wool':             ['sweater', 'house textile'],
-    'cashmere':         ['sweater', 'house textile'],
-    'merino':           ['sweater'],
-    'fleece':           ['sweater', 'house textile'],
-    'denim':            ['jeans', 'shirts'],
-    'leather':          ['shoes', 'jeans', 'shirts'],
-    'suede':            ['shoes', 'jeans'],
-    'canvas':           ['shoes', 'shirts'],
-    'knit':             ['sweater', 'house textile'],
-    'woven':            ['house textile', 'shirts'],
-    'spandex':          ['shirts', 'jeans'],
-    'lycra':            ['shirts', 'jeans', 'sweater'],
-    'velvet':           ['house textile', 'shirts'],
-    'tweed':            ['sweater', 'shirts'],
-    'corduroy':         ['jeans', 'shirts'],
-
-    // ── Wood ─────────────────────────────────────────────────
-    'wood':             ['wooden furniture'],
-    'wooden':           ['wooden furniture'],
-    'timber':           ['wooden furniture'],
-    'oak':              ['wooden furniture'],
-    'pine':             ['wooden furniture'],
-    'mahogany':         ['wooden furniture'],
-    'bamboo':           ['wooden furniture'],
-    'plywood':          ['wooden furniture', 'cardboard box'],
-    'mdf':              ['wooden furniture'],
-
-    // ── Electronics ──────────────────────────────────────────
-    'electronic':       ['laptop', 'mobile phone', 'batteries'],
-    'electrical':       ['laptop', 'batteries', 'light bulb'],
-    'digital':          ['laptop', 'mobile phone', 'batteries'],
-    'appliance':        ['laptop', 'batteries', 'light bulb'],
-    'circuit':          ['laptop', 'mobile phone', 'batteries'],
-    'battery':          ['batteries'],
-    'rechargeable':     ['batteries', 'laptop'],
-    'lithium':          ['batteries', 'laptop'],
-
-    // ── Common item types ────────────────────────────────────
-    'bottle':           ['plastic bottle', 'glass bottle'],
-    'can':              ['tin can', 'plastic bottle'],
-    'jar':              ['glass jar', 'glass bottle'],
-    'box':              ['cardboard box', 'plastic box'],
-    'bag':              ['house textile', 'cardboard box'],
-    'drink':            ['plastic bottle', 'glass bottle', 'tin can'],
-    'beverage':         ['plastic bottle', 'glass bottle', 'tin can'],
-    'food':             ['tin can', 'glass jar', 'plastic box'],
-    'shoe':             ['shoes'],
-    'boot':             ['shoes'],
-    'sneaker':          ['shoes'],
-    'trainer':          ['shoes'],
-    'footwear':         ['shoes'],
-    'phone':            ['mobile phone', 'laptop'],
-    'computer':         ['laptop', 'mobile phone'],
-    'bulb':             ['light bulb'],
-    'lamp':             ['light bulb', 'wooden furniture'],
-    'furniture':        ['wooden furniture'],
-    'book':             ['book', 'newspaper'],
-    'pen':              ['pens', 'pencils'],
-    'pencil':           ['pencils', 'pens'],
-    'stationery':       ['pens', 'pencils', 'paper'],
-    'office':           ['pens', 'pencils', 'paper'],
-    'hoodie':           ['sweater', 'shirts'],
-    'jacket':           ['sweater', 'shirts'],
-    'coat':             ['sweater', 'house textile'],
-    'dress':            ['shirts', 'house textile'],
-    'skirt':            ['shirts', 'jeans'],
-    'trousers':         ['jeans', 'shirts'],
-    'pants':            ['jeans', 'shirts'],
-    'vase':             ['glass jar', 'glass bottle', 'plastic bottle'],
-    'mug':              ['glass jar', 'plastic box'],
-    'cup':              ['glass jar', 'plastic box'],
-    'bowl':             ['plastic box', 'glass jar'],
-    'plate':            ['glass jar', 'plastic box'],
-    'pot':              ['glass jar', 'tin can'],
-    'tray':             ['plastic box', 'tin can'],
-    'toy':              ['plastic box', 'plastic bottle'],
-    'game':             ['cardboard box', 'plastic box'],
-    'hat':              ['house textile', 'sweater'],
-    'cap':              ['house textile', 'sweater'],
-    'scarf':            ['house textile', 'sweater'],
-    'glove':            ['house textile', 'sweater'],
-    'watch':            ['batteries', 'mobile phone'],
-    'clock':            ['batteries', 'mobile phone'],
-    'jewelry':          ['tin can', 'batteries'],
-    'jewellery':        ['tin can', 'batteries'],
-    'glasses':          ['mobile phone', 'batteries'],
-    'sunglasses':       ['mobile phone', 'batteries'],
-    'mirror':           ['glass jar', 'glass bottle'],
-    'packaging':        ['cardboard box', 'plastic box', 'tin can'],
-    'container':        ['plastic box', 'glass jar', 'tin can'],
-    'chocolate':        ['tin can', 'cardboard box', 'plastic box'],
-    'cereal':           ['cardboard box', 'plastic box'],
-    'coffee':           ['glass jar', 'tin can', 'plastic box'],
-    'tea':              ['cardboard box', 'glass jar', 'tin can'],
-    'shampoo':          ['plastic bottle', 'plastic box'],
-    'cosmetic':         ['glass jar', 'plastic bottle', 'plastic box'],
-    'makeup':           ['glass jar', 'plastic bottle', 'plastic box'],
-    'perfume':          ['glass bottle', 'glass jar'],
-    'candle':           ['glass jar', 'tin can'],
-    'paint':            ['tin can', 'plastic box'],
-    'tool':             ['tin can', 'wooden furniture'],
-    'sport':            ['plastic bottle', 'shoes'],
-    'exercise':         ['plastic bottle', 'shoes', 'shirts'],
-    'kitchen':          ['plastic box', 'glass jar', 'tin can'],
-    'cleaning':         ['plastic bottle', 'plastic box'],
-    'detergent':        ['plastic bottle', 'plastic box'],
+    'plastic':       ['plastic bottle','plastic box'],
+    'hdpe':          ['plastic bottle','plastic box'],
+    'ldpe':          ['plastic box','plastic bottle'],
+    'polypropylene': ['plastic box','plastic bottle'],
+    'polyethylene':  ['plastic bottle','plastic box'],
+    'polystyrene':   ['plastic box'],
+    'styrofoam':     ['plastic box'],
+    'acrylic':       ['plastic box','plastic bottle'],
+    'pvc':           ['plastic box','plastic bottle'],
+    'vinyl':         ['plastic box','plastic bottle'],
+    'rubber':        ['plastic box','shoes'],
+    'foam':          ['plastic box'],
+    'neoprene':      ['plastic box','sweater'],
+    'glass':         ['glass bottle','glass jar'],
+    'ceramic':       ['glass jar','glass bottle'],
+    'ceramics':      ['glass jar','glass bottle'],
+    'porcelain':     ['glass jar','glass bottle'],
+    'china':         ['glass jar','glass bottle'],
+    'pottery':       ['glass jar','glass bottle'],
+    'stoneware':     ['glass jar','glass bottle'],
+    'earthenware':   ['glass jar','glass bottle'],
+    'terracotta':    ['glass jar','plastic box'],
+    'crystal':       ['glass jar','glass bottle'],
+    'glassware':     ['glass jar','glass bottle'],
+    'metal':         ['tin can','batteries'],
+    'aluminium':     ['tin can','batteries'],
+    'aluminum':      ['tin can','batteries'],
+    'steel':         ['tin can'],
+    'iron':          ['tin can','wooden furniture'],
+    'silver':        ['tin can','batteries'],
+    'gold':          ['tin can','batteries'],
+    'copper':        ['tin can','batteries'],
+    'brass':         ['tin can','batteries'],
+    'bronze':        ['tin can','batteries'],
+    'tin':           ['tin can'],
+    'chrome':        ['tin can','laptop'],
+    'zinc':          ['tin can','batteries'],
+    'paper':         ['paper','cardboard box','newspaper'],
+    'cardboard':     ['cardboard box','paper'],
+    'card':          ['cardboard box','paper'],
+    'kraft':         ['cardboard box','paper'],
+    'corrugated':    ['cardboard box'],
+    'newsprint':     ['newspaper','paper'],
+    'fabric':        ['shirts','sweater','house textile'],
+    'textile':       ['house textile','shirts','sweater'],
+    'clothing':      ['shirts','sweater','jeans'],
+    'apparel':       ['shirts','sweater','jeans'],
+    'garment':       ['shirts','sweater','jeans'],
+    'clothes':       ['shirts','sweater','jeans'],
+    'fashion':       ['shirts','jeans','sweater'],
+    'wear':          ['shirts','sweater','jeans'],
+    'cloth':         ['shirts','sweater','house textile'],
+    'cotton':        ['shirts','house textile','jeans'],
+    'polyester':     ['shirts','house textile','sweater'],
+    'nylon':         ['shoes','house textile','sweater'],
+    'silk':          ['house textile','shirts'],
+    'linen':         ['house textile','shirts'],
+    'wool':          ['sweater','house textile'],
+    'cashmere':      ['sweater','house textile'],
+    'merino':        ['sweater'],
+    'fleece':        ['sweater','house textile'],
+    'denim':         ['jeans','shirts'],
+    'leather':       ['shoes','jeans','shirts'],
+    'suede':         ['shoes','jeans'],
+    'canvas':        ['shoes','shirts'],
+    'knit':          ['sweater','house textile'],
+    'woven':         ['house textile','shirts'],
+    'spandex':       ['shirts','jeans'],
+    'lycra':         ['shirts','jeans','sweater'],
+    'velvet':        ['house textile','shirts'],
+    'tweed':         ['sweater','shirts'],
+    'corduroy':      ['jeans','shirts'],
+    'wood':          ['wooden furniture'],
+    'wooden':        ['wooden furniture'],
+    'timber':        ['wooden furniture'],
+    'oak':           ['wooden furniture'],
+    'pine':          ['wooden furniture'],
+    'mahogany':      ['wooden furniture'],
+    'bamboo':        ['wooden furniture'],
+    'plywood':       ['wooden furniture','cardboard box'],
+    'mdf':           ['wooden furniture'],
+    'electronic':    ['laptop','mobile phone','batteries'],
+    'electrical':    ['laptop','batteries','light bulb'],
+    'digital':       ['laptop','mobile phone','batteries'],
+    'appliance':     ['laptop','batteries','light bulb'],
+    'circuit':       ['laptop','mobile phone','batteries'],
+    'battery':       ['batteries'],
+    'rechargeable':  ['batteries','laptop'],
+    'lithium':       ['batteries','laptop'],
+    'bottle':        ['plastic bottle','glass bottle'],
+    'can':           ['tin can','plastic bottle'],
+    'jar':           ['glass jar','glass bottle'],
+    'box':           ['cardboard box','plastic box'],
+    'bag':           ['house textile','cardboard box'],
+    'drink':         ['plastic bottle','glass bottle','tin can'],
+    'beverage':      ['plastic bottle','glass bottle','tin can'],
+    'food':          ['tin can','glass jar','plastic box'],
+    'shoe':          ['shoes'],
+    'boot':          ['shoes'],
+    'sneaker':       ['shoes'],
+    'trainer':       ['shoes'],
+    'footwear':      ['shoes'],
+    'phone':         ['mobile phone','laptop'],
+    'computer':      ['laptop','mobile phone'],
+    'bulb':          ['light bulb'],
+    'lamp':          ['light bulb','wooden furniture'],
+    'furniture':     ['wooden furniture'],
+    'book':          ['book','newspaper'],
+    'pen':           ['pens','pencils'],
+    'pencil':        ['pencils','pens'],
+    'stationery':    ['pens','pencils','paper'],
+    'hoodie':        ['sweater','shirts'],
+    'jacket':        ['sweater','shirts'],
+    'coat':          ['sweater','house textile'],
+    'dress':         ['shirts','house textile'],
+    'skirt':         ['shirts','jeans'],
+    'trousers':      ['jeans','shirts'],
+    'pants':         ['jeans','shirts'],
+    'vase':          ['glass jar','glass bottle','plastic bottle'],
+    'mug':           ['glass jar','plastic box'],
+    'cup':           ['glass jar','plastic box'],
+    'bowl':          ['plastic box','glass jar'],
+    'plate':         ['glass jar','plastic box'],
+    'pot':           ['glass jar','tin can'],
+    'tray':          ['plastic box','tin can'],
+    'toy':           ['plastic box','plastic bottle'],
+    'game':          ['cardboard box','plastic box'],
+    'hat':           ['house textile','sweater'],
+    'cap':           ['house textile','sweater'],
+    'scarf':         ['house textile','sweater'],
+    'glove':         ['house textile','sweater'],
+    'watch':         ['batteries','mobile phone'],
+    'clock':         ['batteries','mobile phone'],
+    'jewelry':       ['tin can','batteries'],
+    'jewellery':     ['tin can','batteries'],
+    'mirror':        ['glass jar','glass bottle'],
+    'packaging':     ['cardboard box','plastic box','tin can'],
+    'container':     ['plastic box','glass jar','tin can'],
+    'chocolate':     ['tin can','cardboard box','plastic box'],
+    'cereal':        ['cardboard box','plastic box'],
+    'coffee':        ['glass jar','tin can','plastic box'],
+    'tea':           ['cardboard box','glass jar','tin can'],
+    'shampoo':       ['plastic bottle','plastic box'],
+    'cosmetic':      ['glass jar','plastic bottle','plastic box'],
+    'makeup':        ['glass jar','plastic bottle','plastic box'],
+    'perfume':       ['glass bottle','glass jar'],
+    'candle':        ['glass jar','tin can'],
+    'paint':         ['tin can','plastic box'],
+    'tool':          ['tin can','wooden furniture'],
+    'sport':         ['plastic bottle','shoes'],
+    'exercise':      ['plastic bottle','shoes','shirts'],
+    'kitchen':       ['plastic box','glass jar','tin can'],
+    'cleaning':      ['plastic bottle','plastic box'],
+    'detergent':     ['plastic bottle','plastic box'],
 };
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    CATEGORY ICONS
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
 const CATEGORY_ICONS = {
     'plastic bottle':   '🥤',
     'glass bottle':     '🍾',
@@ -598,28 +524,45 @@ const CATEGORY_ICONS = {
     'pencils':          '✏️',
 };
 
-/* ════════════════════════════════════════════════════════════════
-   GET TOP CATEGORIES
-   Scores every category against the search text using keyword
-   matching + material hint boosting. Hash-based tie-breaking
-   ensures different items always get different results even when
-   scores are equal — never stuck returning the same 3 categories.
-════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY ACCENT COLORS  (neon per type)
+══════════════════════════════════════════════════════════════ */
+const CATEGORY_COLORS = {
+    'plastic bottle':   '#00D4FF',
+    'glass bottle':     '#A78BFA',
+    'glass jar':        '#C084FC',
+    'tin can':          '#FB923C',
+    'book':             '#34D399',
+    'newspaper':        '#6EE7B7',
+    'paper':            '#86EFAC',
+    'laptop':           '#60A5FA',
+    'mobile phone':     '#818CF8',
+    'light bulb':       '#FCD34D',
+    'batteries':        '#F87171',
+    'shirts':           '#F9A8D4',
+    'jeans':            '#93C5FD',
+    'sweater':          '#D8B4FE',
+    'shoes':            '#FCA5A5',
+    'house textile':    '#A5F3FC',
+    'plastic box':      '#67E8F9',
+    'cardboard box':    '#FDE68A',
+    'wooden furniture': '#FBB040',
+    'pens':             '#4ADE80',
+    'pencils':          '#86EFAC',
+};
+
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY RANKING
+══════════════════════════════════════════════════════════════ */
 function getTopCategories(text, count = 3) {
     const lower = (text || '').toLowerCase().replace(/_/g, ' ').replace(/-/g, ' ');
-
-    // 1. Keyword scoring — longer phrases score higher
     const scores = Object.entries(CATEGORY_KEYWORDS).map(([cat, keys]) => {
         let score = 0;
         for (const k of keys) {
-            if (lower.includes(k)) {
-                score += k.trim().split(/\s+/).length * 4;
-            }
+            if (lower.includes(k)) score += k.trim().split(/\s+/).length * 4;
         }
         return { cat, score };
     });
-
-    // 2. Material hint boosting
     for (const [hint, cats] of Object.entries(MATERIAL_HINTS)) {
         if (lower.includes(hint)) {
             cats.forEach((cat, i) => {
@@ -628,41 +571,87 @@ function getTopCategories(text, count = 3) {
             });
         }
     }
-
-    // 3. Deterministic tie-breaking based on text hash
-    // Same text → same result; different text → different result
-    // This prevents always returning the same 3 when scores are all 0
     const hash = lower.split('').reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) & 0xfffff, 0);
-    scores.forEach((s, i) => {
-        // Tiny deterministic noise — won't override real matches
-        s.score += ((hash ^ (i * 2654435761 >>> 0)) & 0xffff) / 500000;
-    });
-
+    scores.forEach((s, i) => { s.score += ((hash ^ (i * 2654435761 >>> 0)) & 0xffff) / 500000; });
     scores.sort((a, b) => b.score - a.score);
     return scores.slice(0, count);
 }
 
-/* ════════════════════════════════════════════════════════════════
+function calcConfidence(topScore) {
+    if (topScore <= 0) return 38;
+    return Math.min(97, Math.max(42, Math.round(38 + topScore * 1.8)));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MATERIAL DETECTOR
+══════════════════════════════════════════════════════════════ */
+function detectMaterial(text) {
+    const t = (text || '').toLowerCase();
+    if (/\bglass\b/.test(t))                                         return 'Glass';
+    if (/alumin(i|)um|aluminium|steel can/.test(t))                  return 'Aluminium / Steel';
+    if (/hdpe|ldpe|pet plastic|polypropylene|polyethylene/.test(t))  return 'Plastic (HDPE/PET)';
+    if (/plastic/.test(t))                                           return 'Plastic';
+    if (/cardboard|corrugated/.test(t))                              return 'Cardboard';
+    if (/paper/.test(t))                                             return 'Paper';
+    if (/denim/.test(t))                                             return 'Denim';
+    if (/cotton|polyester|nylon|wool|cashmere|fleece|textile/.test(t)) return 'Textile';
+    if (/leather/.test(t))                                           return 'Leather';
+    if (/wood|timber|oak|pine|mahogany|bamboo/.test(t))              return 'Wood';
+    if (/electronic|circuit|semiconductor/.test(t))                  return 'Electronics';
+    if (/battery|lithium/.test(t))                                   return 'Li-Ion Battery';
+    if (/ceramic|porcelain|pottery/.test(t))                         return 'Ceramic';
+    if (/rubber|foam|polystyrene/.test(t))                           return 'Rubber / Foam';
+    return '';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ITEM TYPE DETECTOR
+══════════════════════════════════════════════════════════════ */
+function detectItemType(text) {
+    const t = (text || '').toLowerCase();
+    if (/beverage|drink|cola|soda|juice|water bottle|beer|wine|spirits/.test(t)) return 'Beverage';
+    if (/food|snack|cereal|pasta|sauce|jam|pickle/.test(t))                      return 'Food Product';
+    if (/shampoo|conditioner|body wash|shower gel|soap|cosmetic|makeup/.test(t)) return 'Personal Care';
+    if (/detergent|cleaning|bleach|fabric softener/.test(t))                     return 'Cleaning Product';
+    if (/laptop|computer|tablet|monitor|keyboard/.test(t))                       return 'Computer / Laptop';
+    if (/phone|smartphone|iphone|android/.test(t))                               return 'Mobile Device';
+    if (/battery|batteries/.test(t))                                             return 'Battery';
+    if (/jeans|denim/.test(t))                                                   return 'Denim Clothing';
+    if (/shirt|t-shirt|blouse|polo/.test(t))                                     return 'Top Wear';
+    if (/sweater|hoodie|jumper|cardigan/.test(t))                                return 'Knitwear';
+    if (/shoe|sneaker|boot|sandal/.test(t))                                      return 'Footwear';
+    if (/book|magazine|novel/.test(t))                                           return 'Book / Publication';
+    if (/newspaper|tabloid|broadsheet/.test(t))                                  return 'Newspaper';
+    if (/furniture|chair|table|sofa|shelf/.test(t))                              return 'Furniture';
+    if (/light bulb|bulb|lamp/.test(t))                                          return 'Light Fitting';
+    if (/pen|marker|highlighter/.test(t))                                        return 'Pen / Marker';
+    if (/pencil|crayon/.test(t))                                                 return 'Pencil / Crayon';
+    if (/cardboard|box|packaging/.test(t))                                       return 'Packaging';
+    return '';
+}
+
+/* ══════════════════════════════════════════════════════════════
    STATE
-════════════════════════════════════════════════════════════════ */
-let scanPhase        = 'scanning';
-let barcodeMode      = true;
+══════════════════════════════════════════════════════════════ */
+let scanPhase        = 'mode-select';
+let currentMode      = 'barcode';
 let activeStream     = null;
 let loopTimer        = null;
+let scanTimeoutId    = null;
+let loadingMsgTimer  = null;
 let isDetecting      = false;
 let cocoModel        = null;
 let mobileNet        = null;
 let modelsLoaded     = false;
 let modelsLoading    = false;
 let lastScannedCode  = null;
-let pendingLabel     = '';
-let pendingSearchText = '';
 let hitCount         = 0;
-let lastHitCategory  = null;  // normalized category for stable hit-counting
+let lastHitCategory  = null;
+let torchOn          = false;
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    LOADERS
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
 function loadScript(src) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
@@ -676,7 +665,7 @@ async function ensureModels() {
     if (modelsLoaded || modelsLoading) return;
     modelsLoading = true;
     try {
-        setStatus('⏳ Loading AI models…', 'info');
+        setStatus('Loading AI models…', 'info');
         await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
         await Promise.all([
             loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js'),
@@ -685,11 +674,9 @@ async function ensureModels() {
         [cocoModel, mobileNet] = await Promise.all([cocoSsd.load(), mobilenet.load()]);
         modelsLoaded = true;
     } catch (e) {
-        setStatus('⚠ AI models failed to load — check your connection.', 'error');
+        setStatus('AI models failed — check connection.', 'error');
         throw e;
-    } finally {
-        modelsLoading = false;
-    }
+    } finally { modelsLoading = false; }
 }
 
 async function ensureZXing() {
@@ -697,28 +684,39 @@ async function ensureZXing() {
     await loadScript('https://unpkg.com/@zxing/library@0.20.0/umd/index.min.js');
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    HELPERS
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
 function setStatus(msg, type = 'info') {
     const el = document.getElementById('scannerStatus');
-    if (!el) return;
-    el.textContent = msg;
-    el.className = 'scanner-status scanner-status--' + type;
+    if (el) { el.textContent = msg; el.className = 'scanner-status scanner-status--' + type; }
 }
 
-// Clean an ImageNet/MobileNet class label for display & scoring:
-// "ballpoint_pen, writing implement" → "ballpoint pen"
 function cleanLabel(raw) {
     return (raw || '').toLowerCase().replace(/_/g, ' ').split(',')[0].trim();
+}
+
+function vibrate(pattern) {
+    try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(_) {}
+}
+
+function fetchTimeout(url, ms = 6000) {
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
+}
+
+function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3), 16);
+    const g = parseInt(hex.slice(3,5), 16);
+    const b = parseInt(hex.slice(5,7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
 }
 
 function drawBoxes(canvas, video, preds) {
     const dw = canvas.offsetWidth  || 320;
     const dh = canvas.offsetHeight || 240;
-    if (canvas.width !== dw || canvas.height !== dh) {
-        canvas.width = dw; canvas.height = dh;
-    }
+    if (canvas.width !== dw || canvas.height !== dh) { canvas.width = dw; canvas.height = dh; }
     const sx = dw / (video.videoWidth  || dw);
     const sy = dh / (video.videoHeight || dh);
     const ctx = canvas.getContext('2d');
@@ -726,35 +724,23 @@ function drawBoxes(canvas, video, preds) {
     for (const p of preds) {
         if (p.score < 0.38) continue;
         const [x, y, w, h] = p.bbox;
-        // Green = COCO_MAP has this item (not null), yellow = unknown
-        const searchText = COCO_MAP[p.class];
-        const isKnown = searchText !== undefined && searchText !== null;
-        const col = isKnown ? '#24E474' : 'rgba(255,200,70,0.9)';
-        ctx.strokeStyle = col;
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = col;
-        ctx.shadowBlur = 8;
+        const isKnown = COCO_MAP[p.class] !== undefined && COCO_MAP[p.class] !== null;
+        const col     = isKnown ? '#24E474' : 'rgba(255,200,70,0.9)';
+        ctx.strokeStyle = col; ctx.lineWidth = 2.5;
+        ctx.shadowColor = col; ctx.shadowBlur = 8;
         ctx.strokeRect(x*sx, y*sy, w*sx, h*sy);
         ctx.shadowBlur = 0;
         const lbl = `${p.class}  ${Math.round(p.score*100)}%`;
-        ctx.font = 'bold 12px DM Sans, sans-serif';
-        const tw = ctx.measureText(lbl).width + 10;
-        ctx.fillStyle = col;
-        ctx.fillRect(x*sx, y*sy - 22, tw, 22);
-        ctx.fillStyle = '#000';
-        ctx.fillText(lbl, x*sx + 5, y*sy - 6);
+        ctx.font  = 'bold 12px DM Sans, sans-serif';
+        const tw  = ctx.measureText(lbl).width + 10;
+        ctx.fillStyle = col;   ctx.fillRect(x*sx, y*sy - 22, tw, 22);
+        ctx.fillStyle = '#000'; ctx.fillText(lbl, x*sx + 5, y*sy - 6);
     }
 }
 
-function fetchTimeout(url, ms = 6000) {
-    const ctrl = new AbortController();
-    const id = setTimeout(() => ctrl.abort(), ms);
-    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
-}
-
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    MODAL HTML
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
 function buildModal() {
     if (document.getElementById('scannerModal')) return;
     const m = document.createElement('div');
@@ -762,193 +748,284 @@ function buildModal() {
     m.innerHTML = `
     <div class="scanner-box">
 
-      <!-- VIEW 1: live scan -->
-      <div class="scanner-view" id="viewScanning">
+      <!-- ▓ VIEW 1: MODE SELECT ▓ -->
+      <div class="scanner-view" id="viewModeSelect">
         <div class="scanner-header">
-          <span class="scanner-title">📷 Scan Item</span>
-          <button class="scanner-close-btn" id="closeScannerBtn">✕</button>
+          <div class="scanner-brand">
+            <span class="scanner-brand-icon">♻</span>
+            <span>RecycleHelper Scanner</span>
+          </div>
+          <button class="scanner-close-btn" id="closeModeBtn">✕</button>
         </div>
-        <div class="scanner-mode-tabs">
-          <button class="scanner-tab" id="tabBarcode" onclick="switchScanMode('barcode')">📊 Barcode</button>
-          <button class="scanner-tab" id="tabAI"      onclick="switchScanMode('ai')">🤖 AI Vision</button>
+        <div class="scanner-mode-intro">
+          <div class="scanner-mode-hero">🔍</div>
+          <div class="scanner-mode-headline">Identify your item</div>
+          <div class="scanner-mode-subline">Choose a scanning method</div>
+        </div>
+        <div class="scanner-mode-cards">
+          <button class="scanner-mode-card" id="modeBarcodeBtn">
+            <div class="mode-card-glow"></div>
+            <div class="mode-card-top">
+              <span class="mode-card-emoji">▦</span>
+              <span class="mode-card-badge">Fast</span>
+            </div>
+            <div class="mode-card-name">Scan Barcode</div>
+            <div class="mode-card-desc">Point at any product barcode for instant AI identification</div>
+            <div class="mode-card-pills"><span>EAN</span><span>UPC</span><span>QR</span></div>
+          </button>
+          <button class="scanner-mode-card scanner-mode-card--ai" id="modeAIBtn">
+            <div class="mode-card-glow mode-card-glow--ai"></div>
+            <div class="mode-card-top">
+              <span class="mode-card-emoji">🤖</span>
+              <span class="mode-card-badge mode-card-badge--ai">AI</span>
+            </div>
+            <div class="mode-card-name">AI Vision</div>
+            <div class="mode-card-desc">Take a photo or upload an image — ~95% accuracy</div>
+            <div class="mode-card-pills"><span>Photo</span><span>Upload</span><span>95%</span></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ▓ VIEW 2: SCANNING ▓ -->
+      <div class="scanner-view" id="viewScanning" style="display:none">
+        <div class="scanner-header">
+          <button class="scanner-nav-btn" id="backToModeBtn">← Back</button>
+          <span class="scanner-title" id="scanModeTitle">▦ Scan Barcode</span>
+          <div class="scanner-header-end">
+            <button class="scanner-torch-btn" id="torchBtn" title="Toggle flashlight">⚡</button>
+            <button class="scanner-close-btn" id="closeScanBtn">✕</button>
+          </div>
         </div>
         <div class="scanner-viewport">
           <video id="scannerVideo" autoplay playsinline muted></video>
           <canvas id="scannerCanvas"></canvas>
-          <div class="scan-anim"><div class="scan-line"></div></div>
+          <div class="scan-anim" id="scanAnim"><div class="scan-line"></div></div>
           <div class="scanner-corners">
             <span class="s-corner tl"></span><span class="s-corner tr"></span>
             <span class="s-corner bl"></span><span class="s-corner br"></span>
           </div>
+          <div class="scanner-capture-area" id="captureArea" style="display:none">
+            <button class="scanner-capture-btn" id="captureBtn">📷 Take Photo</button>
+          </div>
         </div>
-        <p class="scanner-status scanner-status--info" id="scannerStatus">Starting camera…</p>
-      </div>
-
-      <!-- VIEW 2: confirm -->
-      <div class="scanner-view" id="viewConfirm" style="display:none">
-        <div class="scanner-header">
-          <span class="scanner-title">✅ Found it!</span>
-          <button class="scanner-close-btn" id="closeScannerBtn2">✕</button>
+        <div class="scanner-timeout-track">
+          <div class="scanner-timeout-fill" id="timeoutFill"></div>
         </div>
-        <div class="detected-card">
-          <div class="detected-icon" id="detectedIcon">📦</div>
-          <div class="detected-name" id="detectedName">Item</div>
-          <div class="detected-sub"  id="detectedSub"></div>
-        </div>
-        <p class="confirm-question">Is this your item?</p>
-        <div class="confirm-btns">
-          <button class="confirm-yes-btn" id="confirmYesBtn">✅ Yes!</button>
-          <button class="confirm-no-btn"  id="confirmNoBtn">🔄 Try again</button>
+        <div class="scanner-bottom-row">
+          <p class="scanner-status scanner-status--info" id="scannerStatus">Starting camera…</p>
+          <label class="scanner-upload-label" id="uploadLabel" style="display:none">
+            📁 Upload<input type="file" id="uploadInput" accept="image/*" style="display:none">
+          </label>
         </div>
       </div>
 
-      <!-- VIEW 3: category pick -->
-      <div class="scanner-view" id="viewCategory" style="display:none">
+      <!-- ▓ VIEW 3: LOADING ▓ -->
+      <div class="scanner-view scanner-view--center" id="viewLoading" style="display:none">
         <div class="scanner-header">
-          <span class="scanner-title">♻ Recycle as…</span>
-          <button class="scanner-close-btn" id="closeScannerBtn3">✕</button>
+          <span class="scanner-title">🔎 Analyzing…</span>
+          <button class="scanner-close-btn" id="closeLoadingBtn">✕</button>
         </div>
-        <p class="category-prompt">Pick the best recycling category:</p>
-        <div class="category-choices" id="categoryChoices"></div>
-        <button class="scanner-back-btn" id="backToScanBtn">← Scan again</button>
+        <div class="scanner-ai-orb">
+          <div class="ai-orb-ring r1"></div>
+          <div class="ai-orb-ring r2"></div>
+          <div class="ai-orb-ring r3"></div>
+          <span class="ai-orb-icon">♻</span>
+        </div>
+        <p class="scanner-loading-msg" id="loadingMsg">Identifying product…</p>
+        <div class="scanner-skeleton">
+          <div class="sk-row sk-row--header">
+            <div class="sk-circle"></div>
+            <div class="sk-col">
+              <div class="sk-bar sk-w70"></div>
+              <div class="sk-bar sk-w45"></div>
+            </div>
+          </div>
+          <div class="sk-bar sk-w100 sk-mt8"></div>
+          <div class="sk-pill-row">
+            <div class="sk-pill"></div><div class="sk-pill"></div><div class="sk-pill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▓ VIEW 4: RESULT ▓ -->
+      <div class="scanner-view scanner-view--result" id="viewResult" style="display:none">
+        <div class="scanner-header">
+          <span class="scanner-title">✅ Scan Complete</span>
+          <button class="scanner-close-btn" id="closeResultBtn">✕</button>
+        </div>
+        <div class="result-product-card">
+          <div class="result-icon" id="resultIcon">📦</div>
+          <div class="result-info">
+            <div class="result-name" id="resultName">Product</div>
+            <div class="result-brand" id="resultBrand"></div>
+          </div>
+          <div class="result-conf-badge" id="resultConfBadge">
+            <span class="rcb-num" id="resultConfNum">—</span>
+            <span class="rcb-lbl">match</span>
+          </div>
+        </div>
+        <div class="result-chips" id="resultChips" style="display:none"></div>
+        <div class="result-cats-title">Top Recycling Categories</div>
+        <div class="result-cats" id="resultCats"></div>
+        <button class="result-retry-btn" id="resultRetryBtn">↩ Scan again</button>
       </div>
 
     </div>`;
     document.body.appendChild(m);
 
-    ['closeScannerBtn','closeScannerBtn2','closeScannerBtn3'].forEach(id => {
+    // Close buttons
+    ['closeModeBtn','closeScanBtn','closeLoadingBtn','closeResultBtn'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', stopScanner);
     });
     m.addEventListener('click', e => { if (e.target === m) stopScanner(); });
-    document.getElementById('confirmYesBtn').addEventListener('click', onConfirmYes);
-    document.getElementById('confirmNoBtn').addEventListener('click',  onBackToScan);
-    document.getElementById('backToScanBtn').addEventListener('click', onBackToScan);
+
+    // Mode select
+    document.getElementById('modeBarcodeBtn').addEventListener('click', () => selectMode('barcode'));
+    document.getElementById('modeAIBtn').addEventListener('click',      () => selectMode('ai'));
+
+    // Back to mode
+    document.getElementById('backToModeBtn').addEventListener('click', onBackToMode);
+
+    // Torch
+    document.getElementById('torchBtn').addEventListener('click', toggleTorch);
+
+    // Capture (AI Vision)
+    document.getElementById('captureBtn').addEventListener('click', capturePhoto);
+
+    // Upload (AI Vision)
+    document.getElementById('uploadInput').addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (f) handleUpload(f);
+    });
+
+    // Result retry
+    document.getElementById('resultRetryBtn').addEventListener('click', () => selectMode(currentMode));
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    VIEW NAVIGATION
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
+const ALL_VIEWS = ['viewModeSelect','viewScanning','viewLoading','viewResult'];
+
 function showView(id) {
-    ['viewScanning','viewConfirm','viewCategory'].forEach(v => {
+    ALL_VIEWS.forEach(v => {
         const el = document.getElementById(v);
         if (el) el.style.display = (v === id) ? 'flex' : 'none';
     });
 }
 
-/* ════════════════════════════════════════════════════════════════
-   CONFIRM VIEW
-════════════════════════════════════════════════════════════════ */
-function showConfirmView(label, subLabel, searchText) {
-    scanPhase         = 'confirm';
-    pendingLabel      = label;
-    pendingSearchText = searchText || label;
-
-    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
-
-    const top  = getTopCategories(pendingSearchText, 1)[0];
-    const icon = (top && CATEGORY_ICONS[top.cat]) || '📦';
-
-    document.getElementById('detectedIcon').textContent = icon;
-    document.getElementById('detectedName').textContent = label;
-    document.getElementById('detectedSub').textContent  = subLabel || '';
-
-    showView('viewConfirm');
+/* ══════════════════════════════════════════════════════════════
+   BACK TO MODE SELECT
+══════════════════════════════════════════════════════════════ */
+function onBackToMode() {
+    clearActiveScanning();
+    scanPhase = 'mode-select';
+    showView('viewModeSelect');
 }
 
-function onConfirmYes() {
-    scanPhase = 'categories';
-    const tops      = getTopCategories(pendingSearchText, 3);
-    const choicesEl = document.getElementById('categoryChoices');
-    choicesEl.innerHTML = '';
+/* ══════════════════════════════════════════════════════════════
+   SELECT MODE → START SCANNING
+══════════════════════════════════════════════════════════════ */
+async function selectMode(mode) {
+    currentMode = mode;
+    scanPhase   = 'scanning';
+    hitCount = 0; lastHitCategory = null; lastScannedCode = null;
+    torchOn  = false;
+    document.getElementById('torchBtn')?.classList.remove('torch-active');
 
-    tops.forEach(({ cat }) => {
-        const btn = document.createElement('button');
-        btn.className = 'category-choice-btn';
-        btn.innerHTML = `
-            <span class="choice-icon">${CATEGORY_ICONS[cat] || '♻️'}</span>
-            <span class="choice-name">${cat.charAt(0).toUpperCase() + cat.slice(1)}</span>`;
-        btn.addEventListener('click', () => navigateToItem(cat));
-        choicesEl.appendChild(btn);
-    });
+    const titleEl = document.getElementById('scanModeTitle');
+    if (titleEl) titleEl.textContent = mode === 'barcode' ? '▦ Scan Barcode' : '🤖 AI Vision';
 
-    showView('viewCategory');
-}
+    const captureArea = document.getElementById('captureArea');
+    const uploadLabel = document.getElementById('uploadLabel');
+    if (captureArea) captureArea.style.display = mode === 'ai' ? 'flex' : 'none';
+    if (uploadLabel) uploadLabel.style.display  = mode === 'ai' ? 'flex' : 'none';
 
-function onBackToScan() {
-    scanPhase       = 'scanning';
-    lastScannedCode = null;
-    hitCount        = 0;
-    lastHitCategory = null;
+    showView('viewScanning');
+    setStatus('Starting camera…', 'info');
+
+    if (!activeStream) {
+        try {
+            activeStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+            });
+            const video = document.getElementById('scannerVideo');
+            if (!video) return;
+            video.srcObject = activeStream;
+            await new Promise(r => {
+                video.addEventListener('loadeddata', r, { once: true });
+                setTimeout(r, 3000);
+            });
+        } catch(_) {
+            setStatus('Camera access denied — please allow camera and try again.', 'error');
+            return;
+        }
+    }
 
     const canvas = document.getElementById('scannerCanvas');
     if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-    setStatus(barcodeMode ? '📊 Point camera at a barcode…' : 'Point camera at your item…', 'info');
-    showView('viewScanning');
-
-    if (barcodeMode) loopTimer = setTimeout(barcodeLoop, 300);
-    else             loopTimer = setTimeout(detectionLoop, 600);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   NAVIGATE
-════════════════════════════════════════════════════════════════ */
-function navigateToItem(name) {
-    stopScanner();
-    const inp  = document.getElementById('searchInput');
-    const form = document.getElementById('searchForm');
-    if (inp && form) { inp.value = name; form.dispatchEvent(new Event('submit')); }
-}
-
-/* ════════════════════════════════════════════════════════════════
-   MODE SWITCH
-════════════════════════════════════════════════════════════════ */
-function switchScanMode(mode) {
-    const wantBarcode = (mode === 'barcode');
-    if (wantBarcode === barcodeMode && scanPhase === 'scanning') return;
-
-    document.getElementById('tabBarcode')?.classList.toggle('scanner-tab-active', wantBarcode);
-    document.getElementById('tabAI')?.classList.toggle('scanner-tab-active', !wantBarcode);
-
-    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
-    isDetecting = false; hitCount = 0; lastHitCategory = null;
-    lastScannedCode = null; scanPhase = 'scanning';
-
-    const canvas = document.getElementById('scannerCanvas');
-    if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-
-    showView('viewScanning');
-
-    if (wantBarcode) {
-        barcodeMode = true;
-        setStatus('📊 Point camera at a barcode…', 'info');
-        startBarcodeLoop();
+    if (mode === 'barcode') {
+        setStatus('Point camera at a barcode…', 'info');
+        startTimeoutBar(7000);
+        if (!('BarcodeDetector' in window)) ensureZXing().catch(() => {});
+        loopTimer = setTimeout(barcodeLoop, 300);
     } else {
-        barcodeMode = false;
+        setStatus('Point camera at your item…', 'info');
         ensureModels()
             .then(() => {
-                if (barcodeMode) return;
+                if (currentMode !== 'ai' || scanPhase !== 'scanning') return;
                 setStatus('Point camera at your item…', 'info');
+                startTimeoutBar(10000);
                 loopTimer = setTimeout(detectionLoop, 600);
             })
-            .catch(() => setStatus('⚠ Could not load AI models.', 'error'));
+            .catch(() => setStatus('AI models failed to load.', 'error'));
     }
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
+   TIMEOUT BAR
+══════════════════════════════════════════════════════════════ */
+function startTimeoutBar(ms) {
+    clearTimeout(scanTimeoutId);
+    const fill = document.getElementById('timeoutFill');
+    if (fill) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        requestAnimationFrame(() => {
+            fill.style.transition = `width ${ms}ms linear`;
+            fill.style.width = '100%';
+        });
+    }
+    scanTimeoutId = setTimeout(onScanTimeout, ms);
+}
+
+function clearTimeoutBar() {
+    clearTimeout(scanTimeoutId);
+    scanTimeoutId = null;
+    const fill = document.getElementById('timeoutFill');
+    if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+}
+
+function onScanTimeout() {
+    if (scanPhase !== 'scanning') return;
+    if (currentMode === 'barcode') {
+        setStatus('No barcode found — try AI Vision or move closer.', 'error');
+        vibrate([200, 50, 200]);
+    } else {
+        if (lastHitCategory) {
+            showLoadingThenResult('Detected item', 'AI Vision', lastHitCategory, 60);
+        } else {
+            setStatus('No item detected — try getting closer or better lighting.', 'error');
+        }
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
    BARCODE MODE
-════════════════════════════════════════════════════════════════ */
-async function startBarcodeLoop() {
-    if (!('BarcodeDetector' in window)) {
-        setStatus('⏳ Loading barcode reader…', 'info');
-        try { await ensureZXing(); } catch (_) {}
-    }
-    if (barcodeMode) barcodeLoop();
-}
-
+══════════════════════════════════════════════════════════════ */
 async function barcodeLoop() {
-    if (!barcodeMode || !document.getElementById('scannerModal') || scanPhase !== 'scanning') return;
-
+    if (scanPhase !== 'scanning' || currentMode !== 'barcode' || !document.getElementById('scannerModal')) return;
     const video = document.getElementById('scannerVideo');
     if (video && video.readyState >= 2 && video.videoWidth > 0 && !isDetecting) {
         isDetecting = true;
@@ -956,16 +1033,17 @@ async function barcodeLoop() {
             const code = await readBarcodeFromVideo(video);
             if (code && code !== lastScannedCode) {
                 lastScannedCode = code;
-                await handleBarcodeResult(code);
+                clearTimeoutBar();
                 isDetecting = false;
+                vibrate([80, 40, 80]);
+                await handleBarcodeResult(code);
                 return;
             }
-        } catch (_) {}
+        } catch(_) {}
         isDetecting = false;
     }
-
-    if (barcodeMode && document.getElementById('scannerModal') && scanPhase === 'scanning') {
-        loopTimer = setTimeout(barcodeLoop, 400);
+    if (scanPhase === 'scanning' && currentMode === 'barcode' && document.getElementById('scannerModal')) {
+        loopTimer = setTimeout(barcodeLoop, 350);
     }
 }
 
@@ -980,183 +1058,369 @@ async function readBarcodeFromVideo(video) {
             }
             const results = await window.__barcodeDetector.detect(video);
             if (results && results.length > 0) return results[0].rawValue;
-        } catch (_) {}
+        } catch(_) {}
         return null;
     }
     if (window.ZXing) {
         try {
-            const canvas = document.createElement('canvas');
-            canvas.width  = video.videoWidth  || 640;
-            canvas.height = video.videoHeight || 480;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const c = document.createElement('canvas');
+            c.width  = video.videoWidth  || 640;
+            c.height = video.videoHeight || 480;
+            c.getContext('2d').drawImage(video, 0, 0, c.width, c.height);
             const reader = new ZXing.BrowserMultiFormatReader();
-            const result = reader.decodeFromCanvas(canvas);
+            const result = reader.decodeFromCanvas(c);
             return result ? result.getText() : null;
-        } catch (_) { return null; }
+        } catch(_) { return null; }
     }
     return null;
 }
 
 async function lookupBarcode(code) {
-    // 1. Open Food Facts — food & drink
+    // Open Food Facts
     try {
         const r = await fetchTimeout(
-            `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=product_name,categories,packaging,labels`
+            `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=product_name,categories,packaging,labels,brands`
         );
         if (r.ok) {
             const d = await r.json();
             if (d.status === 1 && d.product) {
                 const p = d.product;
                 return {
-                    name:       p.product_name || code,
+                    name:       (p.product_name || code).substring(0, 60),
+                    brand:      p.brands  ? p.brands.split(',')[0].trim()  : '',
+                    rawCateg:   p.categories || '',
+                    rawPack:    p.packaging  || '',
                     searchText: [p.product_name, p.categories, p.packaging, p.labels].filter(Boolean).join(' ')
                 };
             }
         }
-    } catch (_) {}
-
-    // 2. UPCitemdb — electronics, clothing, books, etc.
+    } catch(_) {}
+    // UPCitemdb
     try {
-        const r = await fetchTimeout(
-            `https://api.upcitemdb.com/prod/trial/lookup?upc=${encodeURIComponent(code)}`
-        );
+        const r = await fetchTimeout(`https://api.upcitemdb.com/prod/trial/lookup?upc=${encodeURIComponent(code)}`);
         if (r.ok) {
             const d = await r.json();
             if (d.code === 'OK' && d.items && d.items.length > 0) {
                 const p = d.items[0];
                 return {
-                    name:       p.title || code,
+                    name:       (p.title || code).substring(0, 60),
+                    brand:      p.brand || '',
+                    rawCateg:   p.category || '',
+                    rawPack:    '',
                     searchText: [p.category, p.brand, p.title, p.description].filter(Boolean).join(' ')
                 };
             }
         }
-    } catch (_) {}
-
-    return { name: code, searchText: '' };
+    } catch(_) {}
+    return { name: code, brand: '', rawCateg: '', rawPack: '', searchText: '' };
 }
 
 async function handleBarcodeResult(code) {
     if (scanPhase !== 'scanning') return;
-    setStatus(`🔎 Barcode: ${code} — looking up…`, 'info');
-
+    showLoadingView('Looking up barcode…');
     const found = await lookupBarcode(code);
-    if (scanPhase !== 'scanning') return;
+    if (!document.getElementById('scannerModal')) return;
 
     const isUnknown = found.name === code && !found.searchText;
-    showConfirmView(
-        isUnknown ? `Barcode: ${code}` : found.name,
-        isUnknown ? 'Unknown product — choose recycling category' : `Barcode: ${code}`,
-        found.searchText || found.name
-    );
+    const name      = isUnknown ? `Barcode: ${code}` : found.name;
+    const searchTxt = found.searchText || found.name;
+    const material  = detectMaterial(found.rawPack + ' ' + found.rawCateg + ' ' + searchTxt);
+    const itemType  = detectItemType(found.rawCateg + ' ' + searchTxt);
+    const top3      = getTopCategories(searchTxt, 3);
+    const conf      = calcConfidence(top3[0]?.score || 0);
+
+    showResultView({ name, brand: found.brand, material, itemType }, top3, conf);
 }
 
-/* ════════════════════════════════════════════════════════════════
-   AI DETECTION MODE
-   Runs COCO-SSD AND MobileNet every frame in parallel.
-   — COCO gives good bounding box labels for common objects.
-   — MobileNet gives much richer 1000-class ImageNet classification.
-   Both results are combined into a single searchText and fed to
-   getTopCategories, so even niche items (pens, ceramics, accessories,
-   appliances, furniture, stationery…) get correct category suggestions.
-   Hit-counting uses the normalized top category so "bottle" and
-   "water bottle" count as the same item across frames.
-════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   AI VISION MODE  —  live detection loop
+══════════════════════════════════════════════════════════════ */
 async function detectionLoop() {
-    if (!document.getElementById('scannerModal') || barcodeMode || scanPhase !== 'scanning') return;
+    if (scanPhase !== 'scanning' || currentMode !== 'ai' || !document.getElementById('scannerModal')) return;
 
     if (!isDetecting) {
         const video  = document.getElementById('scannerVideo');
         const canvas = document.getElementById('scannerCanvas');
-
         if (video && video.readyState >= 2 && video.videoWidth > 0) {
             isDetecting = true;
+            let displayName = null;
+            const searchParts = [];
 
-            let displayName = null;  // shown to user in status
-            let searchParts = [];    // assembled into searchText for scoring
-
-            // ── COCO-SSD ──────────────────────────────────────────────
             if (cocoModel) {
                 try {
                     const preds = await cocoModel.detect(video);
                     if (canvas) drawBoxes(canvas, video, preds);
-
                     const best = preds
                         .filter(p => p.score > 0.35 && COCO_MAP[p.class] !== null)
-                        .sort((a, b) => b.score - a.score)[0];
-
+                        .sort((a,b) => b.score - a.score)[0];
                     if (best) {
                         displayName = best.class;
-                        // Use the rich search text from COCO_MAP if available
-                        const cocoSearch = COCO_MAP[best.class];
-                        if (cocoSearch) searchParts.push(cocoSearch);
-                        else searchParts.push(best.class);
+                        const mapped = COCO_MAP[best.class];
+                        searchParts.push(mapped || best.class);
                     }
-                } catch (_) {}
+                } catch(_) {}
             }
 
-            // ── MobileNet (1000 ImageNet classes — always run) ─────────
             if (mobileNet) {
                 try {
                     const preds = await mobileNet.classify(video, 5);
                     preds.filter(p => p.probability > 0.06).forEach((p, i) => {
                         const label = cleanLabel(p.className);
-                        // Use top MobileNet result as display name if COCO found nothing
                         if (i === 0 && !displayName) displayName = label;
                         searchParts.push(label);
                     });
-                } catch (_) {}
+                } catch(_) {}
             }
 
             const searchText = searchParts.join(' ').trim();
+            const normCat    = searchText ? getTopCategories(searchText, 1)[0].cat : null;
 
-            // Normalize: get the top category this searchText maps to
-            // Use it for hit-counting so different raw labels for the same
-            // concept (bottle / water bottle / pop bottle) don't reset the count
-            const normCat = searchText ? getTopCategories(searchText, 1)[0].cat : null;
+            if (normCat && normCat === lastHitCategory) hitCount++;
+            else { lastHitCategory = normCat; hitCount = normCat ? 1 : 0; }
 
-            if (normCat && normCat === lastHitCategory) {
-                hitCount++;
-            } else {
-                lastHitCategory = normCat;
-                hitCount = normCat ? 1 : 0;
-            }
-
-            // 2 consistent frames → show confirm view
             if (hitCount >= 2 && displayName && searchText) {
-                const displayCap = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-                showConfirmView(
-                    displayCap,
-                    'Identified by AI vision',
-                    searchText
-                );
+                clearTimeoutBar();
+                vibrate([80, 40, 80]);
+                const capName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
                 isDetecting = false;
+                showLoadingThenResult(capName, 'AI Vision', searchText, null);
                 return;
             }
 
-            if (displayName) {
-                setStatus(`👀 Seeing: ${displayName}… hold still`, 'info');
-            } else {
-                setStatus('Point camera at your item…', 'info');
-            }
-
+            if (displayName) setStatus(`Seeing: ${displayName}… hold still`, 'info');
+            else             setStatus('Point camera at your item…', 'info');
             isDetecting = false;
         }
     }
-
-    if (!barcodeMode && document.getElementById('scannerModal') && scanPhase === 'scanning') {
+    if (scanPhase === 'scanning' && currentMode === 'ai' && document.getElementById('scannerModal')) {
         loopTimer = setTimeout(detectionLoop, 650);
     }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   STOP / START
-════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   PHOTO CAPTURE
+══════════════════════════════════════════════════════════════ */
+async function capturePhoto() {
+    const video = document.getElementById('scannerVideo');
+    if (!video || video.readyState < 2) return;
+    clearActiveScanning();
+    showLoadingView('Analyzing photo…');
+    vibrate([60]);
+
+    const c = document.createElement('canvas');
+    c.width  = video.videoWidth  || 640;
+    c.height = video.videoHeight || 480;
+    c.getContext('2d').drawImage(video, 0, 0);
+
+    const img = new Image();
+    img.src = c.toDataURL('image/jpeg', 0.85);
+    await new Promise(r => { img.onload = r; setTimeout(r, 2000); });
+    await analyzeImageElement(img);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   IMAGE UPLOAD
+══════════════════════════════════════════════════════════════ */
+async function handleUpload(file) {
+    clearActiveScanning();
+    showLoadingView('Analyzing image…');
+    vibrate([60]);
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.src   = url;
+    await new Promise(r => { img.onload = r; setTimeout(r, 3000); });
+    URL.revokeObjectURL(url);
+    await analyzeImageElement(img);
+}
+
+async function analyzeImageElement(img) {
+    if (!modelsLoaded) {
+        try { await ensureModels(); }
+        catch(_) { updateLoadingMsg('Using visual hints…'); }
+    }
+    let displayName = null;
+    const searchParts = [];
+
+    if (cocoModel) {
+        try {
+            const preds = await cocoModel.detect(img);
+            const best  = preds
+                .filter(p => p.score > 0.3 && COCO_MAP[p.class] !== null)
+                .sort((a,b) => b.score - a.score)[0];
+            if (best) {
+                displayName = best.class;
+                const mapped = COCO_MAP[best.class];
+                searchParts.push(mapped || best.class);
+            }
+        } catch(_) {}
+    }
+    if (mobileNet) {
+        try {
+            const preds = await mobileNet.classify(img, 5);
+            preds.filter(p => p.probability > 0.05).forEach((p, i) => {
+                const label = cleanLabel(p.className);
+                if (i === 0 && !displayName) displayName = label;
+                searchParts.push(label);
+            });
+        } catch(_) {}
+    }
+
+    const searchText = searchParts.join(' ').trim();
+    if (!searchText && !displayName) {
+        updateLoadingMsg('Could not identify — try another image.');
+        setTimeout(() => { if (document.getElementById('scannerModal')) selectMode('ai'); }, 2500);
+        return;
+    }
+
+    const capName  = displayName ? (displayName.charAt(0).toUpperCase() + displayName.slice(1)) : 'Item';
+    const top3     = getTopCategories(searchText || capName, 3);
+    const conf     = calcConfidence(top3[0]?.score || 0);
+    const material = detectMaterial(searchText);
+    const itemType = detectItemType(searchText);
+    showResultView({ name: capName, brand: '', material, itemType }, top3, conf);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FLASHLIGHT
+══════════════════════════════════════════════════════════════ */
+async function toggleTorch() {
+    try {
+        const track = activeStream?.getVideoTracks()[0];
+        if (!track) return;
+        torchOn = !torchOn;
+        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
+        document.getElementById('torchBtn')?.classList.toggle('torch-active', torchOn);
+    } catch(_) {}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LOADING VIEW
+══════════════════════════════════════════════════════════════ */
+const LOADING_MSGS = [
+    'Identifying product…',
+    'Looking up database…',
+    'Analyzing materials…',
+    'Finding recycling categories…',
+];
+
+function showLoadingView(firstMsg) {
+    clearActiveScanning();
+    scanPhase = 'loading';
+    const el = document.getElementById('loadingMsg');
+    if (el) el.textContent = firstMsg || LOADING_MSGS[0];
+    showView('viewLoading');
+    let i = 1;
+    loadingMsgTimer = setInterval(() => {
+        const el = document.getElementById('loadingMsg');
+        if (el && i < LOADING_MSGS.length) el.textContent = LOADING_MSGS[i++];
+    }, 1200);
+}
+
+function updateLoadingMsg(msg) {
+    const el = document.getElementById('loadingMsg');
+    if (el) el.textContent = msg;
+}
+
+async function showLoadingThenResult(name, sub, searchText, overrideConf) {
+    showLoadingView('Identifying product…');
+    await new Promise(r => setTimeout(r, 900));
+    if (!document.getElementById('scannerModal')) return;
+
+    const top3     = getTopCategories(searchText, 3);
+    const conf     = overrideConf != null ? overrideConf : calcConfidence(top3[0]?.score || 0);
+    const material = detectMaterial(searchText);
+    const itemType = detectItemType(searchText);
+    showResultView({ name, brand: '', material, itemType }, top3, conf);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESULT VIEW
+══════════════════════════════════════════════════════════════ */
+function showResultView(product, top3, confidence) {
+    if (loadingMsgTimer) { clearInterval(loadingMsgTimer); loadingMsgTimer = null; }
+    scanPhase = 'result';
+    const { name, brand, material, itemType } = product;
+    const top = top3[0];
+
+    document.getElementById('resultIcon').textContent = (top && CATEGORY_ICONS[top.cat]) || '♻️';
+    document.getElementById('resultName').textContent  = name || 'Unknown item';
+
+    const brandEl = document.getElementById('resultBrand');
+    if (brandEl) { brandEl.textContent = brand || ''; brandEl.style.display = brand ? '' : 'none'; }
+
+    const confNum   = document.getElementById('resultConfNum');
+    const confBadge = document.getElementById('resultConfBadge');
+    if (confNum)   confNum.textContent  = confidence + '%';
+    if (confBadge) confBadge.className  = 'result-conf-badge result-conf-badge--' +
+        (confidence >= 75 ? 'high' : confidence >= 52 ? 'mid' : 'low');
+
+    // Meta chips
+    const chipsEl = document.getElementById('resultChips');
+    if (chipsEl) {
+        chipsEl.innerHTML = '';
+        if (itemType) chipsEl.innerHTML += `<div class="result-chip"><span class="rc-lbl">Type</span><span class="rc-val">${itemType}</span></div>`;
+        if (material) chipsEl.innerHTML += `<div class="result-chip"><span class="rc-lbl">Material</span><span class="rc-val">${material}</span></div>`;
+        chipsEl.style.display = (itemType || material) ? 'flex' : 'none';
+    }
+
+    // Category cards
+    const catsEl = document.getElementById('resultCats');
+    if (catsEl) {
+        catsEl.innerHTML = '';
+        top3.forEach(({ cat }, i) => {
+            const color  = CATEGORY_COLORS[cat] || '#24E474';
+            const icon   = CATEGORY_ICONS[cat]  || '♻️';
+            const isBest = i === 0;
+            const catConf = Math.max(30, confidence - i * 13);
+            const card   = document.createElement('button');
+            card.className = 'result-cat-card' + (isBest ? ' result-cat-card--best' : '');
+            card.style.setProperty('--cc', color);
+            card.style.setProperty('--cc-bg',     hexToRgba(color, isBest ? 0.12 : 0.06));
+            card.style.setProperty('--cc-border',  hexToRgba(color, isBest ? 0.45 : 0.18));
+            card.style.setProperty('--cc-hover-bg', hexToRgba(color, 0.16));
+            card.innerHTML = `
+              <span class="rcc-icon">${icon}</span>
+              <span class="rcc-name">${cat.charAt(0).toUpperCase() + cat.slice(1)}</span>
+              ${isBest ? `<span class="rcc-best" style="color:${color};border-color:${hexToRgba(color,0.45)};background:${hexToRgba(color,0.15)}">⭐ Best</span>` : ''}
+              <span class="rcc-conf">${catConf}%</span>
+              <span class="rcc-arrow">→</span>`;
+            card.addEventListener('click', () => navigateToItem(cat));
+            catsEl.appendChild(card);
+        });
+    }
+
+    showView('viewResult');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATE TO ITEM.HTML
+══════════════════════════════════════════════════════════════ */
+function navigateToItem(name) {
+    stopScanner();
+    const inp  = document.getElementById('searchInput');
+    const form = document.getElementById('searchForm');
+    if (inp && form) { inp.value = name; form.dispatchEvent(new Event('submit')); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CLEAR / STOP
+══════════════════════════════════════════════════════════════ */
+function clearActiveScanning() {
+    if (loopTimer)      { clearTimeout(loopTimer);       loopTimer      = null; }
+    if (loadingMsgTimer){ clearInterval(loadingMsgTimer); loadingMsgTimer = null; }
+    clearTimeoutBar();
+    isDetecting     = false;
+    hitCount        = 0;
+    lastHitCategory = null;
+    lastScannedCode = null;
+}
+
 function stopScanner() {
-    if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
+    clearActiveScanning();
     if (activeStream) { activeStream.getTracks().forEach(t => t.stop()); activeStream = null; }
     delete window.__barcodeDetector;
-    isDetecting = false; hitCount = 0; lastHitCategory = null;
-    barcodeMode = true; lastScannedCode = null; scanPhase = 'scanning';
+    torchOn   = false;
+    scanPhase = 'mode-select';
     const modal = document.getElementById('scannerModal');
     if (modal) modal.remove();
 }
@@ -1164,39 +1428,14 @@ function stopScanner() {
 async function startScanner() {
     if (document.getElementById('scannerModal')) return;
     buildModal();
-
-    scanPhase = 'scanning'; barcodeMode = true;
-    hitCount = 0; lastHitCategory = null; lastScannedCode = null;
-
-    const video = document.getElementById('scannerVideo');
-    setStatus('📷 Starting camera…', 'info');
-
-    document.getElementById('tabBarcode')?.classList.add('scanner-tab-active');
-    document.getElementById('tabAI')?.classList.remove('scanner-tab-active');
-
-    try {
-        activeStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
-        video.srcObject = activeStream;
-        await new Promise(r => {
-            video.addEventListener('loadeddata', r, { once: true });
-            setTimeout(r, 3000);
-        });
-    } catch (_) {
-        setStatus('⚠ Camera access denied — allow camera and try again.', 'error');
-        return;
-    }
-
-    setStatus('📊 Point camera at a barcode…', 'info');
-    if (!('BarcodeDetector' in window)) ensureZXing().catch(() => {});
-    startBarcodeLoop();
+    scanPhase = 'mode-select';
+    showView('viewModeSelect');
 }
 
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    WIRE SCAN BUTTON
-════════════════════════════════════════════════════════════════ */
-(function () {
+══════════════════════════════════════════════════════════════ */
+(function() {
     function attachBtn() {
         const btn = document.getElementById('scanBtn');
         if (btn) btn.addEventListener('click', startScanner);

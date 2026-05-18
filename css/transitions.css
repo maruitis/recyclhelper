@@ -703,10 +703,11 @@ button:not(:disabled):active {
    18. MISC
 ══════════════════════════════════════════════════════════════ */
 .scanner-close-btn {
-    transition: background 0.23s ease, color 0.23s ease,
-                border-color 0.23s ease, transform 0.23s ease !important;
+    transition: background 0.18s ease, color 0.18s ease,
+                border-color 0.18s ease,
+                transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
-.scanner-close-btn:hover { transform: scale(1.14) rotate(8deg) !important; }
+.scanner-close-btn:hover { transform: rotate(90deg) scale(1.1) !important; }
 
 .lang-btn {
     transition: background 0.28s ease, color 0.28s ease,
