@@ -5330,7 +5330,7 @@ nav {
 /* ── Trash Pickup Schedule ──────────────────────────────────────────────────── */
 .pickup-schedule {
     display: none;
-    margin-top: 12px;
+    margin-top: 22px;
     padding: 13px 16px 11px;
     background: rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(10px);
