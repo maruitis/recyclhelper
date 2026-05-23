@@ -5332,12 +5332,12 @@ nav {
     display: none;
     margin-top: 12px;
     padding: 13px 16px 11px;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 16px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
     animation: pickupFadeIn 0.4s ease both;
 }
 @keyframes pickupFadeIn {
@@ -5351,10 +5351,11 @@ nav {
     margin-bottom: 9px;
 }
 .pickup-title {
-    font-family: 'Gasoek One', sans-serif;
-    font-size: 14px;
-    color: #1a3a2a;
-    letter-spacing: 0.3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: #182e20;
+    letter-spacing: 0.1px;
 }
 .pickup-city {
     font-size: 11px;
@@ -5366,15 +5367,35 @@ nav {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 5px 0;
+    padding: 5px 6px;
     border-bottom: 1px solid rgba(255,255,255,0.22);
+    border-radius: 10px;
+    cursor: default;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.pickup-row:hover {
+    transform: translateX(5px);
+    background: rgba(255,255,255,0.14);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 .pickup-row:last-child { border-bottom: none; }
-.pickup-row-icon { font-size: 15px; flex-shrink: 0; }
+.pickup-row-img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s ease;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.12));
+}
+.pickup-row:hover .pickup-row-img {
+    transform: scale(1.18) rotate(-6deg);
+    filter: drop-shadow(0 3px 7px rgba(0,0,0,0.18));
+}
 .pickup-row-name {
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: #1c3a28;
+    font-size: 13px;
+    font-weight: 600;
+    color: #162a1e;
     flex: 1;
 }
 .pickup-row-right {
@@ -5388,9 +5409,11 @@ nav {
     font-size: 11px;
     font-weight: 700;
     color: #fff;
-    padding: 2px 8px;
+    padding: 2px 9px;
     border-radius: 20px;
     white-space: nowrap;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.18);
 }
 .pickup-date-small {
     font-family: 'DM Sans', sans-serif;

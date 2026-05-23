@@ -527,11 +527,10 @@ function showPickupSchedule(address, geoData) {
     const seed = simpleHash(address.toLowerCase().replace(/\s+/g, ''));
 
     const types = [
-        { name: 'General Waste',     icon: '🗑',  color: '#78909c', interval: 7  },
-        { name: 'Plastic & Cans',    icon: '♻',  color: '#4caf82', interval: 14 },
-        { name: 'Paper & Cardboard', icon: '📦', color: '#8d6e63', interval: 14 },
-        { name: 'Glass',             icon: '🫙',  color: '#42a5f5', interval: 28 },
-        { name: 'Organic Waste',     icon: '🌱', color: '#66bb6a', interval: 7  },
+        { name: 'General Waste',     img: 'images/donate-plant.png',  color: '#5c6bc0', interval: 7  },
+        { name: 'Plastic & Cans',    img: 'images/plasticbottle.png', color: '#26a69a', interval: 14 },
+        { name: 'Paper & Cardboard', img: 'images/crdboardbox.png',   color: '#7e57c2', interval: 14 },
+        { name: 'Glass',             img: 'images/glassjar.png',      color: '#1e88e5', interval: 28 },
     ];
 
     const today = new Date();
@@ -559,7 +558,7 @@ function showPickupSchedule(address, geoData) {
         </div>
         ${rows.map(r => `
             <div class="pickup-row">
-                <span class="pickup-row-icon">${r.icon}</span>
+                <img class="pickup-row-img" src="${r.img}" alt="${r.name}">
                 <span class="pickup-row-name">${r.name}</span>
                 <div class="pickup-row-right">
                     <span class="pickup-days-badge" style="background:${r.color}">${r.label}</span>
