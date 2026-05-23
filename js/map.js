@@ -342,30 +342,6 @@ async function getWalkingDistances(userLat, userLon, points) {
     return points.map(p => haversine(userLat, userLon, p.lat, p.lon) * 1350);
 }
 
-// ── Render venue-type legend below the map ───────────────────────────────────
-function renderLegend(nodes) {
-    const old = document.getElementById('mapLegend');
-    if (old) old.remove();
-
-    const types = [...new Set(nodes.map(n => getVenueType(n.tags || {})))];
-    if (types.length <= 1) return;
-
-    const legend = document.createElement('div');
-    legend.id = 'mapLegend';
-    legend.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:4px 0;font-size:12px;';
-
-    types.forEach(type => {
-        const vt = VENUE_TYPES[type];
-        if (!vt) return;
-        const pill = document.createElement('span');
-        pill.style.cssText = `background:${vt.color};color:#fff;padding:2px 9px;border-radius:10px;white-space:nowrap;`;
-        pill.textContent = `${vt.icon} ${vt.label}`;
-        legend.appendChild(pill);
-    });
-
-    const mapSection = document.querySelector('.map-section');
-    if (mapSection) mapSection.appendChild(legend);
-}
 
 // ── Friendly name from OSM tags ──────────────────────────────────────────────
 function nameFromTags(tags) {
@@ -521,8 +497,6 @@ async function findCenters() {
             mapInstance.fitBounds(allPts, { padding: [40, 40] });
         }
 
-        // 10. Render color legend for the venue types shown
-        renderLegend(nodes);
         revealMap();
 
     } catch (err) {
