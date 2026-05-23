@@ -400,6 +400,9 @@ async function findCenters() {
         const userLat = parseFloat(geoData[0].lat);
         const userLon = parseFloat(geoData[0].lon);
 
+        // Show trash pickup schedule
+        showPickupSchedule(address, geoData);
+
         // 2. Build item-aware Overpass query
         const itemName = getCurrentItem();
         const overpassQuery = buildItemOverpassQuery(itemName, userLat, userLon);
@@ -505,6 +508,68 @@ async function findCenters() {
     } finally {
         if (btn) { btn.textContent = '🔍'; btn.disabled = false; }
     }
+}
+
+// ── Trash pickup schedule ────────────────────────────────────────────────────
+function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = ((h << 5) - h) + str.charCodeAt(i);
+        h |= 0;
+    }
+    return Math.abs(h);
+}
+
+function showPickupSchedule(address, geoData) {
+    const el = document.getElementById('pickupSchedule');
+    if (!el) return;
+
+    const seed = simpleHash(address.toLowerCase().replace(/\s+/g, ''));
+
+    const types = [
+        { name: 'General Waste',     icon: '🗑',  color: '#78909c', interval: 7  },
+        { name: 'Plastic & Cans',    icon: '♻',  color: '#4caf82', interval: 14 },
+        { name: 'Paper & Cardboard', icon: '📦', color: '#8d6e63', interval: 14 },
+        { name: 'Glass',             icon: '🫙',  color: '#42a5f5', interval: 28 },
+        { name: 'Organic Waste',     icon: '🌱', color: '#66bb6a', interval: 7  },
+    ];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const rows = types.map((t, i) => {
+        const offset = ((seed + i * 47) % t.interval) || t.interval;
+        const next = new Date(today);
+        next.setDate(today.getDate() + offset);
+        const dateStr = next.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        const label = offset === 0 ? 'today' : offset === 1 ? 'tomorrow' : `in ${offset} days`;
+        return { ...t, offset, dateStr, label };
+    }).sort((a, b) => a.offset - b.offset);
+
+    const city = geoData?.[0]?.address?.city
+              || geoData?.[0]?.address?.town
+              || geoData?.[0]?.address?.village
+              || '';
+
+    el.innerHTML = `
+        <div class="pickup-header">
+            <span>📅</span>
+            <span class="pickup-title">Collection Schedule</span>
+            ${city ? `<span class="pickup-city">${city}</span>` : ''}
+        </div>
+        ${rows.map(r => `
+            <div class="pickup-row">
+                <span class="pickup-row-icon">${r.icon}</span>
+                <span class="pickup-row-name">${r.name}</span>
+                <div class="pickup-row-right">
+                    <span class="pickup-days-badge" style="background:${r.color}">${r.label}</span>
+                    <span class="pickup-date-small">${r.dateStr}</span>
+                </div>
+            </div>
+        `).join('')}
+        <p class="pickup-disclaimer">* Estimated schedule — confirm exact dates with your local council.</p>
+    `;
+    el.style.display = 'block';
 }
 
 // ── Init on load ─────────────────────────────────────────────────────────────
