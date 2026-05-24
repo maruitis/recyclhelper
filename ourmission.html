@@ -428,17 +428,6 @@
 
         <div class="mission-hashtags">
 
-            <div class="hashtag-pill" data-tag="#OneScanAway"
-                 data-caption="One scan and I know exactly where it goes ♻️ #OneScanAway #RecycleHelper #sustainability #gogreen">
-                <span class="hashtag-tag">#OneScanAway</span>
-                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
-            </div>
-
-            <div class="hashtag-pill" data-tag="#NoMoreStressJustScanAndPress"
-                 data-caption="No more guessing, no more stress. Just scan and press 📱♻️ #NoMoreStressJustScanAndPress #RecycleHelper #easyrecycling">
-                <span class="hashtag-tag">#NoMoreStressJustScanAndPress</span>
-                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
-            </div>
 
             <div class="hashtag-pill" data-tag="#RecycleWithRecycleHelper"
                  data-caption="Making the planet cleaner, one item at a time 🌍💚 #RecycleWithRecycleHelper #sustainability #zerowaste #greenlife">
@@ -468,6 +457,17 @@
         pill.addEventListener('click', () => {
             const caption = pill.dataset.caption;
             const tag     = pill.dataset.tag;
+            <div class="hashtag-pill" data-tag="#OneScanAway"
+                 data-caption="One scan and I know exactly where it goes ♻️ #OneScanAway #RecycleHelper #sustainability #gogreen">
+                <span class="hashtag-tag">#OneScanAway</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
+
+            <div class="hashtag-pill" data-tag="#NoMoreStressJustScanAndPress"
+                 data-caption="No more guessing, no more stress. Just scan and press 📱♻️ #NoMoreStressJustScanAndPress #RecycleHelper #easyrecycling">
+                <span class="hashtag-tag">#NoMoreStressJustScanAndPress</span>
+                <span class="hashtag-hint">Tap to copy &amp; open Instagram</span>
+            </div>
 
             // Copy to clipboard
             navigator.clipboard.writeText(caption).catch(() => {
