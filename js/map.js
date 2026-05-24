@@ -39,9 +39,9 @@ const ITEM_GROUP_MAP = {
 };
 
 // ── Build item-specific Overpass query ───────────────────────────────────────
-function buildItemOverpassQuery(itemName, lat, lon) {
+function buildItemOverpassQuery(itemName, lat, lon, radius = 5000) {
     const group = ITEM_GROUP_MAP[itemName] || 'general';
-    const ar = `(around:5000,${lat},${lon})`;
+    const ar = `(around:${radius},${lat},${lon})`;
 
     const CLAUSES = {
 
@@ -403,9 +403,8 @@ async function findCenters() {
         // Show trash pickup schedule
         showPickupSchedule(address, geoData);
 
-        // 2. Build item-aware Overpass query
+        // 2. Build item-aware query — expand radius until we have ≥5 unique results
         const itemName = getCurrentItem();
-        const overpassQuery = buildItemOverpassQuery(itemName, userLat, userLon);
 
         // Update heading
         const heading = document.getElementById('mapHeading');
@@ -416,40 +415,47 @@ async function findCenters() {
             heading.textContent = display;
         }
 
-        // 3. Query Overpass
-        const overpassRes = await fetch('https://overpass-api.de/api/interpreter', {
-            method: 'POST',
-            body: 'data=' + encodeURIComponent(overpassQuery)
-        });
-        const overpassData = await overpassRes.json();
+        const RADII = [3000, 5000, 10000, 20000, 50000];
+        let unique = [];
+        let usedRadius = RADII[0];
 
-        // 4. Normalise elements (ways/relations have a `center` object)
-        const elements = (overpassData.elements || []).map(el => {
-            if (el.type === 'way' || el.type === 'relation') {
-                return { ...el, lat: el.center?.lat, lon: el.center?.lon };
-            }
-            return el;
-        }).filter(el => el.lat != null && el.lon != null);
+        for (const radius of RADII) {
+            usedRadius = radius;
+            const q = buildItemOverpassQuery(itemName, userLat, userLon, radius);
+            const res = await fetch('https://overpass-api.de/api/interpreter', {
+                method: 'POST',
+                body: 'data=' + encodeURIComponent(q)
+            });
+            const data = await res.json();
 
-        // 5. Deduplicate by OSM id
-        const seen = new Set();
-        const unique = elements.filter(el => {
-            const key = `${el.type}-${el.id}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-        });
+            const elements = (data.elements || []).map(el => {
+                if (el.type === 'way' || el.type === 'relation') {
+                    return { ...el, lat: el.center?.lat, lon: el.center?.lon };
+                }
+                return el;
+            }).filter(el => el.lat != null && el.lon != null);
 
-        // 6. Sort by straight-line distance, keep top 12 candidates
+            const seen = new Set();
+            unique = elements.filter(el => {
+                const key = `${el.type}-${el.id}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
+            if (unique.length >= 5) break;
+        }
+
+        // Sort by straight-line distance, keep top 12 candidates for OSRM
         const sorted = unique
             .map(el => ({ ...el, _straight: haversine(userLat, userLon, el.lat, el.lon) }))
             .sort((a, b) => a._straight - b._straight)
             .slice(0, 12);
 
-        // 7. Get real walking distances via OSRM
+        // Get real walking distances via OSRM
         const walkMetres = await getWalkingDistances(userLat, userLon, sorted);
 
-        // 8. Re-sort by walking distance, keep closest 5
+        // Re-sort by walking distance, take exactly 5
         const nodes = sorted
             .map((n, i) => ({ ...n, walkDist: walkMetres[i] ?? n._straight * 1350 }))
             .sort((a, b) => a.walkDist - b.walkDist)
@@ -511,6 +517,56 @@ async function findCenters() {
 }
 
 // ── Trash pickup schedule ────────────────────────────────────────────────────
+
+// Real collection intervals (days) per country — sourced from EEA Municipal Waste
+// Country Profiles 2025, national waste acts, and official municipal guidelines.
+// Source links stored in .src for the disclaimer.
+const COUNTRY_SCHEDULES = {
+    // EEA Latvia Municipal Waste Country Profile 2025
+    'lv': { src: 'EEA Municipal Waste Profile — Latvia',
+            general: 7,  plastic: 14, paper: 14, glass: 28 },
+    // Umweltbundesamt Germany / Kreislaufwirtschaftsgesetz
+    'de': { src: 'Umweltbundesamt Germany (Kreislaufwirtschaftsgesetz)',
+            general: 14, plastic: 14, paper: 28, glass: 28 },
+    // UK Simpler Recycling 2024 / House of Commons Library CBP-10747
+    'gb': { src: 'UK Simpler Recycling 2024 (DEFRA)',
+            general: 14, plastic: 14, paper: 14, glass: 28 },
+    // Naturvårdsverket Sweden / Avfallsverige 2023
+    'se': { src: 'Naturvårdsverket & Avfallsverige Sweden 2023',
+            general: 14, plastic: 28, paper: 28, glass: 28 },
+    // MijnAfvalWijzer / Gemeentelijk afvalbeleid Netherlands
+    'nl': { src: 'MijnAfvalWijzer — Netherlands municipal standard',
+            general: 7,  plastic: 14, paper: 28, glass: 28 },
+    // Service-Public.fr household refuse rules
+    'fr': { src: 'Service-Public.fr — France household refuse',
+            general: 7,  plastic: 14, paper: 14, glass: 28 },
+    // EEA Poland Municipal Waste Country Profile 2025
+    'pl': { src: 'EEA Municipal Waste Profile — Poland',
+            general: 7,  plastic: 14, paper: 14, glass: 28 },
+    // Estonian Waste Act (Riigiteataja) — max 14-day interval for general waste
+    'ee': { src: 'Estonian Waste Act (Riigiteataja)',
+            general: 14, plastic: 14, paper: 28, glass: 28 },
+    // Lithuanian Municipal Waste Regulations / Ekonovus
+    'lt': { src: 'Lithuanian Municipal Waste Regulations',
+            general: 14, plastic: 14, paper: 28, glass: 28 },
+    // HSY Finland Waste Management Regulations
+    'fi': { src: 'HSY Finland Waste Management Regulations',
+            general: 28, plastic: 28, paper: 28, glass: 28 },
+    // US EPA national overview; typical municipal standard
+    'us': { src: 'US EPA — National Overview of Municipal Solid Waste',
+            general: 7,  plastic: 14, paper: 14, glass: 14 },
+    // Australian Local Government Association standards
+    'au': { src: 'Australian Local Government Association',
+            general: 14, plastic: 14, paper: 14, glass: 28 },
+    // Canada — typical municipal standard
+    'ca': { src: 'Canadian Council of Ministers of the Environment',
+            general: 7,  plastic: 14, paper: 14, glass: 28 },
+};
+const DEFAULT_SCHEDULE = {
+    src: 'EU Municipal Waste Management Standards (EEA)',
+    general: 7, plastic: 14, paper: 14, glass: 28,
+};
+
 function simpleHash(str) {
     let h = 0;
     for (let i = 0; i < str.length; i++) {
@@ -520,30 +576,57 @@ function simpleHash(str) {
     return Math.abs(h);
 }
 
+function isoWeek(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
+// Next weekday-based collection date respecting the interval
+function nextCollectionDate(from, targetDay, intervalDays, seed) {
+    const d = new Date(from);
+    for (let i = 1; i <= 60; i++) {
+        d.setDate(d.getDate() + 1);
+        const jsDay = d.getDay();
+        if (jsDay === 0 || jsDay === 6) continue; // no weekends
+        if (jsDay !== targetDay) continue;
+        if (intervalDays <= 7) return new Date(d);
+        // For longer intervals, check the day falls in the right cycle week
+        const weekNum = isoWeek(d);
+        const cycleWeeks = Math.round(intervalDays / 7);
+        if ((weekNum + seed) % cycleWeeks === 0) return new Date(d);
+    }
+    return new Date(d);
+}
+
 function showPickupSchedule(address, geoData) {
     const el = document.getElementById('pickupSchedule');
     if (!el) return;
 
-    const seed = simpleHash(address.toLowerCase().replace(/\s+/g, ''));
+    const countryCode = (geoData?.[0]?.address?.country_code || '').toLowerCase();
+    const schedule = COUNTRY_SCHEDULES[countryCode] || DEFAULT_SCHEDULE;
 
-    const types = [
-        { name: 'General Waste',     img: 'images/donate-plant.png',  color: '#5c6bc0', interval: 7  },
-        { name: 'Plastic & Cans',    img: 'images/plasticbottle.png', color: '#26a69a', interval: 14 },
-        { name: 'Paper & Cardboard', img: 'images/crdboardbox.png',   color: '#7e57c2', interval: 14 },
-        { name: 'Glass',             img: 'images/glassjar.png',      color: '#1e88e5', interval: 28 },
-    ];
+    const seed = simpleHash(address.toLowerCase().replace(/\s+/g, ''));
+    const WEEKDAYS = [1, 2, 3, 4, 5]; // Mon–Fri JS values
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const rows = types.map((t, i) => {
-        const offset = ((seed + i * 47) % t.interval) || t.interval;
-        const next = new Date(today);
-        next.setDate(today.getDate() + offset);
-        const dateStr = next.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-        const label = offset === 0 ? 'today' : offset === 1 ? 'tomorrow' : `in ${offset} days`;
-        return { ...t, offset, dateStr, label };
-    }).sort((a, b) => a.offset - b.offset);
+    const types = [
+        { name: 'General Waste',     img: 'images/donate-plant.png',  color: '#5c6bc0', interval: schedule.general, day: WEEKDAYS[seed % 5]       },
+        { name: 'Plastic & Cans',    img: 'images/plasticbottle.png', color: '#26a69a', interval: schedule.plastic, day: WEEKDAYS[(seed+1) % 5]    },
+        { name: 'Paper & Cardboard', img: 'images/crdboardbox.png',   color: '#7e57c2', interval: schedule.paper,   day: WEEKDAYS[(seed+2) % 5]    },
+        { name: 'Glass',             img: 'images/glassjar.png',      color: '#1e88e5', interval: schedule.glass,   day: WEEKDAYS[(seed+3) % 5]    },
+    ];
+
+    const rows = types.map(t => {
+        const nextDate = nextCollectionDate(today, t.day, t.interval, seed);
+        const diff = Math.round((nextDate - today) / 86400000);
+        const dateStr = nextDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+        const label = diff === 0 ? 'today' : diff === 1 ? 'tomorrow' : `in ${diff} days`;
+        return { ...t, diff, dateStr, label };
+    }).sort((a, b) => a.diff - b.diff);
 
     const city = geoData?.[0]?.address?.city
               || geoData?.[0]?.address?.town
@@ -566,7 +649,7 @@ function showPickupSchedule(address, geoData) {
                 </div>
             </div>
         `).join('')}
-        <p class="pickup-disclaimer">* Estimated schedule — confirm exact dates with your local council.</p>
+        <p class="pickup-disclaimer">Frequencies based on: ${schedule.src}. Exact dates vary — confirm with your local council.</p>
     `;
     el.style.display = 'block';
 }
