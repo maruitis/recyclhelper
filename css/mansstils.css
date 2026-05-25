@@ -1,4 +1,4 @@
- /* Suppress all transitions during initial theme load to prevent flash */
+
 html:not(.theme-ready) *,
 html:not(.theme-ready) *::before,
 html:not(.theme-ready) *::after {
