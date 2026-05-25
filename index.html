@@ -35,11 +35,36 @@
     <h1>RECYCLEHELPER.COM</h1>
 <!-- Inside your index.html body -->
 <div class="search-row">
+    <button class="ecobot-trigger" id="ecoBotTrigger" aria-label="Ask EcoBot">
+        <span class="ecobot-trigger-icon">🌿</span>
+        <span class="ecobot-trigger-label">Ask EcoBot</span>
+    </button>
     <form id="searchForm" class="search-container">
         <input type="text" id="searchInput" placeholder="Search (e.g. plastic bottle, book etc.)" required>
         <button type="submit">🔍</button>
     </form>
     <button type="button" class="scan-item-btn" id="scanBtn">📷 Scan Item</button>
+</div>
+
+<!-- Eco Bot panel -->
+<div class="ecobot-panel" id="ecoBotPanel" aria-hidden="true">
+    <div class="ecobot-header">
+        <div>
+            <div class="ecobot-name">EcoBot</div>
+            <div class="ecobot-sub">Your recycling guide</div>
+        </div>
+        <button class="ecobot-close" id="ecoBotClose" aria-label="Close"><span class="ecobot-close-x">✕</span></button>
+    </div>
+    <div class="ecobot-messages" id="ecoBotMessages">
+        <div class="ecobot-msg ecobot-msg-bot">
+            Hi! I'm EcoBot 🌱 Pick a topic or type a keyword to find answers.
+        </div>
+    </div>
+    <div class="ecobot-categories" id="ecoBotCategories"></div>
+    <div class="ecobot-input-row">
+        <input class="ecobot-input" id="ecoBotInput" placeholder="Search questions…" autocomplete="off">
+        <button class="ecobot-send" id="ecoBotSend">↑</button>
+    </div>
 </div>
 
 <div class="cards-container">
@@ -67,6 +92,7 @@
 <h2 id="site-slogan">EVERY RECYCLED ITEM MAKES A DIFFERENCE! ACT NOW!</h2>
 <script src="js/main.js"></script>
 <script src="js/search.js"></script>
+<script src="js/ecobot.js"></script>
 <script src="js/scanner.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/language.js"></script>

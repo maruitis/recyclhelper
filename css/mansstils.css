@@ -328,9 +328,351 @@ button {
    align-items: stretch makes both children the exact same height
    automatically — no magic numbers needed.
 ────────────────────────────────────────────────────────────── */
+/* ══════════════════════ ECOBOT ══════════════════════════════════════════════ */
+.ecobot-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 0;
+    padding: 0 20px;
+    position: relative;
+    left: -2px;
+    height: 100%;               /* matches search row height */
+    background: rgba(255,255,255,0.28);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #162a1a;
+    white-space: nowrap;
+    box-shadow:
+        0 4px 16px rgba(0,0,0,0.10),
+        0 0 0 0 rgba(36,180,100,0);
+    transition:
+        transform 0.22s cubic-bezier(0.34,1.5,0.64,1),
+        box-shadow 0.22s ease,
+        background 0.2s ease;
+}
+.ecobot-trigger:hover {
+    transform: translateY(-2px) scale(1.03);
+    background: rgba(255,255,255,0.45);
+    box-shadow:
+        0 8px 28px rgba(0,0,0,0.14),
+        0 0 18px rgba(36,180,100,0.28);
+}
+.ecobot-trigger:active { transform: scale(0.97); }
+.ecobot-trigger-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 1px 4px rgba(36,180,100,0.4));
+    transition: transform 0.3s cubic-bezier(0.34,1.8,0.64,1);
+}
+.ecobot-trigger:hover .ecobot-trigger-icon { transform: rotate(-12deg) scale(1.15); }
+
+/* Panel */
+.ecobot-panel {
+    position: fixed;
+    left: calc(50% + 10px);
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: min(430px, 92vw);
+    max-height: 74vh;
+    background: rgba(255,255,255,0.26);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 26px;
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(255,255,255,0.12) inset,
+        0 0 40px rgba(36,180,100,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.4,0.64,1);
+}
+.ecobot-panel.ecobot-open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Header */
+.ecobot-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 16px 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15);
+    flex-shrink: 0;
+}
+.ecobot-avatar {
+    font-size: 28px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(36,180,100,0.35));
+    transition: transform 0.3s cubic-bezier(0.34,1.8,0.64,1);
+}
+.ecobot-header:hover .ecobot-avatar { transform: rotate(-10deg) scale(1.15); }
+.ecobot-name {
+    font-family: 'Gasoek One', sans-serif;
+    font-size: 18px;
+    color: #122018;
+    line-height: 1.1;
+}
+.ecobot-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: rgba(20,42,24,0.52);
+}
+.ecobot-close {
+    margin-left: auto;
+    background: rgba(255,255,255,0.32);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1a3a22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.ecobot-close:hover {
+    background: rgba(255,255,255,0.62);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+}
+.ecobot-close-x {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34,1.5,0.64,1);
+}
+.ecobot-close:hover .ecobot-close-x {
+    transform: rotate(90deg);
+}
+
+/* Messages */
+.ecobot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.ecobot-msg {
+    max-width: 86%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    animation: ecobotPop 0.24s cubic-bezier(0.34,1.5,0.64,1) both;
+}
+@keyframes ecobotPop {
+    from { opacity: 0; transform: scale(0.86) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.ecobot-msg-bot {
+    background: rgba(255,255,255,0.42);
+    border: 1px solid rgba(255,255,255,0.55);
+    color: #0e1c12;
+    align-self: flex-start;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+.ecobot-msg-user {
+    background: rgba(36,180,100,0.22);
+    border: 1px solid rgba(36,180,100,0.32);
+    color: #0a1e10;
+    align-self: flex-end;
+    box-shadow: 0 2px 10px rgba(36,180,100,0.12);
+}
+
+/* Categories / Options */
+.ecobot-categories {
+    padding: 6px 12px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+    max-height: 170px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+.ecobot-cat-label {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: rgba(20,42,24,0.45);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+.ecobot-cat-pill {
+    padding: 5px 13px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #122018 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.ecobot-cat-pill:hover {
+    background: rgba(255,255,255,0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(36,180,100,0.18);
+}
+.ecobot-option {
+    width: 100%;
+    text-align: left;
+    padding: 8px 13px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: #0e1c12;
+    cursor: pointer;
+    line-height: 1.4;
+    box-shadow: none;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+.ecobot-option:hover {
+    background: transparent;
+    border-color: rgba(36,180,100,0.85);
+    box-shadow: 0 0 14px rgba(36,180,100,0.45), 0 0 4px rgba(36,180,100,0.3) inset;
+    transform: translateX(3px);
+}
+
+/* Input row */
+.ecobot-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 13px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
+}
+.ecobot-input {
+    flex: 1;
+    background: rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 22px;
+    padding: 8px 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #0e1c12;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) inset;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.ecobot-input::placeholder { color: rgba(18,32,24,0.38); }
+.ecobot-input:focus {
+    background: rgba(255,255,255,0.55);
+    box-shadow: none;
+    outline: none;
+}
+.ecobot-send {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(36,200,110,0.85), rgba(20,160,80,0.85));
+    border: none;
+    color: #fff;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 3px 12px rgba(36,180,100,0.35);
+    transition: transform 0.18s cubic-bezier(0.34,1.6,0.64,1), box-shadow 0.18s;
+}
+.ecobot-send:hover {
+    transform: scale(1.12);
+    box-shadow: 0 6px 20px rgba(36,180,100,0.5);
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"] .ecobot-trigger {
+    background: rgba(0,20,50,0.55);
+    border-color: rgba(0,160,255,0.3);
+    color: #c8e8ff;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 14px rgba(0,160,255,0.1);
+}
+[data-theme="dark"] .ecobot-trigger:hover {
+    background: rgba(0,30,70,0.7);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.3), 0 0 22px rgba(0,160,255,0.22);
+}
+[data-theme="dark"] .ecobot-trigger-icon { filter: drop-shadow(0 1px 5px rgba(0,200,255,0.4)); }
+[data-theme="dark"] .ecobot-panel {
+    background: rgba(8,16,36,0.72);
+    border-color: rgba(0,160,255,0.22);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 50px rgba(0,120,255,0.1);
+}
+[data-theme="dark"] .ecobot-header { background: rgba(0,10,30,0.3); border-bottom-color: rgba(0,160,255,0.14); }
+[data-theme="dark"] .ecobot-name   { color: #c8e8ff; }
+[data-theme="dark"] .ecobot-sub    { color: rgba(180,220,255,0.42); }
+[data-theme="dark"] .ecobot-close  { background: rgba(255,255,255,0.07); border-color: rgba(0,160,255,0.18); color: #90c8f0; }
+[data-theme="dark"] .ecobot-close:hover { background: rgba(0,160,255,0.18); }
+[data-theme="dark"] .ecobot-msg-bot  { background: rgba(40,160,255,0.18); border-color: rgba(80,200,255,0.35); color: #d8f0ff; box-shadow: 0 2px 12px rgba(0,140,255,0.2); }
+[data-theme="dark"] .ecobot-msg-user { background: rgba(140,210,255,0.22); border-color: rgba(160,220,255,0.45); color: #e8f6ff; box-shadow: 0 2px 10px rgba(80,180,255,0.15); }
+[data-theme="dark"] .ecobot-cat-pill { background: transparent; border-color: transparent; color: #e8f4ff !important; box-shadow: none; }
+[data-theme="dark"] .ecobot-cat-pill:hover { background: rgba(80,30,160,0.45); box-shadow: 0 5px 14px rgba(120,60,255,0.3); }
+[data-theme="dark"] .ecobot-option { background: transparent; border-color: transparent; color: #a8d4f0; }
+[data-theme="dark"] .ecobot-option:hover { background: transparent; border-color: rgba(130,90,255,0.9); box-shadow: 0 0 16px rgba(100,60,255,0.5), 0 0 5px rgba(130,90,255,0.25) inset; }
+[data-theme="dark"] .ecobot-input  { background: rgba(160,210,255,0.15); border-color: rgba(100,180,255,0.4); color: #c8e8ff; }
+[data-theme="dark"] .ecobot-input::placeholder { color: rgba(140,200,255,0.35); }
+[data-theme="dark"] .ecobot-input:focus { box-shadow: none; outline: none; }
+[data-theme="dark"] .ecobot-input-row { border-top-color: rgba(0,160,255,0.12); background: rgba(0,10,30,0.25); }
+[data-theme="dark"] .ecobot-cat-label { color: rgba(140,200,255,0.38); }
+[data-theme="dark"] .ecobot-send { background: linear-gradient(135deg, rgba(0,180,255,0.8), rgba(0,120,200,0.8)); box-shadow: 0 3px 12px rgba(0,160,255,0.35); }
+[data-theme="dark"] .ecobot-send:hover { box-shadow: 0 6px 22px rgba(0,160,255,0.5); }
+
+/* ── Sky theme ── */
+[data-theme="sky"] .ecobot-trigger { background: rgba(255,255,255,0.55); border-color: rgba(80,160,240,0.4); color: #0a4fa0; box-shadow: 0 4px 16px rgba(80,160,240,0.18); }
+[data-theme="sky"] .ecobot-trigger:hover { background: rgba(255,255,255,0.75); box-shadow: 0 8px 28px rgba(80,160,240,0.28), 0 0 18px rgba(80,160,240,0.2); }
+[data-theme="sky"] .ecobot-trigger-icon { filter: drop-shadow(0 1px 5px rgba(80,160,240,0.4)); }
+[data-theme="sky"] .ecobot-panel { background: rgba(255,255,255,0.6); border-color: rgba(80,160,240,0.3); box-shadow: 0 20px 60px rgba(80,160,240,0.18), 0 0 40px rgba(80,160,240,0.1); }
+[data-theme="sky"] .ecobot-header { background: rgba(255,255,255,0.25); border-bottom-color: rgba(80,160,240,0.2); }
+[data-theme="sky"] .ecobot-name  { color: #0a3060; }
+[data-theme="sky"] .ecobot-sub   { color: rgba(10,60,120,0.48); }
+[data-theme="sky"] .ecobot-close { background: rgba(255,255,255,0.5); border-color: rgba(80,160,240,0.3); color: #0a4fa0; }
+[data-theme="sky"] .ecobot-close:hover { background: rgba(80,160,240,0.15); }
+[data-theme="sky"] .ecobot-msg-bot  { background: rgba(255,255,255,0.65); border-color: rgba(80,160,240,0.3); color: #0a2850; box-shadow: 0 2px 10px rgba(80,160,240,0.1); }
+[data-theme="sky"] .ecobot-msg-user { background: rgba(80,160,240,0.15); border-color: rgba(80,160,240,0.28); color: #071e40; box-shadow: 0 2px 10px rgba(80,160,240,0.1); }
+[data-theme="sky"] .ecobot-cat-pill { background: transparent; border-color: transparent; color: #0a4fa0; box-shadow: none; }
+[data-theme="sky"] .ecobot-cat-pill:hover { background: rgba(255,255,255,0.85); box-shadow: 0 5px 14px rgba(80,160,240,0.2); }
+[data-theme="sky"] .ecobot-option { background: transparent; border-color: transparent; color: #0a2850; }
+[data-theme="sky"] .ecobot-option:hover { background: transparent; border-color: rgba(40,160,240,0.9); box-shadow: 0 0 16px rgba(40,160,240,0.45), 0 0 5px rgba(40,160,240,0.2) inset; }
+[data-theme="sky"] .ecobot-input { background: rgba(255,255,255,0.6); border-color: rgba(80,160,240,0.3); color: #0a2850; }
+[data-theme="sky"] .ecobot-input:focus { box-shadow: none; outline: none; }
+[data-theme="sky"] .ecobot-cat-label { color: rgba(10,60,120,0.38); }
+[data-theme="sky"] .ecobot-send { background: linear-gradient(135deg, rgba(80,160,240,0.85), rgba(30,110,200,0.85)); box-shadow: 0 3px 12px rgba(80,160,240,0.35); }
+[data-theme="sky"] .ecobot-send:hover { box-shadow: 0 6px 22px rgba(80,160,240,0.5); }
+
+/* ══════════════════════════════════════════════════════════════════════════ */
 .search-row {
     display: flex;
-    align-items: stretch;      /* both children grow to same height */
+    align-items: stretch;
     justify-content: center;
     gap: 10px;
     margin: 46px auto 24px;
@@ -360,6 +702,7 @@ button {
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
+.search-container:focus-within { outline: none; box-shadow: none !important; }
 .search-container input {
     width: 100%;
     height: 100%;              /* fills the pill height */
@@ -392,7 +735,7 @@ button {
     margin: 0;
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 0 22px;           /* horizontal padding only */
+    padding: 0 22px;
     font-size: 0.9rem;
     box-sizing: border-box;
 }
@@ -3635,6 +3978,36 @@ nav {
     .scan-item-btn:active,
     .scan-item-btn-small:active { transform: scale(0.96); }
 
+    /* ─ EcoBot trigger: full-width pill in the stacked column ─ */
+    .ecobot-trigger {
+        position: static;
+        left: 0;
+        width: 100%;
+        height: 46px;
+        justify-content: center;
+        border-radius: 50px;
+        font-size: 14px;
+    }
+
+    /* ─ EcoBot panel: full-width, anchored to bottom on mobile ─ */
+    .ecobot-panel {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.92);
+        width: 92vw;
+        max-height: 80vh;
+        border-radius: 20px;
+    }
+    .ecobot-panel.ecobot-open {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* ─ EcoBot categories: allow wrapping on small screens ─ */
+    .ecobot-categories {
+        flex-wrap: wrap;
+    }
+
     /* ─ Filter tags ─ */
     #filterTags { padding: 0 14px; }
 
@@ -4136,6 +4509,11 @@ nav {
     h3  { font-size: 26px; }
     nav { padding: 8px 10px 6px; gap: 6px; }
     .nav-link { min-width: 66px; height: 30px; font-size: 11px; padding: 0 10px; }
+
+    .ecobot-trigger { font-size: 13px; height: 42px; }
+    .ecobot-panel   { width: 96vw; max-height: 82vh; border-radius: 16px; }
+    .ecobot-input   { font-size: 13px; }
+    .ecobot-cat-pill { font-size: 11px; padding: 4px 10px; }
 
     /* ── Scanner: small phone overrides ──────────────────────── */
     .scanner-box        { max-height: 94vh; border-radius: 18px 18px 0 0; }
