@@ -4048,6 +4048,14 @@ nav {
     .scan-item-btn:active,
     .scan-item-btn-small:active { transform: scale(0.96); }
 
+    /* Recycle/Item scan button: circle on mobile */
+    .search-row .scan-item-btn.scan-item-btn-small {
+        width: 50px !important;
+        height: 50px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+    }
+
     /* ─ EcoBot panel: full-width, anchored to bottom on mobile ─ */
     .ecobot-panel {
         position: fixed;
