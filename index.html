@@ -36,14 +36,16 @@
 <!-- Inside your index.html body -->
 <div class="search-row">
     <button class="ecobot-trigger" id="ecoBotTrigger" aria-label="Ask EcoBot">
-        <span class="ecobot-trigger-icon">🌿</span>
-        <span class="ecobot-trigger-label">Ask EcoBot</span>
+        <img src="images/ecochat.png" alt="EcoBot" class="ecobot-trigger-img">
     </button>
     <form id="searchForm" class="search-container">
         <input type="text" id="searchInput" placeholder="Search (e.g. plastic bottle, book etc.)" required>
-        <button type="submit">🔍</button>
+        <button type="submit"><img src="images/search.png" alt="Search" class="search-btn-img"></button>
     </form>
-    <button type="button" class="scan-item-btn" id="scanBtn">📷 Scan Item</button>
+    <button type="button" class="scan-item-btn" id="scanBtn">
+        <img src="images/scanner.png" alt="Scan" class="scan-btn-img">
+        <span>Scan!</span>
+    </button>
 </div>
 
 <!-- Eco Bot panel -->

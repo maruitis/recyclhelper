@@ -56,11 +56,7 @@ body.rh-leaving {
    4. HEADINGS
 ══════════════════════════════════════════════════════════════ */
 h1 {
-    transition: filter 0.52s ease;
-    filter: drop-shadow(0 0 28px rgba(36, 228, 116, 0.2));
-}
-h1:hover {
-    filter: drop-shadow(0 0 52px rgba(36, 228, 116, 0.52));
+    transition: none;
 }
 h2 {
     cursor: default;
@@ -573,10 +569,7 @@ button:not(:disabled):active {
    16. DARK THEME ENHANCEMENTS
 ══════════════════════════════════════════════════════════════ */
 [data-theme="dark"] h1 {
-    filter: drop-shadow(0 0 38px rgba(0,255,106,0.38)) !important;
-}
-[data-theme="dark"] h1:hover {
-    filter: drop-shadow(0 0 70px rgba(0,255,106,0.75)) !important;
+    filter: none;
 }
 [data-theme="dark"] h2:hover {
     text-shadow: 0 0 36px rgba(160,220,255,0.45) !important;
@@ -644,10 +637,7 @@ button:not(:disabled):active {
    17. SKY THEME ENHANCEMENTS
 ══════════════════════════════════════════════════════════════ */
 [data-theme="sky"] h1 {
-    filter: drop-shadow(0 0 28px rgba(80,130,255,0.28)) !important;
-}
-[data-theme="sky"] h1:hover {
-    filter: drop-shadow(0 0 55px rgba(80,130,255,0.58)) !important;
+    filter: none;
 }
 [data-theme="sky"] h2:hover {
     text-shadow: 0 0 28px rgba(80,130,255,0.35) !important;

@@ -333,45 +333,47 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
     margin: 0;
-    padding: 0 20px;
+    padding: 0;
     position: relative;
     left: -2px;
-    height: 100%;               /* matches search row height */
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    align-self: center;
     background: rgba(255,255,255,0.28);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.45);
-    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 50%;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #162a1a;
-    white-space: nowrap;
     box-shadow:
-        0 4px 16px rgba(0,0,0,0.10),
-        0 0 0 0 rgba(36,180,100,0);
+        0 4px 16px rgba(0,0,0,0.12),
+        0 0 12px rgba(36,180,100,0.15);
     transition:
         transform 0.22s cubic-bezier(0.34,1.5,0.64,1),
         box-shadow 0.22s ease,
         background 0.2s ease;
 }
 .ecobot-trigger:hover {
-    transform: translateY(-2px) scale(1.03);
+    transform: translateY(-3px) scale(1.08);
     background: rgba(255,255,255,0.45);
     box-shadow:
-        0 8px 28px rgba(0,0,0,0.14),
-        0 0 18px rgba(36,180,100,0.28);
+        0 8px 28px rgba(0,0,0,0.16),
+        0 0 22px rgba(36,180,100,0.35);
 }
-.ecobot-trigger:active { transform: scale(0.97); }
-.ecobot-trigger-icon {
-    font-size: 20px;
-    filter: drop-shadow(0 1px 4px rgba(36,180,100,0.4));
+.ecobot-trigger:active { transform: scale(0.94); }
+.ecobot-trigger-img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    border-radius: 50%;
     transition: transform 0.3s cubic-bezier(0.34,1.8,0.64,1);
+    pointer-events: none;
 }
-.ecobot-trigger:hover .ecobot-trigger-icon { transform: rotate(-12deg) scale(1.15); }
+.ecobot-trigger:hover .ecobot-trigger-img {
+    transform: scale(1.12) rotate(-8deg);
+}
 
 /* Panel */
 .ecobot-panel {
@@ -614,13 +616,12 @@ button {
 /* ── Dark theme ── */
 [data-theme="dark"] .ecobot-trigger {
     background: rgba(0,20,50,0.55);
-    border-color: rgba(0,160,255,0.3);
-    color: #c8e8ff;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 14px rgba(0,160,255,0.1);
+    border-color: rgba(0,160,255,0.4);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 14px rgba(0,160,255,0.2);
 }
 [data-theme="dark"] .ecobot-trigger:hover {
     background: rgba(0,30,70,0.7);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.3), 0 0 22px rgba(0,160,255,0.22);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.3), 0 0 26px rgba(0,160,255,0.4);
 }
 [data-theme="dark"] .ecobot-trigger-icon { filter: drop-shadow(0 1px 5px rgba(0,200,255,0.4)); }
 [data-theme="dark"] .ecobot-panel {
@@ -648,8 +649,8 @@ button {
 [data-theme="dark"] .ecobot-send:hover { box-shadow: 0 6px 22px rgba(0,160,255,0.5); }
 
 /* ── Sky theme ── */
-[data-theme="sky"] .ecobot-trigger { background: rgba(255,255,255,0.55); border-color: rgba(80,160,240,0.4); color: #0a4fa0; box-shadow: 0 4px 16px rgba(80,160,240,0.18); }
-[data-theme="sky"] .ecobot-trigger:hover { background: rgba(255,255,255,0.75); box-shadow: 0 8px 28px rgba(80,160,240,0.28), 0 0 18px rgba(80,160,240,0.2); }
+[data-theme="sky"] .ecobot-trigger { background: rgba(255,255,255,0.55); border-color: rgba(80,160,240,0.5); box-shadow: 0 4px 16px rgba(80,160,240,0.2); }
+[data-theme="sky"] .ecobot-trigger:hover { background: rgba(255,255,255,0.75); box-shadow: 0 8px 28px rgba(80,160,240,0.3), 0 0 22px rgba(80,160,240,0.3); }
 [data-theme="sky"] .ecobot-trigger-icon { filter: drop-shadow(0 1px 5px rgba(80,160,240,0.4)); }
 [data-theme="sky"] .ecobot-panel { background: rgba(255,255,255,0.6); border-color: rgba(80,160,240,0.3); box-shadow: 0 20px 60px rgba(80,160,240,0.18), 0 0 40px rgba(80,160,240,0.1); }
 [data-theme="sky"] .ecobot-header { background: rgba(255,255,255,0.25); border-bottom-color: rgba(80,160,240,0.2); }
@@ -697,7 +698,7 @@ button {
 }
 
 .search-container.small {
-    width: 420px;
+    width: 490px;
     padding: 0 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
@@ -726,18 +727,59 @@ button {
     align-items: center;
     font-size: 1.1rem;
 }
+.search-btn-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.2s cubic-bezier(0.34,1.6,0.64,1), opacity 0.2s;
+    opacity: 0.8;
+}
+.search-container button[type="submit"]:hover .search-btn-img {
+    transform: scale(1.2);
+    opacity: 1;
+}
 
 /* Scan button — stretches to same height as the search bar */
 .search-row .scan-item-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin: 0;
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 0 22px;
+    padding: 0 22px 0 54px;
     font-size: 0.9rem;
+    font-weight: 700;
     box-sizing: border-box;
+    transition:
+        transform 0.22s cubic-bezier(0.34,1.5,0.64,1),
+        box-shadow 0.22s ease,
+        background 0.2s ease;
+}
+.search-row .scan-item-btn.scan-item-btn-small {
+    padding: 0 10px;
+}
+.search-row .scan-item-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(36,180,100,0.3), 0 0 16px rgba(36,180,100,0.2);
+}
+.search-row .scan-item-btn:active { transform: scale(0.96); }
+
+.scan-btn-img {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.34,1.8,0.64,1);
+}
+.search-row .scan-item-btn:hover .scan-btn-img {
+    transform: translateY(-50%) scale(1.2) rotate(8deg);
 }
 
 /* Give the row an explicit height so both children have something to stretch to */
@@ -1802,9 +1844,19 @@ transform: translateY(-395px) translateX(530px);
 }
 .scan-item-btn-small {
     margin: 4px auto 8px;
-    padding: 5px 18px;
+    padding: 5px 8px;
     font-size: 0.82rem;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+}
+.scan-btn-img-small {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -3939,55 +3991,62 @@ nav {
     /* ─ Clouds: hide on small screens ─ */
     .cloud { display: none; }
 
-    /* ─ Search row: stack vertically, search bar less wide ─ */
+    /* ─ Search row: search bar full-width on top, buttons on one row below ─ */
     .search-row,
     .search-row.search-row-small {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
-        width: 86vw;
+        width: 88vw;
         height: auto;
         margin: 16px auto 8px;
-        gap: 8px;
+        gap: 10px;
     }
     .search-row.search-row-small { margin-top: 8px; margin-bottom: 8px; }
-    .search-container,
-    .search-container.small {
+
+    /* Search bar takes its own full row */
+    .search-row .search-container,
+    .search-row .search-container.small {
         width: 100%;
         height: 46px;
         border-radius: 50px;
+        order: 0;
+        flex-shrink: 0;
     }
     .search-container input,
     .search-container.small input {
         font-size: 15px;
         padding: 0 16px;
     }
-    /* Scan button: compact, centered under search bar */
+
+    /* EcoBot circle: second row, left side */
+    .ecobot-trigger {
+        position: static;
+        left: 0;
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        order: 1;
+    }
+
+    /* Scan button: second row, right side */
     .scan-item-btn,
     .search-row .scan-item-btn,
     .scan-item-btn-small {
         width: auto !important;
-        height: 38px !important;
-        padding: 0 28px !important;
-        align-self: center;
+        height: 50px !important;
+        padding: 0 24px 0 56px !important;
         justify-content: center;
         border-radius: 50px !important;
         font-size: 14px;
         touch-action: manipulation;
         transition: transform 0.15s ease;
+        order: 1;
+        flex-shrink: 0;
     }
     .scan-item-btn:active,
     .scan-item-btn-small:active { transform: scale(0.96); }
-
-    /* ─ EcoBot trigger: full-width pill in the stacked column ─ */
-    .ecobot-trigger {
-        position: static;
-        left: 0;
-        width: 100%;
-        height: 46px;
-        justify-content: center;
-        border-radius: 50px;
-        font-size: 14px;
-    }
 
     /* ─ EcoBot panel: full-width, anchored to bottom on mobile ─ */
     .ecobot-panel {
