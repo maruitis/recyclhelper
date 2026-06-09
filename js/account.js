@@ -199,7 +199,18 @@
     }
 
     const emailEl = document.getElementById("account-email");
-    if (emailEl) emailEl.textContent = session.user.email || "Your account";
+    const { data: profile } = await client
+      .from("profiles")
+      .select("display_name")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    if (emailEl) {
+      const name = profile?.display_name;
+      emailEl.textContent = name
+        ? "@" + name + " · " + (session.user.email || "")
+        : session.user.email || "Your account";
+    }
 
     const { data: pics, error } = await client
       .from("user_pics")

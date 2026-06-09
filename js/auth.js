@@ -221,16 +221,110 @@
     return null;
   }
 
-  function showLoggedInOnAuthPage(session) {
+  async function getProfile(userId) {
+    const { data, error } = await client()
+      .from("profiles")
+      .select("id, display_name")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) console.error(error);
+    return data;
+  }
+
+  async function ensureProfile(userId, displayName) {
+    const existing = await getProfile(userId);
+    if (existing?.display_name) return existing;
+
+    const { data, error } = await client()
+      .from("profiles")
+      .insert({ id: userId, display_name: displayName })
+      .select("id, display_name")
+      .single();
+
+    if (error) {
+      console.error(error);
+      return null;
+    }
+    return data;
+  }
+
+  function validateDisplayName(name) {
+    if (!name || name.length < 2) return "Display name must be at least 2 characters.";
+    if (name.length > 24) return "Display name must be 24 characters or less.";
+    if (!/^[a-zA-Z0-9_]+$/.test(name)) return "Use letters, numbers, and underscores only.";
+    return null;
+  }
+
+  function showUsernameSetup(session) {
+    const box = document.getElementById("auth-box");
+    if (!box) return;
+    box.innerHTML =
+      `<h2 id="form-title">Choose your name</h2>` +
+      `<p style="text-align:center;margin:0 0 14px;font-size:0.9rem;">This is how you appear on Shares</p>` +
+      `<input type="text" id="setup-display-name" placeholder="e.g. EcoRecycler42" maxlength="24" autocomplete="username" />` +
+      `<button type="button" onclick="saveDisplayName()">Save name</button>` +
+      `<p id="message"></p>` +
+      `<button type="button" id="btn-register" style="margin-top:8px;background:#d9d9d9;color:#333;" onclick="logout()">Log out</button>`;
+
+    const input = document.getElementById("setup-display-name");
+    if (input) {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveDisplayName();
+      });
+    }
+  }
+
+  function showLoggedInOnAuthPage(session, displayName) {
     const box = document.getElementById("auth-box");
     if (!box) return;
     const email = session?.user?.email || "your account";
+    const nameLine = displayName
+      ? `<p style="text-align:center;margin:0 0 4px;font-weight:700;">@${escapeHtml(displayName)}</p>`
+      : "";
     box.innerHTML =
       `<h2 id="form-title">Signed in</h2>` +
-      `<p style="text-align:center;margin:0 0 16px;">${escapeHtml(email)}</p>` +
+      nameLine +
+      `<p style="text-align:center;margin:0 0 16px;opacity:0.85;">${escapeHtml(email)}</p>` +
+      `<a href="shares.html" style="display:block;text-align:center;margin:0 0 8px;font-weight:700;">Shares</a>` +
       `<a href="account.html" style="display:block;text-align:center;margin:0 0 12px;font-weight:700;">My account</a>` +
       `<button type="button" onclick="redirectAfterLogin()">Back to site</button>` +
       `<button type="button" id="btn-register" style="margin-top:8px;background:#d9d9d9;color:#333;" onclick="logout()">Log out</button>`;
+  }
+
+  async function showLoggedInOrSetup(session) {
+    const profile = await getProfile(session.user.id);
+    if (!profile?.display_name) {
+      showUsernameSetup(session);
+      return;
+    }
+    showLoggedInOnAuthPage(session, profile.display_name);
+  }
+
+  async function saveDisplayName() {
+    const input = document.getElementById("setup-display-name");
+    const msg = document.getElementById("message");
+    const name = input?.value?.trim();
+    const err = validateDisplayName(name);
+
+    if (err) {
+      if (msg) msg.textContent = err;
+      return;
+    }
+
+    const { data: sessionData } = await client().auth.getSession();
+    const session = sessionData?.session;
+    if (!session) {
+      if (msg) msg.textContent = "Please sign in again.";
+      return;
+    }
+
+    const profile = await ensureProfile(session.user.id, name);
+    if (!profile) {
+      if (msg) msg.textContent = "That name may be taken. Try another.";
+      return;
+    }
+
+    showLoggedInOnAuthPage(session, profile.display_name);
   }
 
   window.redirectAfterLogin = redirectAfterLogin;
@@ -242,9 +336,12 @@
     const btnRegister = document.getElementById("btn-register");
     const toggle = document.getElementById("toggle-link");
 
+    const nameEl = document.getElementById("display-name");
+
     if (title) title.textContent = register ? "Create account" : "Login";
     if (btnLogin) btnLogin.style.display = register ? "none" : "block";
     if (btnRegister) btnRegister.style.display = register ? "block" : "none";
+    if (nameEl) nameEl.style.display = register ? "block" : "none";
     if (toggle) {
       toggle.textContent = register
         ? "Already have an account? Log in"
@@ -259,7 +356,7 @@
 
     const { data } = await sbClient.auth.getSession();
     if (data?.session) {
-      showLoggedInOnAuthPage(data.session);
+      await showLoggedInOrSetup(data.session);
       return;
     }
 
@@ -282,10 +379,16 @@
   async function register() {
     const email = document.getElementById("email")?.value?.trim();
     const password = document.getElementById("password")?.value;
+    const displayName = document.getElementById("display-name")?.value?.trim();
     const msg = document.getElementById("message");
 
     if (!email || !password) {
       if (msg) msg.textContent = "Enter email and password.";
+      return;
+    }
+    const nameErr = validateDisplayName(displayName);
+    if (nameErr) {
+      if (msg) msg.textContent = nameErr;
       return;
     }
     if (password.length < 6) {
@@ -293,13 +396,27 @@
       return;
     }
 
-    const { error } = await client().auth.signUp({ email, password });
+    const { data, error } = await client().auth.signUp({ email, password });
 
     if (error) {
       if (msg) msg.textContent = "Error: " + error.message;
-    } else if (msg) {
-      msg.textContent =
-        "Account created! If email confirmation is on, check your inbox — then log in.";
+      return;
+    }
+
+    if (data?.session && data?.user) {
+      const profile = await ensureProfile(data.user.id, displayName);
+      if (!profile) {
+        if (msg) msg.textContent = "Account created but name failed — pick a name after login.";
+      } else {
+        redirectAfterLogin();
+        return;
+      }
+    } else {
+      localStorage.setItem("pending_display_name", displayName);
+      if (msg) {
+        msg.textContent =
+          "Account created! Check your inbox to confirm — then log in.";
+      }
       setAuthFormMode(false);
     }
   }
@@ -314,13 +431,29 @@
       return;
     }
 
-    const { error } = await client().auth.signInWithPassword({ email, password });
+    const { data, error } = await client().auth.signInWithPassword({ email, password });
 
     if (error) {
       if (msg) msg.textContent = "Error: " + error.message;
-    } else {
-      redirectAfterLogin();
+      return;
     }
+
+    const session = data?.session;
+    if (!session) return;
+
+    const pending = localStorage.getItem("pending_display_name");
+    if (pending) {
+      await ensureProfile(session.user.id, pending);
+      localStorage.removeItem("pending_display_name");
+    }
+
+    const profile = await getProfile(session.user.id);
+    if (!profile?.display_name && isAuthPage()) {
+      showUsernameSetup(session);
+      return;
+    }
+
+    redirectAfterLogin();
   }
 
   async function logout() {
@@ -339,6 +472,7 @@
   window.login = login;
   window.logout = logout;
   window.toggleForm = toggleForm;
+  window.saveDisplayName = saveDisplayName;
   window.injectAuthPersonBtn = injectPersonButton;
   window.getAuthSession = getSession;
 

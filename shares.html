@@ -6,15 +6,16 @@
   <script src="js/auth.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My account — RecycleHelper</title>
+  <title>Shares — RecycleHelper</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Gasoek+One&family=Inter:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Jomhuria&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/mansstils.css">
   <link rel="stylesheet" href="css/transitions.css">
+  <link rel="stylesheet" href="css/shares.css">
   <script>(function(){var t=localStorage.getItem('recycle_theme');if(t==='dark'||t==='sky')document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
-<body>
+<body class="shares-page">
 
   <nav>
     <a href="index.html" class="nav-link">Home</a>
@@ -27,24 +28,20 @@
   <div class="cloud cloud-left" aria-hidden="true"><img src="images/cloud.png" alt=""></div>
   <div class="cloud cloud-right" aria-hidden="true"><img src="images/cloud.png" alt=""></div>
 
-  <div class="account-wrap">
-    <div class="account-header">
-      <h2>My account</h2>
-      <p id="account-email"></p>
-    </div>
+  <header class="shares-hero">
+    <h2>RECYCLEGRAM</h2>
+    <p>See what recyclers around the world are sharing</p>
+  </header>
 
-    <p class="account-msg" id="account-msg"></p>
+  <p class="shares-login-hint" id="shares-login-hint" style="display:none;">
+    <a href="auth.html?redirect=shares.html">Sign in</a> to like, comment, and pin posts.
+  </p>
 
-    <div class="account-empty" id="account-empty" style="display:none;">
-      No recycling photos yet. Use the <strong>+</strong> button on the home page to add one!
-    </div>
-
-    <div class="account-grid" id="account-grid"></div>
-
-    <a href="index.html" class="account-back">← Back to home</a>
-  </div>
+  <main class="shares-feed" id="shares-feed" aria-live="polite">
+    <div class="shares-loading">Loading Recyclegram…</div>
+  </main>
 
   <script src="js/theme.js"></script>
-  <script src="js/account.js"></script>
+  <script src="js/shares.js"></script>
 </body>
 </html>
