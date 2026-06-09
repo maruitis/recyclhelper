@@ -60,11 +60,6 @@ h1 {
 }
 h2 {
     cursor: default;
-    transition: transform 0.39s ease, text-shadow 0.39s ease;
-}
-h2:hover {
-    transform: scale(1.012);
-    text-shadow: 0 0 28px rgba(56, 76, 63, 0.3);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -571,9 +566,6 @@ button:not(:disabled):active {
 [data-theme="dark"] h1 {
     filter: none;
 }
-[data-theme="dark"] h2:hover {
-    text-shadow: 0 0 36px rgba(160,220,255,0.45) !important;
-}
 [data-theme="dark"] .nav-link:hover {
     box-shadow: 0 0 90px 28px #00FF6A,
                 0 0 160px 10px rgba(0,255,106,0.3) !important;
@@ -638,9 +630,6 @@ button:not(:disabled):active {
 ══════════════════════════════════════════════════════════════ */
 [data-theme="sky"] h1 {
     filter: none;
-}
-[data-theme="sky"] h2:hover {
-    text-shadow: 0 0 28px rgba(80,130,255,0.35) !important;
 }
 [data-theme="sky"] .nav-link:hover {
     box-shadow: 0 0 64px 20px rgba(80,130,255,0.62),

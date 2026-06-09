@@ -34,8 +34,11 @@
     }
 
     function injectToggle() {
+        if (document.querySelector(".theme-switcher")) return;
+
         const nav = document.querySelector("nav");
-        if (!nav || nav.querySelector(".theme-switcher")) return;
+        const group = document.createElement("div");
+        group.className = nav ? "nav-ctrl-group" : "nav-ctrl-group nav-ctrl-fixed";
 
         const switcher = document.createElement("div");
         switcher.className = "theme-switcher";
@@ -51,7 +54,13 @@
             switcher.appendChild(btn);
         });
 
-        nav.appendChild(switcher);
+        group.appendChild(switcher);
+        if (nav) {
+            nav.appendChild(group);
+        } else {
+            document.body.appendChild(group);
+        }
+        window.dispatchEvent(new Event("themeReady"));
     }
 
     function init() {
