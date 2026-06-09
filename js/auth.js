@@ -10,6 +10,19 @@
     return path.endsWith("auth.html") || path.endsWith("/auth");
   }
 
+  function isProtectedPage() {
+    const path = window.location.pathname || "";
+    return path.endsWith("account.html");
+  }
+
+  async function getSession() {
+    const sbClient = client();
+    if (!sbClient?.auth?.getSession) return null;
+    const { data, error } = await sbClient.auth.getSession();
+    if (error) console.error(error);
+    return data?.session || null;
+  }
+
   function escapeHtml(s) {
     const d = document.createElement("div");
     d.textContent = s;
@@ -104,6 +117,37 @@
         background: rgba(20, 35, 32, 0.9);
         color: #e8f4ec;
       }
+      @media (max-width: 768px) {
+        .nav-ctrl-group a.auth-person-btn {
+          margin-right: 14px;
+          width: 20px;
+          height: 20px;
+          font-size: 11px;
+        }
+        .nav-ctrl-group.nav-ctrl-fixed {
+          top: 10px;
+          right: 10px;
+        }
+        #auth-box {
+          margin: 40px 16px 28px;
+          padding: 22px 18px;
+          max-width: none;
+        }
+        #auth-box h2 { font-size: 1.35rem; }
+        #auth-box input, #auth-box button {
+          font-size: 16px;
+          min-height: 48px;
+        }
+        body > h1[style] {
+          font-size: 1.5rem !important;
+          margin-top: 16px !important;
+          padding: 0 12px;
+        }
+      }
+      @media (max-width: 480px) {
+        .nav-ctrl-group a.auth-person-btn { margin-right: 10px; }
+        #auth-box { margin-top: 32px; padding: 18px 14px; }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -167,24 +211,14 @@
   }
 
   async function requireAuth() {
-    const sbClient = client();
-    if (!sbClient || typeof sbClient.auth?.getSession !== "function") {
-      console.error("Supabase auth client is not ready.");
-      return null;
-    }
+    const session = await getSession();
+    if (session) return session;
 
-    const { data, error } = await sbClient.auth.getSession();
-    if (error) console.error(error);
-
-    if (!data?.session) {
-      const returnTo = encodeURIComponent(
-        window.location.pathname + window.location.search + window.location.hash
-      );
-      window.location.replace("auth.html?redirect=" + returnTo);
-      return null;
-    }
-
-    return data.session;
+    const returnTo = encodeURIComponent(
+      window.location.pathname + window.location.search + window.location.hash
+    );
+    window.location.replace("auth.html?redirect=" + returnTo);
+    return null;
   }
 
   function showLoggedInOnAuthPage(session) {
@@ -306,8 +340,23 @@
   window.logout = logout;
   window.toggleForm = toggleForm;
   window.injectAuthPersonBtn = injectPersonButton;
+  window.getAuthSession = getSession;
+
+  function notifyAuthChange(session) {
+    window.dispatchEvent(
+      new CustomEvent("authStateChanged", { detail: { session: session || null } })
+    );
+  }
+
+  function ensureViewport() {
+    const meta = document.querySelector('meta[name="viewport"]');
+    if (meta && !meta.content.includes("viewport-fit")) {
+      meta.content = "width=device-width, initial-scale=1.0, viewport-fit=cover";
+    }
+  }
 
   async function boot() {
+    ensureViewport();
     injectAuthStyles();
 
     if (isAuthPage()) {
@@ -320,16 +369,27 @@
       return;
     }
 
-    const session = await requireAuth();
-    if (!session) return;
-
     schedulePersonButton();
 
-    client().auth.onAuthStateChange((event, newSession) => {
-      if (event === "SIGNED_OUT" || !newSession) {
-        window.location.replace("auth.html");
-      }
-    });
+    if (isProtectedPage()) {
+      const session = await requireAuth();
+      if (!session) return;
+    }
+
+    const sbClient = client();
+    if (sbClient?.auth?.onAuthStateChange) {
+      sbClient.auth.onAuthStateChange((event, newSession) => {
+        notifyAuthChange(newSession);
+        if ((event === "SIGNED_OUT" || !newSession) && isProtectedPage()) {
+          const returnTo = encodeURIComponent(
+            window.location.pathname + window.location.search + window.location.hash
+          );
+          window.location.replace("auth.html?redirect=" + returnTo);
+        }
+      });
+    }
+
+    notifyAuthChange(await getSession());
   }
 
   boot();

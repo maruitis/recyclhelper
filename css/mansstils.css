@@ -3949,8 +3949,8 @@ nav {
     h3 { font-size: 32px; white-space: normal; }
     h4 { font-size: 19px; }
 
-    /* ─ Body: ensure slogan doesn't overlap content ─ */
-    body { padding-bottom: 80px; }
+    /* ─ Body: ensure slogan + FAB don't overlap content ─ */
+    body { padding-bottom: 100px; }
 
     /* ─ Nav: two-row wrap (links row 1, theme+lang row 2) ─ */
     nav {
@@ -3987,6 +3987,12 @@ nav {
     }
     .theme-dot { width: 20px; height: 20px; }
     .lang-selector { margin-left: 6px; flex-shrink: 0; }
+    .nav-ctrl-group {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+        order: 10;
+    }
 
     /* ─ Clouds: hide on small screens ─ */
     .cloud { display: none; }
@@ -4009,10 +4015,15 @@ nav {
     .search-row .search-container,
     .search-row .search-container.small {
         width: 100%;
+        max-width: 100%;
         height: 46px;
         border-radius: 50px;
         order: 0;
         flex-shrink: 0;
+    }
+    .search-row {
+        width: calc(100vw - 24px);
+        max-width: 100%;
     }
     .search-container input,
     .search-container.small input {
@@ -4628,7 +4639,9 @@ nav {
     .img-wrapper { width: 110px !important; }
     .card-img   { width: 100% !important; height: 100% !important; object-fit: contain !important; }
 
-    #site-slogan { font-size: 18px !important; }
+    #site-slogan { font-size: 18px !important; padding-bottom: env(safe-area-inset-bottom, 4px) !important; }
+
+    body { padding-bottom: 110px; }
 
     .lifehack-header        { font-size: 26px; }
     .detail-spec-section h3 { font-size: 26px; }

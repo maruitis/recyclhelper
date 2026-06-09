@@ -152,8 +152,41 @@
         opacity: 0.7;
       }
       .recycle-pic-modal-wrap { position: relative; }
+      @media (max-width: 768px) {
+        .recycle-pic-add {
+          bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+          right: 14px;
+          width: 50px;
+          height: 50px;
+          border-radius: 36px;
+          font-size: 1.7rem;
+        }
+        .recycle-pic-overlay { padding: 12px; align-items: flex-end; }
+        .recycle-pic-modal {
+          width: 100%;
+          max-width: none;
+          padding: 20px 16px 24px;
+          border-radius: 22px 22px 18px 18px;
+        }
+        .recycle-pic-actions { flex-direction: column; }
+        .recycle-pic-actions button { width: 100%; }
+        .recycle-pic-preview img { max-height: 200px; }
+      }
+      @media (max-width: 480px) {
+        .recycle-pic-add {
+          bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+          right: 10px;
+          width: 46px;
+          height: 46px;
+        }
+      }
     `;
     document.head.appendChild(style);
+  }
+
+  function setPlusVisible(visible) {
+    const btn = document.getElementById("recycle-pic-add");
+    if (btn) btn.style.display = visible ? "flex" : "none";
   }
 
   function injectUI() {
@@ -204,6 +237,7 @@
     fileInput.id = "recycle-pic-file-input";
     fileInput.hidden = true;
 
+    addBtn.style.display = "none";
     document.body.appendChild(addBtn);
     document.body.appendChild(overlay);
     document.body.appendChild(cameraInput);
@@ -323,6 +357,15 @@
     setTimeout(closeModal, 1400);
   }
 
+  async function applySession(nextSession) {
+    session = nextSession || null;
+    if (!isIndexPage()) return;
+
+    injectStyles();
+    injectUI();
+    setPlusVisible(!!session);
+  }
+
   async function init() {
     if (!isIndexPage()) return;
 
@@ -330,11 +373,11 @@
     if (!client?.auth?.getSession) return;
 
     const { data } = await client.auth.getSession();
-    if (!data?.session) return;
+    await applySession(data?.session || null);
 
-    session = data.session;
-    injectStyles();
-    injectUI();
+    window.addEventListener("authStateChanged", (e) => {
+      applySession(e.detail?.session || null);
+    });
   }
 
   if (document.readyState === "loading") {

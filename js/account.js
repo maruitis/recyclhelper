@@ -111,8 +111,32 @@
         color: #0e0973;
       }
       [data-theme="dark"] .account-msg { color: #b8e6ff; }
+      @media (max-width: 768px) {
+        .account-wrap {
+          margin: 12px auto 36px;
+          padding: 0 14px;
+        }
+        .account-header h2 { font-size: 1.45rem; }
+        .account-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+        }
+        .account-pic-meta { padding: 8px 10px 10px; font-size: 0.75rem; }
+        .account-empty { padding: 28px 16px; font-size: 0.9rem; }
+      }
+      @media (max-width: 480px) {
+        .account-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+        .account-header h2 { font-size: 1.25rem; }
+      }
     `;
     document.head.appendChild(style);
+  }
+
+  function redirectToAuth() {
+    const returnTo = encodeURIComponent(
+      window.location.pathname + window.location.search + window.location.hash
+    );
+    window.location.replace("auth.html?redirect=" + returnTo);
   }
 
   async function togglePublic(id, checked) {
@@ -169,7 +193,10 @@
     const client = sb();
     const { data: sessionData } = await client.auth.getSession();
     const session = sessionData?.session;
-    if (!session) return;
+    if (!session) {
+      redirectToAuth();
+      return;
+    }
 
     const emailEl = document.getElementById("account-email");
     if (emailEl) emailEl.textContent = session.user.email || "Your account";
